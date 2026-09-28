@@ -77,7 +77,8 @@ public sealed class MapScreen(GameSession session, ScreenStack screens) : IScree
 
     private void EnterCity(City city)
     {
-        Log($"Entered {city.Name}.");
+        Log($"Visited {city.Name}.");
+        screens.Push(new CityScreen(session, city, screens));
     }
 
     private void Engage(NeutralSquad neutral)
