@@ -83,7 +83,8 @@ public sealed class MapScreen(GameSession session, ScreenStack screens) : IScree
 
     private void Engage(NeutralSquad neutral)
     {
-        Log($"{neutral.Name} block the way.");
+        Log($"Battle with {neutral.Name}.");
+        screens.Push(new BattleScreen(session, neutral, screens));
     }
 
     private void EndTurn()
