@@ -1,0 +1,14 @@
+[
+  { "id": "knight", "name": "Knight", "hp": 150, "armor": 10, "initiative": 50, "power": 50, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 4 },
+
+  { "id": "squire", "name": "Squire", "hp": 100, "armor": 0, "initiative": 50, "power": 25, "accuracy": 80, "attack": "melee", "size": "small", "cost": 50 },
+  { "id": "archer", "name": "Archer", "hp": 45, "armor": 0, "initiative": 60, "power": 25, "accuracy": 80, "attack": "ranged", "size": "small", "cost": 40 },
+  { "id": "apprentice", "name": "Apprentice", "hp": 35, "armor": 0, "initiative": 40, "power": 15, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 60 },
+  { "id": "acolyte", "name": "Acolyte", "hp": 50, "armor": 0, "initiative": 10, "power": 20, "accuracy": 100, "attack": "heal", "size": "small", "cost": 50 },
+
+  { "id": "goblin", "name": "Goblin", "hp": 50, "armor": 0, "initiative": 30, "power": 15, "accuracy": 75, "attack": "melee", "size": "small", "cost": 30 },
+  { "id": "goblin-archer", "name": "Goblin Archer", "hp": 40, "armor": 0, "initiative": 40, "power": 15, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 30 },
+  { "id": "orc", "name": "Orc", "hp": 200, "armor": 0, "initiative": 30, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 100 },
+  { "id": "shaman", "name": "Shaman", "hp": 60, "armor": 0, "initiative": 35, "power": 20, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 80 },
+  { "id": "ogre", "name": "Ogre", "hp": 300, "armor": 0, "initiative": 20, "power": 65, "accuracy": 80, "attack": "melee", "size": "large", "cost": 200 }
+]

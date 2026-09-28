@@ -1,18 +1,28 @@
+using System;
 using Disciples.Core.Map;
+using Disciples.Core.Units;
 
 namespace Disciples.Core.Squads
 {
-    public sealed class Leader
+    /// <summary>A leader with its squad travelling on the world map.</summary>
+    public sealed class Party
     {
-        public Leader(string name, Position position, int maxMovementPoints)
+        public Party(Unit leader, Position position, int maxMovementPoints)
         {
-            Name = name;
+            if (!leader.IsLeader)
+                throw new ArgumentException($"{leader.Name} cannot lead a party.", nameof(leader));
+
+            Leader = leader;
+            Squad = new Squad(leader.Definition.Leadership);
+            Squad.TryPlace(leader, new SquadSlot(SquadLine.Front, 1));
             Position = position;
             MaxMovementPoints = maxMovementPoints;
             MovementPoints = maxMovementPoints;
         }
 
-        public string Name { get; }
+        public Unit Leader { get; }
+        public Squad Squad { get; }
+        public string Name => Leader.Name;
         public Position Position { get; private set; }
         public int MovementPoints { get; private set; }
         public int MaxMovementPoints { get; }

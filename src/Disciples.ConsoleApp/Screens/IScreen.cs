@@ -6,6 +6,5 @@ public interface IScreen
 {
     IRenderable Render(int width, int height);
 
-    /// <returns>False when the game should exit.</returns>
-    bool HandleKey(ConsoleKeyInfo key);
+    void HandleKey(ConsoleKeyInfo key);
 }

@@ -1,5 +1,6 @@
 {
   "name": "Test Valley",
+  "gold": 300,
   "legend": {
     ".": "plains",
     "=": "road",
@@ -33,9 +34,155 @@
     "MMMh~~~~~~~~~~~~~~~~~~~~....ffff...hhMMM"
   ],
   "cities": [
-    { "name": "Imperial Capital", "x": 3, "y": 10, "capital": true },
-    { "name": "Wolfsdale", "x": 34, "y": 10, "capital": false },
-    { "name": "Riverwatch", "x": 22, "y": 17, "capital": false }
+    {
+      "name": "Imperial Capital",
+      "x": 3,
+      "y": 10,
+      "capital": true,
+      "income": 100,
+      "recruits": [
+        "squire",
+        "archer",
+        "apprentice",
+        "acolyte"
+      ],
+      "buildings": true
+    },
+    {
+      "name": "Wolfsdale",
+      "x": 34,
+      "y": 10,
+      "capital": false,
+      "income": 50,
+      "recruits": [
+        "squire",
+        "archer"
+      ],
+      "garrison": [
+        {
+          "id": "archer",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Riverwatch",
+      "x": 22,
+      "y": 17,
+      "capital": false,
+      "income": 50,
+      "recruits": [
+        "archer",
+        "acolyte"
+      ],
+      "garrison": [
+        {
+          "id": "squire",
+          "line": "front",
+          "column": 1
+        }
+      ]
+    }
   ],
-  "leader": { "name": "Knight", "x": 4, "y": 10, "movementPoints": 20 }
+  "neutrals": [
+    {
+      "name": "Goblin Scouts",
+      "x": 10,
+      "y": 10,
+      "reward": 100,
+      "units": [
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Orc Warband",
+      "x": 26,
+      "y": 10,
+      "reward": 200,
+      "units": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "shaman",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Ogre Guard",
+      "x": 31,
+      "y": 10,
+      "reward": 350,
+      "units": [
+        {
+          "id": "ogre",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Goblin Raiders",
+      "x": 22,
+      "y": 15,
+      "reward": 120,
+      "units": [
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    }
+  ],
+  "party": {
+    "leader": "knight",
+    "x": 4,
+    "y": 10,
+    "movementPoints": 20
+  }
 }

@@ -4,7 +4,7 @@ using Spectre.Console.Rendering;
 
 namespace Disciples.ConsoleApp;
 
-public sealed class GameLoop(IScreen screen)
+public sealed class GameLoop(ScreenStack screens)
 {
     public void Run()
     {
@@ -18,12 +18,18 @@ public sealed class GameLoop(IScreen screen)
             .Start(context =>
             {
                 context.Refresh();
-                while (screen.HandleKey(Console.ReadKey(true)))
+                while (screens.Current is { } screen)
+                {
+                    screen.HandleKey(Console.ReadKey(true));
+                    if (screens.Current == null)
+                        break;
+
                     context.UpdateTarget(Render());
+                }
             });
 
         Console.CursorVisible = true;
     }
 
-    private IRenderable Render() => screen.Render(Console.WindowWidth, Console.WindowHeight);
+    private IRenderable Render() => screens.Current!.Render(Console.WindowWidth, Console.WindowHeight);
 }

@@ -1,4 +1,5 @@
 using Disciples.ConsoleApp.Rendering;
+using Disciples.Core.Cities;
 using Disciples.Core.Map;
 using Disciples.Core.Session;
 using Spectre.Console;
@@ -6,7 +7,7 @@ using Spectre.Console.Rendering;
 
 namespace Disciples.ConsoleApp.Screens;
 
-public sealed class MapScreen(GameSession session) : IScreen
+public sealed class MapScreen(GameSession session, ScreenStack screens) : IScreen
 {
     private const int SideWidth = 34;
     private const int LogSize = 6;
@@ -16,6 +17,7 @@ public sealed class MapScreen(GameSession session) : IScreen
     private static readonly Style LeaderStyle = new(Color.White, decoration: Decoration.Bold);
     private static readonly Style CapitalStyle = new(Color.Gold1, new Color(128, 28, 28), Decoration.Bold);
     private static readonly Style CityStyle = new(Color.Grey93, new Color(72, 48, 96), Decoration.Bold);
+    private static readonly Style EnemyStyle = new(Color.Red1, decoration: Decoration.Bold);
     private static readonly string[] LegendTerrains = ["plains", "road", "forest", "hills", "mountains", "water"];
 
     private readonly List<string> _log = ["Welcome, Knight. Arrows or numpad to move."];
@@ -33,29 +35,31 @@ public sealed class MapScreen(GameSession session) : IScreen
         return new Rows(grid, RenderHints());
     }
 
-    public bool HandleKey(ConsoleKeyInfo key)
+    public void HandleKey(ConsoleKeyInfo key)
     {
         if (key.Key is ConsoleKey.Escape or ConsoleKey.Q)
-            return false;
-
-        if (key.Key == ConsoleKey.E)
+            screens.Clear();
+        else if (key.Key == ConsoleKey.E)
             EndTurn();
+        else if (key.Key == ConsoleKey.Enter && session.CurrentCity is { } city)
+            EnterCity(city);
         else if (KeyToDirection(key.Key) is { } direction)
             Move(direction);
-
-        return true;
     }
 
     private void Move(Direction direction)
     {
-        var target = session.Leader.Position.Step(direction);
+        var target = session.Party.Position.Step(direction);
 
         switch (session.TryMove(direction))
         {
             case MoveResult.Moved when session.Map.CityAt(target) is { } city:
-                Log($"Arrived at {city.Name}. City screen comes in M3.");
+                EnterCity(city);
                 break;
-            case MoveResult.Moved when session.Leader.MovementPoints == 0:
+            case MoveResult.EnemyEncountered:
+                Engage(session.Map.NeutralAt(target)!);
+                break;
+            case MoveResult.Moved when session.Party.MovementPoints == 0:
                 Log("Out of movement. Press E to end turn.");
                 break;
             case MoveResult.OutOfBounds:
@@ -66,15 +70,25 @@ public sealed class MapScreen(GameSession session) : IScreen
                 break;
             case MoveResult.NotEnoughMovement:
                 var terrain = session.Map.TerrainAt(target);
-                Log($"{terrain.Name} costs {terrain.MoveCost}, only {session.Leader.MovementPoints} left.");
+                Log($"{terrain.Name} costs {terrain.MoveCost}, only {session.Party.MovementPoints} left.");
                 break;
         }
+    }
+
+    private void EnterCity(City city)
+    {
+        Log($"Entered {city.Name}.");
+    }
+
+    private void Engage(NeutralSquad neutral)
+    {
+        Log($"{neutral.Name} block the way.");
     }
 
     private void EndTurn()
     {
         session.EndTurn();
-        Log($"Turn {session.Turn}. Movement restored.");
+        Log($"Turn {session.Turn}. Gold {session.Gold}.");
     }
 
     private void Log(string message)
@@ -87,7 +101,7 @@ public sealed class MapScreen(GameSession session) : IScreen
     private Panel RenderMap(int viewWidth, int viewHeight)
     {
         var map = session.Map;
-        var leader = session.Leader.Position;
+        var leader = session.Party.Position;
         var left = Math.Clamp(leader.X - viewWidth / 2, 0, map.Width - viewWidth);
         var top = Math.Clamp(leader.Y - viewHeight / 2, 0, map.Height - viewHeight);
 
@@ -113,7 +127,7 @@ public sealed class MapScreen(GameSession session) : IScreen
         var city = session.Map.CityAt(position);
         var cityStyle = city?.IsCapital == true ? CapitalStyle : CityStyle;
 
-        if (position == session.Leader.Position)
+        if (position == session.Party.Position)
         {
             var background = city == null ? TileStyles.Background(terrain) : cityStyle.Background;
             paragraph.Append("@ ", LeaderStyle.Background(background));
@@ -121,6 +135,10 @@ public sealed class MapScreen(GameSession session) : IScreen
         else if (city != null)
         {
             paragraph.Append(city.IsCapital ? "◆ " : "■ ", cityStyle);
+        }
+        else if (session.Map.NeutralAt(position) != null)
+        {
+            paragraph.Append("† ", EnemyStyle.Background(TileStyles.Background(terrain)));
         }
         else
         {
@@ -130,13 +148,14 @@ public sealed class MapScreen(GameSession session) : IScreen
 
     private Panel RenderSide()
     {
-        var leader = session.Leader;
+        var party = session.Party;
         var rows = new List<IRenderable>
         {
-            new Markup($"[bold gold1]{Markup.Escape(leader.Name)}[/]  [grey]turn[/] [bold]{session.Turn}[/]"),
-            MovementBar(leader.MovementPoints, leader.MaxMovementPoints),
-            new Text(""),
+            new Markup($"[bold gold1]{Markup.Escape(party.Name)}[/]  [grey]turn[/] [bold]{session.Turn}[/]  [gold1]{session.Gold}g[/]"),
+            MovementBar(party.MovementPoints, party.MaxMovementPoints),
             new Markup($"[grey]Location[/]  {DescribeLocation()}"),
+            new Text(""),
+            RenderSquad(),
             new Text(""),
             RenderLegend(),
             new Text(""),
@@ -161,11 +180,22 @@ public sealed class MapScreen(GameSession session) : IScreen
 
     private string DescribeLocation()
     {
-        var position = session.Leader.Position;
+        var position = session.Party.Position;
         if (session.Map.CityAt(position) is { } city)
             return $"[bold]{Markup.Escape(city.Name)}[/]{(city.IsCapital ? " [gold1](capital)[/]" : "")}";
 
         return $"{Markup.Escape(session.Map.TerrainAt(position).Name)} [grey]{position}[/]";
+    }
+
+    private Grid RenderSquad()
+    {
+        var squad = session.Party.Squad;
+        var grid = new Grid().AddColumn().AddColumn(new GridColumn().RightAligned());
+        grid.AddRow(new Markup($"[grey]Squad[/]"), new Markup($"[grey]{squad.UsedSlots}/{squad.Capacity}[/]"));
+        foreach (var unit in squad.Units)
+            grid.AddRow(new Text(unit.Name), new Markup(UnitStyles.HpMarkup(unit)));
+
+        return grid;
     }
 
     private static Grid RenderLegend()
@@ -174,6 +204,8 @@ public sealed class MapScreen(GameSession session) : IScreen
             .Select(id => LegendItem(TileStyles.LegendGlyph(id), TileStyles.LegendStyle(id), char.ToUpper(id[0]) + id[1..]))
             .Append(LegendItem("◆", CapitalStyle, "Capital"))
             .Append(LegendItem("■", CityStyle, "City"))
+            .Append(LegendItem("†", EnemyStyle, "Enemy"))
+            .Append(LegendItem("@", LeaderStyle, "You"))
             .ToList();
 
         var grid = new Grid().AddColumn().AddColumn();
@@ -190,7 +222,7 @@ public sealed class MapScreen(GameSession session) : IScreen
 
     private static Markup RenderHints()
     {
-        return new Markup("[gold1]←↑→↓[/] [grey]/ numpad / Home PgUp End PgDn — move[/]   [gold1]E[/] [grey]end turn[/]   [gold1]Esc[/] [grey]quit[/]");
+        return new Markup("[gold1]←↑→↓[/] [grey]/ numpad / Home PgUp End PgDn — move[/]   [gold1]Enter[/] [grey]city[/]   [gold1]E[/] [grey]end turn[/]   [gold1]Esc[/] [grey]quit[/]");
     }
 
     private static Direction? KeyToDirection(ConsoleKey key)

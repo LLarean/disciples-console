@@ -13,4 +13,6 @@ AnsiConsole.Write(new FigletText("Disciples").Color(Color.Gold1));
 AnsiConsole.MarkupLine("[grey]Console prototype. Press any key to start...[/]");
 Console.ReadKey(true);
 
-new GameLoop(new MapScreen(session)).Run();
+var screens = new ScreenStack();
+screens.Push(new MapScreen(session, screens));
+new GameLoop(screens).Run();
