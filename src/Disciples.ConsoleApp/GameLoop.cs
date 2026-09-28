@@ -17,6 +17,7 @@ public sealed class GameLoop(IScreen screen)
             .Cropping(VerticalOverflowCropping.Bottom)
             .Start(context =>
             {
+                context.Refresh();
                 while (screen.HandleKey(Console.ReadKey(true)))
                     context.UpdateTarget(Render());
             });
