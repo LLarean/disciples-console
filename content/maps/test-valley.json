@@ -1,0 +1,41 @@
+{
+  "name": "Test Valley",
+  "legend": {
+    ".": "plains",
+    "=": "road",
+    "f": "forest",
+    "h": "hills",
+    "M": "mountains",
+    "~": "water"
+  },
+  "rows": [
+    "MMMMMMMMffff.........~~~~......ffffMMMMM",
+    "MMMMMMfffff.........~~~~.......fffffMMMM",
+    "MMMMhhfff..........~~~~.........fffhhMMM",
+    "MMMhhh............~~~~..........hhhhhMMM",
+    "MMhh..............~~~~............hhhhMM",
+    "Mhh....ff........~~~~.......ff......hhhM",
+    "Mh....ffff.......~~~~......ffff......hhM",
+    "M....ffffff.....~~~~.......fff........hM",
+    "M.....ffff......~~~~...................M",
+    "......ff.......~~~~.....................",
+    "....==========================..........",
+    ".............~~~~.......................",
+    "...ff.......~~~~.........ff.....hh......",
+    "..ffff.....~~~~.........ffff...hhhh.....",
+    ".ffffff....~~~~........ffffff..hhMMh....",
+    ".fffff....~~~~~~.......fffff...hMMMMh...",
+    "..fff....~~~~~~~~.......fff....hhMMhh...",
+    "........~~~~~~~~~~......................",
+    ".......~~~~~~~~~~~~...........ff........",
+    "hh....~~~~~~~~~~~~~~.........ffff.......",
+    "MMh..~~~~~~~~~~~~~~~~~......ffffff....hM",
+    "MMMh~~~~~~~~~~~~~~~~~~~~....ffff...hhMMM"
+  ],
+  "cities": [
+    { "name": "Imperial Capital", "x": 3, "y": 10, "capital": true },
+    { "name": "Wolfsdale", "x": 34, "y": 10, "capital": false },
+    { "name": "Riverwatch", "x": 22, "y": 17, "capital": false }
+  ],
+  "leader": { "name": "Knight", "x": 4, "y": 10, "movementPoints": 20 }
+}

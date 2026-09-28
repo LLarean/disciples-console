@@ -6,14 +6,14 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 ## M0 — Scaffold
 - [x] Solution: `Disciples.Core` (netstandard2.1), `Disciples.ConsoleApp` (net8.0 + Spectre.Console), `Disciples.Core.Tests` (xUnit)
 - [x] Docs: mechanics catalogue, roadmap, architecture, ADRs, project `CLAUDE.md`
-- [ ] Screen loop prototype: full-screen layout (map panel, side panel, hint bar), key input, no flicker
+- [x] Screen loop prototype: full-screen layout (map panel, side panel, hint bar), key input, no flicker
 
 ## M1 — Map and movement
-- [ ] Terrain, tile, map model; test map loaded from `content/maps/*.json` (1.1, 9.1)
-- [ ] Leader on map, movement with cost and movement points (1.2, 1.3)
-- [ ] Map objects: capital, city (1.4)
-- [ ] Viewport scrolling (1.5)
-- [ ] Turn counter and end turn (2.1)
+- [x] Terrain, tile, map model; test map loaded from `content/maps/*.json` (1.1, 9.1)
+- [x] Leader on map, movement with cost and movement points (1.2, 1.3)
+- [x] Map objects: capital, city (1.4) — display only
+- [x] Viewport scrolling (1.5)
+- [x] Turn counter and end turn (2.1)
 
 ## M2 — Units and squad
 - [ ] Unit definitions loaded from `content/units/*.json`; unit instances (3.1–3.3)

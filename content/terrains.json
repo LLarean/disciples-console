@@ -1,0 +1,8 @@
+[
+  { "id": "plains", "name": "Plains", "moveCost": 2 },
+  { "id": "road", "name": "Road", "moveCost": 1 },
+  { "id": "forest", "name": "Forest", "moveCost": 4 },
+  { "id": "hills", "name": "Hills", "moveCost": 3 },
+  { "id": "mountains", "name": "Mountains", "moveCost": null },
+  { "id": "water", "name": "Water", "moveCost": null }
+]

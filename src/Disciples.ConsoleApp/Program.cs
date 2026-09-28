@@ -1,12 +1,16 @@
 using System.Text;
+using Disciples.ConsoleApp;
+using Disciples.ConsoleApp.Content;
+using Disciples.ConsoleApp.Screens;
 using Spectre.Console;
 
 Console.OutputEncoding = Encoding.UTF8;
 
+var session = new ContentLoader(Path.Combine(AppContext.BaseDirectory, "content")).LoadSession("test-valley");
+
+AnsiConsole.Clear();
 AnsiConsole.Write(new FigletText("Disciples").Color(Color.Gold1));
-AnsiConsole.Write(new Panel("[grey]Console prototype. Scaffold only (M0).[/]")
-    .Header("[gold1]Disciples Console[/]")
-    .Border(BoxBorder.Double)
-    .BorderColor(Color.Gold3));
-AnsiConsole.MarkupLine("[grey]Press any key to exit...[/]");
+AnsiConsole.MarkupLine("[grey]Console prototype. Press any key to start...[/]");
 Console.ReadKey(true);
+
+new GameLoop(new MapScreen(session)).Run();
