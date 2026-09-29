@@ -7,7 +7,7 @@ using Disciples.Core.Session;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
 
-namespace Disciples.ConsoleApp.Content;
+namespace Disciples.Tui.Content;
 
 public sealed class ContentLoader(string contentRoot)
 {

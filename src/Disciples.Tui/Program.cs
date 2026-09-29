@@ -1,5 +1,5 @@
-using Disciples.ConsoleApp.Content;
 using Disciples.Tui;
+using Disciples.Tui.Content;
 using Disciples.Tui.Screens;
 using Terminal.Gui.App;
 

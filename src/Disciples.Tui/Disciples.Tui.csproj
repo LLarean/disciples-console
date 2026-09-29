@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Disciples.ConsoleApp\Content\ContentLoader.cs" Link="Content\ContentLoader.cs" />
     <None Include="..\..\content\**\*" LinkBase="content" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
