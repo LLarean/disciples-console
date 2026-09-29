@@ -35,5 +35,7 @@ namespace Disciples.Core.Content
             _terrains.TryGetValue(id, out var terrain) ? terrain : throw new ContentException($"Unknown terrain '{id}'.");
 
         public Building? FindBuilding(string id) => _buildings.FirstOrDefault(b => b.Id == id);
+
+        public string BuildingName(string id) => FindBuilding(id)?.Name ?? id;
     }
 }

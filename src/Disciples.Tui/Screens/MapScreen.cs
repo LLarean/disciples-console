@@ -13,11 +13,12 @@ public sealed class MapScreen : Screen
     private const int LogCapacity = 50;
 
     private readonly GameSession _session;
-    private readonly List<string> _log = ["Welcome, Knight. Arrows or numpad to move."];
+    private readonly List<string> _log = [];
 
     public MapScreen(GameSession session)
     {
         _session = session;
+        _log.Add($"Welcome, {session.Party.Name}. Arrows or numpad to move.");
 
         var map = new MapView(session) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
         var party = new PartyView(session, _log) { X = Pos.Right(map), Y = 0, Width = SideWidth, Height = Dim.Fill(1) };
@@ -31,7 +32,7 @@ public sealed class MapScreen : Screen
             Shell.Quit();
         else if (key == Key.E)
             EndTurn();
-        else if (key == Key.Enter && _session.CurrentCity is { } city)
+        else if (key == Key.Enter && _session.CurrentCity is { IsPlayerOwned: true } city)
             EnterCity(city);
         else if (KeyToDirection(key) is { } direction)
             Move(direction);
@@ -45,13 +46,22 @@ public sealed class MapScreen : Screen
     {
         var target = _session.Party.Position.Step(direction);
 
-        switch (_session.TryMove(direction))
+        var result = _session.TryMove(direction);
+        DrainEvents();
+
+        switch (result)
         {
             case MoveResult.Moved when _session.Map.CityAt(target) is { } city:
                 EnterCity(city);
                 break;
+            case MoveResult.CityCaptured when _session.Status == GameStatus.Playing:
+                EnterCity(_session.CurrentCity!);
+                break;
+            case MoveResult.CityCaptured:
+                Shell.Replace(new GameEndScreen(true, _session.Turn, Shell.Quit));
+                break;
             case MoveResult.EnemyEncountered:
-                Engage(_session.Map.NeutralAt(target)!);
+                Engage(_session.EncounterAt(target)!);
                 break;
             case MoveResult.Moved when _session.Party.MovementPoints == 0:
                 Log("Out of movement. Press E to end turn.");
@@ -75,16 +85,25 @@ public sealed class MapScreen : Screen
         Shell.Push(new CityScreen(_session, city));
     }
 
-    private void Engage(NeutralSquad neutral)
+    private void Engage(Encounter encounter)
     {
-        Log($"Battle with {neutral.Name}.");
-        Shell.Push(new BattleScreen(_session, neutral));
+        Log($"Battle with {encounter.Name}.");
+        Shell.Push(new BattleScreen(_session, encounter));
     }
 
     private void EndTurn()
     {
         _session.EndTurn();
-        Log($"Turn {_session.Turn}. Gold {_session.Gold}.");
+        DrainEvents();
+        Log($"Gold {_session.Gold}.");
+    }
+
+    protected override void UpdateViews() => DrainEvents();
+
+    private void DrainEvents()
+    {
+        foreach (var gameEvent in _session.TakeEvents())
+            Log(GameEventText.Describe(gameEvent));
     }
 
     private void Log(string message)

@@ -46,12 +46,6 @@ namespace Disciples.Core.Units
             return healed;
         }
 
-        public void Revive(int hp)
-        {
-            if (!IsAlive)
-                Hp = Math.Min(MaxHp, Math.Max(1, hp));
-        }
-
         internal void AddExperience(int amount) => Experience += Math.Max(0, amount);
 
         internal void CapExperience() => Experience = Math.Min(Experience, Definition.ExperienceToLevel);

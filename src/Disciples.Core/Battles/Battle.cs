@@ -22,6 +22,7 @@ namespace Disciples.Core.Battles
         private readonly GameRules _rules;
         private readonly List<Unit> _queue = new List<Unit>();
         private readonly HashSet<Unit> _defending = new HashSet<Unit>();
+        private readonly HashSet<Unit> _waited = new HashSet<Unit>();
         private readonly List<BattleEvent> _log = new List<BattleEvent>();
 
         public Battle(Squad attackers, Squad defenders, IRandom random, GameRules? rules = null)
@@ -42,6 +43,9 @@ namespace Disciples.Core.Battles
         public bool IsAttackersTurn => Current != null && Attackers.Contains(Current);
         public IReadOnlyList<Unit> Queue => _queue;
         public IReadOnlyList<BattleEvent> Log => _log;
+
+        /// <summary>A unit may postpone its turn to the end of the queue once per round.</summary>
+        public bool CanWait => Current != null && _queue.Count > 1 && !_waited.Contains(Current);
 
         public bool IsDefending(Unit unit) => _defending.Contains(unit);
 
@@ -91,6 +95,19 @@ namespace Disciples.Core.Battles
             _defending.Add(actor);
             _log.Add(new BattleEvent(BattleEventKind.Defended, Round, actor));
             EndAction();
+        }
+
+        public bool Wait()
+        {
+            var actor = Current;
+            if (actor == null || !CanWait)
+                return false;
+
+            _waited.Add(actor);
+            _queue.RemoveAt(0);
+            _queue.Add(actor);
+            _log.Add(new BattleEvent(BattleEventKind.Waited, Round, actor));
+            return true;
         }
 
         public void Retreat()
@@ -146,6 +163,7 @@ namespace Disciples.Core.Battles
         private void StartRound()
         {
             Round++;
+            _waited.Clear();
             _log.Add(new BattleEvent(BattleEventKind.RoundStarted, Round));
 
             var order = Attackers.AliveUnits.Concat(Defenders.AliveUnits)

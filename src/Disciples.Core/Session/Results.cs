@@ -6,7 +6,15 @@ namespace Disciples.Core.Session
         OutOfBounds,
         Impassable,
         NotEnoughMovement,
-        EnemyEncountered
+        EnemyEncountered,
+        CityCaptured
+    }
+
+    public enum GameStatus
+    {
+        Playing,
+        Won,
+        Lost
     }
 
     public enum HireResult

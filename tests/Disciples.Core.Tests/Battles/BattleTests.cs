@@ -97,4 +97,20 @@ public class BattleTests
         Assert.Equal(BattleOutcome.Victory, battle.Outcome);
         Assert.Null(battle.Current);
     }
+
+    [Fact]
+    public void Wait_MovesActorToEndOfQueueOncePerRound()
+    {
+        var battle = new Battle(
+            SquadOf((Squire, SquadLine.Front, 0), (Archer, SquadLine.Back, 0)),
+            SquadOf((Acolyte, SquadLine.Back, 0)),
+            new FixedRandom());
+
+        Assert.True(battle.Wait());
+        Assert.Equal(["Squire", "Acolyte", "Archer"], battle.Queue.Select(u => u.Name));
+
+        battle.Defend();
+        battle.Defend();
+        Assert.False(battle.CanWait);
+    }
 }

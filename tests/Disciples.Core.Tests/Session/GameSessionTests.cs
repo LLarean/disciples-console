@@ -13,8 +13,10 @@ public class GameSessionTests
     private static readonly Position Start = new(1, 1);
     private static readonly Position TownPosition = new(1, 0);
     private static readonly Position EnemyPosition = new(0, 2);
+    private static readonly Position KeepPosition = new(2, 0);
 
-    private static GameSession CreateSession(Terrain east, int movementPoints = 10, int gold = 100)
+    private static GameSession CreateSession(
+        Terrain east, int movementPoints = 10, int gold = 100, UnitDefinition? keepGuard = null, UnitDefinition? bandit = null)
     {
         var tiles = new Terrain[3, 3];
         for (var x = 0; x < 3; x++)
@@ -28,11 +30,14 @@ public class GameSessionTests
             new Building("order", "Order", "Fighters", 50, "", "barracks")
         };
         var town = new City("Town", TownPosition, true, 30, [Squire, Archer], buildings);
+        var keep = new City("Keep", KeepPosition, false, 20, owner: Owner.Neutral);
+        if (keepGuard != null)
+            keep.Garrison.TryAdd(new Unit(keepGuard));
         var enemySquad = new Squad();
-        enemySquad.TryAdd(new Unit(Squire));
+        enemySquad.TryAdd(new Unit(bandit ?? Squire));
         var enemy = new NeutralSquad("Bandits", EnemyPosition, enemySquad, 75);
 
-        var map = new WorldMap("Test", tiles, [town], [enemy]);
+        var map = new WorldMap("Test", tiles, [town, keep], [enemy]);
         return new GameSession(TestContent, map, new Party(new Unit(Knight), Start, movementPoints), gold, new FixedRandom());
     }
 
@@ -148,19 +153,103 @@ public class GameSessionTests
         Assert.Equal(BuildResult.NotEnoughGold, session.Build(town, new Building("x", "X", "", 999, "", null)));
     }
 
-    [Fact]
-    public void FinishBattle_Victory_RemovesNeutralAndGrantsReward()
+    private static BattleReport Fight(GameSession session, Encounter encounter)
     {
-        var session = CreateSession(Plains);
-        var neutral = session.Map.Neutrals[0];
-        var battle = session.StartBattle(neutral);
-
+        var battle = session.StartBattle(encounter);
+        var ai = new SimpleBattleAi(session.Random);
         while (!battle.IsOver)
-            new SimpleBattleAi(session.Random).Act(battle);
-        session.FinishBattle(battle, neutral);
+            ai.Act(battle);
+        return session.FinishBattle(battle, encounter);
+    }
 
-        Assert.Equal(BattleOutcome.Victory, battle.Outcome);
+    [Fact]
+    public void FinishBattle_Victory_RemovesNeutralAndGrantsRewardAndExperience()
+    {
+        var session = CreateSession(Plains, bandit: Recruit);
+
+        var report = Fight(session, session.EncounterAt(EnemyPosition)!);
+
+        Assert.Equal(BattleOutcome.Victory, report.Outcome);
         Assert.Empty(session.Map.Neutrals);
         Assert.Equal(175, session.Gold);
+        Assert.Equal(Recruit.ExperienceValue, session.Party.Leader.Experience);
+        Assert.Contains(session.TakeEvents(), e => e.Kind == GameEventKind.BattleWon);
+    }
+
+    [Fact]
+    public void FinishBattle_ExperienceUpgradesUnitWhenCapitalHasBuilding()
+    {
+        var session = CreateSession(Plains, gold: 1000, bandit: Recruit);
+        var town = session.Map.Cities[0];
+        session.Build(town, town.Buildings[0]);
+        var recruit = new Unit(Recruit, experience: Recruit.ExperienceToLevel - 5);
+        session.Party.Squad.TryAdd(recruit);
+
+        Fight(session, session.EncounterAt(EnemyPosition)!);
+
+        Assert.Same(Veteran, recruit.Definition);
+    }
+
+    [Fact]
+    public void TryMove_IntoGuardedHostileCity_ReportsEncounter()
+    {
+        var session = CreateSession(Plains, keepGuard: Squire);
+
+        Assert.Equal(MoveResult.EnemyEncountered, session.TryMove(Direction.NorthEast));
+        Assert.Same(session.Map.Cities[1], session.EncounterAt(KeepPosition)!.City);
+    }
+
+    [Fact]
+    public void TryMove_IntoEmptyHostileCity_CapturesIt()
+    {
+        var session = CreateSession(Plains);
+
+        Assert.Equal(MoveResult.CityCaptured, session.TryMove(Direction.NorthEast));
+        Assert.Equal(Owner.Player, session.Map.Cities[1].Owner);
+        Assert.Equal(KeepPosition, session.Party.Position);
+    }
+
+    [Fact]
+    public void FinishBattle_WinningGarrisonFight_CapturesCityAndMovesParty()
+    {
+        var session = CreateSession(Plains, keepGuard: Archer);
+
+        var report = Fight(session, session.EncounterAt(KeepPosition)!);
+
+        Assert.Same(session.Map.Cities[1], report.CapturedCity);
+        Assert.True(session.Map.Cities[1].IsPlayerOwned);
+        Assert.Equal(KeepPosition, session.Party.Position);
+    }
+
+    [Fact]
+    public void EndTurn_IgnoresIncomeOfHostileCities()
+    {
+        var session = CreateSession(Plains);
+
+        session.EndTurn();
+
+        Assert.Equal(130, session.Gold);
+    }
+
+    [Fact]
+    public void LastEnemyDefeated_WinsTheGame()
+    {
+        var session = CreateSession(Plains);
+        session.TryMove(Direction.NorthEast);
+
+        Fight(session, session.EncounterAt(EnemyPosition)!);
+
+        Assert.Equal(GameStatus.Won, session.Status);
+    }
+
+    [Fact]
+    public void LeaderDeath_LosesTheGame()
+    {
+        var session = CreateSession(Plains, bandit: Ogre);
+        session.Party.Leader.TakeDamage(Knight.MaxHp - 1);
+
+        Fight(session, session.EncounterAt(EnemyPosition)!);
+
+        Assert.Equal(GameStatus.Lost, session.Status);
     }
 }

@@ -78,6 +78,7 @@ public sealed class PartyView : Canvas
             .Select(id => (Glyph: Palette.LegendGlyph(id), Attribute: Palette.TerrainAttribute(id), Name: char.ToUpper(id[0]) + id[1..]))
             .Append(("◆", new Attribute(MapView.CapitalColors.Foreground, MapView.CapitalColors.Background), "Capital"))
             .Append(("■", new Attribute(MapView.CityColors.Foreground, MapView.CityColors.Background), "City"))
+            .Append(("■", new Attribute(MapView.HostileCityColors.Foreground, MapView.HostileCityColors.Background), "Hostile"))
             .Append(("†", new Attribute(Palette.Enemy, Palette.Background), "Enemy"))
             .Append(("@", new Attribute(MapView.LeaderColor, Palette.Background), "You"))
             .ToList();

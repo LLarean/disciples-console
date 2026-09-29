@@ -1,5 +1,4 @@
 using Disciples.Core.Battles;
-using Disciples.Core.Map;
 using Disciples.Core.Session;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
@@ -16,25 +15,26 @@ public sealed class BattleScreen : Screen
     private const int LogSize = 7;
 
     private readonly GameSession _session;
-    private readonly NeutralSquad _neutral;
+    private readonly Encounter _encounter;
     private readonly Battle _battle;
     private readonly SimpleBattleAi _ai;
     private readonly SquadView _playerView;
     private readonly SquadView _enemyView;
     private int _targetIndex;
+    private BattleReport? _report;
 
-    public BattleScreen(GameSession session, NeutralSquad neutral)
+    public BattleScreen(GameSession session, Encounter encounter)
     {
         _session = session;
-        _neutral = neutral;
-        _battle = session.StartBattle(neutral);
+        _encounter = encounter;
+        _battle = session.StartBattle(encounter);
         _ai = new SimpleBattleAi(session.Random);
         RunEnemyTurns();
 
         var header = new Canvas(DrawHeader) { X = 0, Y = 0, Width = Dim.Fill(), Height = 1 };
         _playerView = new SquadView(session.Party.Name) { X = 0, Y = 1, Squad = _battle.Attackers };
         var queue = new Canvas(DrawQueue, "Turn order") { X = Pos.Right(_playerView) + 1, Y = 1, Width = QueueWidth, Height = SquadView.PanelHeight };
-        _enemyView = new SquadView(neutral.Name, facesLeft: true) { X = Pos.Right(queue) + 1, Y = 1, Squad = _battle.Defenders };
+        _enemyView = new SquadView(encounter.Name, facesLeft: true) { X = Pos.Right(queue) + 1, Y = 1, Squad = _battle.Defenders };
         var log = new Canvas(DrawLog, "Log") { X = 0, Y = Pos.Bottom(_playerView), Width = Dim.Fill(), Height = LogSize + 2 };
         var hints = new HintBar(Hints);
         Add(header, _playerView, queue, _enemyView, log, hints);
@@ -45,9 +45,9 @@ public sealed class BattleScreen : Screen
 
     public override bool HandleKey(Key key)
     {
-        if (_battle.IsOver)
+        if (_report != null)
         {
-            Finish();
+            Leave();
             return true;
         }
 
@@ -59,10 +59,12 @@ public sealed class BattleScreen : Screen
             AfterPlayerAction(() => _battle.Act(target));
         else if (key == Key.D)
             AfterPlayerAction(_battle.Defend);
+        else if (key == Key.W && _battle.CanWait)
+            AfterPlayerAction(() => _battle.Wait());
         else if (key == Key.A)
             AfterPlayerAction(() => _ai.Act(_battle));
         else if (key == Key.X)
-            _battle.Retreat();
+            AfterPlayerAction(_battle.Retreat);
         else
             return false;
 
@@ -96,15 +98,17 @@ public sealed class BattleScreen : Screen
     {
         while (!_battle.IsOver && !_battle.IsAttackersTurn)
             _ai.Act(_battle);
+
+        if (_battle.IsOver && _report == null)
+            _report = _session.FinishBattle(_battle, _encounter);
     }
 
-    private void Finish()
+    private void Leave()
     {
-        _session.FinishBattle(_battle, _neutral);
-        if (_session.IsGameOver)
-            Shell.Replace(new GameOverScreen());
-        else
+        if (_session.Status == GameStatus.Playing)
             Shell.Pop();
+        else
+            Shell.Replace(new GameEndScreen(_session.Status == GameStatus.Won, _session.Turn, Shell.Quit));
     }
 
     private SquadSlot? CursorIn(Squad squad) =>
@@ -130,13 +134,14 @@ public sealed class BattleScreen : Screen
     {
         var x = canvas.Text(1, 0, "Battle", Palette.Accent, style: TextStyle.Bold);
         x = canvas.Text(x + 1, 0, "vs", Palette.Dim);
-        x = canvas.Text(x + 1, 0, _neutral.Name, Palette.Enemy, style: TextStyle.Bold) + 3;
+        x = canvas.Text(x + 1, 0, _encounter.Name, Palette.Enemy, style: TextStyle.Bold) + 3;
 
         switch (_battle.Outcome)
         {
             case BattleOutcome.Victory:
                 x = canvas.Text(x, 0, "Victory!", Palette.Good, style: TextStyle.Bold);
-                canvas.Text(x + 1, 0, $"+{_neutral.Reward} gold", Palette.Accent);
+                x = canvas.Text(x + 1, 0, $"+{_report?.Gold} gold", Palette.Accent);
+                canvas.Text(x + 1, 0, $"+{_report?.Experience} exp", Palette.Ally);
                 break;
             case BattleOutcome.Defeat:
                 canvas.Text(x, 0, "Defeat. Your party has fallen.", Palette.Bad, style: TextStyle.Bold);
@@ -167,6 +172,12 @@ public sealed class BattleScreen : Screen
 
     private void DrawLog(Canvas canvas)
     {
+        if (_report != null)
+        {
+            DrawReport(canvas, _report);
+            return;
+        }
+
         var log = _battle.Log;
         var start = Math.Max(0, log.Count - LogSize);
         for (var i = start; i < log.Count; i++)
@@ -177,6 +188,26 @@ public sealed class BattleScreen : Screen
                 x = canvas.Text(x, i - start, segment, color);
         }
     }
+
+    private void DrawReport(Canvas canvas, BattleReport report)
+    {
+        var lines = new List<(string Text, Color Color)>();
+        if (report.Outcome == BattleOutcome.Victory)
+            lines.Add(($"Gained {report.Gold} gold and {report.Experience} experience.", Palette.Accent));
+        lines.AddRange(report.Progress.Select(p => (Describe(p), p.Kind == ProgressKind.WaitingForBuilding ? Palette.Warn : Palette.Good)));
+        if (report.CapturedCity is { } city)
+            lines.Add(($"{city.Name} is captured.", Palette.Good));
+
+        for (var i = 0; i < lines.Count && i < LogSize; i++)
+            canvas.Text(1, i, lines[i].Text, lines[i].Color);
+    }
+
+    private string Describe(UnitProgress progress) => progress.Kind switch
+    {
+        ProgressKind.LeveledUp => $"{progress.Unit.Name} reached level {progress.Unit.Level}.",
+        ProgressKind.Upgraded => $"{progress.PreviousName} became {progress.Unit.Name}.",
+        _ => $"{progress.Unit.Name} needs {_session.Content.BuildingName(progress.Building ?? "")} in the capital to grow."
+    };
 
     private IEnumerable<(string, Color)> Describe(BattleEvent e, Color text)
     {
@@ -207,6 +238,10 @@ public sealed class BattleScreen : Screen
                 yield return Name(e.Actor);
                 yield return (" defends", text);
                 break;
+            case BattleEventKind.Waited:
+                yield return Name(e.Actor);
+                yield return (" waits", text);
+                break;
             case BattleEventKind.Killed:
                 yield return Name(e.Target);
                 yield return (" dies", Palette.Bad);
@@ -224,7 +259,7 @@ public sealed class BattleScreen : Screen
 
     private IEnumerable<(string, string)> Hints()
     {
-        if (_battle.IsOver)
+        if (_report != null)
         {
             yield return ("Any key", "continue");
             yield break;
@@ -239,6 +274,8 @@ public sealed class BattleScreen : Screen
         yield return ("←↑→↓", "target");
         yield return ("Enter", enter);
         yield return ("D", "defend");
+        if (_battle.CanWait)
+            yield return ("W", "wait");
         yield return ("A", "auto");
         yield return ("X", "retreat (end battle)");
     }

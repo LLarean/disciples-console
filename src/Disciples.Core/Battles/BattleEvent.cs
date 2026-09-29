@@ -9,6 +9,7 @@ namespace Disciples.Core.Battles
         Miss,
         Healed,
         Defended,
+        Waited,
         Killed,
         Retreated
     }
