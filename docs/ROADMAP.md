@@ -4,7 +4,7 @@ Milestones are sequential. A milestone is done when every checkbox is ticked, `d
 Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## M0 — Scaffold
-- [x] Solution: `Disciples.Core` (netstandard2.1), `Disciples.ConsoleApp` (net8.0 + Spectre.Console), `Disciples.Core.Tests` (xUnit)
+- [x] Solution: `Disciples.Core` (netstandard2.1), `Disciples.ConsoleApp` (net8.0 + Spectre.Console), `Disciples.Core.Tests` (xUnit) — console app later replaced, see below
 - [x] Docs: mechanics catalogue, roadmap, architecture, ADRs, project `CLAUDE.md`
 - [x] Screen loop prototype: full-screen layout (map panel, side panel, hint bar), key input, no flicker
 - [x] Front-end moved from Spectre.Console to Terminal.Gui (`Disciples.Tui`, ADR 0003)
@@ -45,3 +45,8 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 ## M6 — Capital buildings and unit upgrades
 - [x] Capital buildings: list by branch, requirements, build for gold (5.10) — placeholder data, no effect yet
 - [ ] Empire unit tree, tier upgrades (3.9, 7.4)
+
+## Tech debt
+- [ ] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)
+- [ ] Splash screen ("Disciples" title) was not ported from the Spectre version
+- [ ] Picked unit in the city is shown with the cursor frame, not the pick color, while the cursor stays on it
