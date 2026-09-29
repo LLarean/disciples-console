@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Disciples.Core.Content;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
 
@@ -17,19 +18,18 @@ namespace Disciples.Core.Battles
     /// <summary>Turn-based battle; outcome is from the attacker's point of view.</summary>
     public sealed class Battle
     {
-        private const int InitiativeSpread = 10;
-        private const int DamageSpreadPercent = 10;
-
         private readonly IRandom _random;
+        private readonly GameRules _rules;
         private readonly List<Unit> _queue = new List<Unit>();
         private readonly HashSet<Unit> _defending = new HashSet<Unit>();
         private readonly List<BattleEvent> _log = new List<BattleEvent>();
 
-        public Battle(Squad attackers, Squad defenders, IRandom random)
+        public Battle(Squad attackers, Squad defenders, IRandom random, GameRules? rules = null)
         {
             Attackers = attackers;
             Defenders = defenders;
             _random = random;
+            _rules = rules ?? new GameRules();
             StartRound();
         }
 
@@ -66,7 +66,7 @@ namespace Disciples.Core.Battles
             switch (actor.Definition.AttackType)
             {
                 case AttackType.Heal:
-                    var healed = target.Heal(actor.Definition.Power);
+                    var healed = target.Heal(actor.Power);
                     _log.Add(new BattleEvent(BattleEventKind.Healed, Round, actor, target, healed));
                     break;
                 case AttackType.AllEnemies:
@@ -104,7 +104,7 @@ namespace Disciples.Core.Battles
 
         private void Strike(Unit actor, Unit target)
         {
-            if (_random.Next(0, 100) >= actor.Definition.Accuracy)
+            if (_random.Next(0, 100) >= actor.Accuracy)
             {
                 _log.Add(new BattleEvent(BattleEventKind.Miss, Round, actor, target));
                 return;
@@ -119,13 +119,13 @@ namespace Disciples.Core.Battles
 
         private int Damage(Unit actor, Unit target)
         {
-            var power = actor.Definition.Power;
-            var spread = power * DamageSpreadPercent / 100;
+            var power = actor.Power;
+            var spread = power * _rules.DamageSpreadPercent / 100;
             var damage = power + _random.Next(-spread, spread + 1);
-            damage = damage * (100 - target.Definition.Armor) / 100;
+            damage = damage * (100 - target.Armor) / 100;
 
             if (IsDefending(target))
-                damage /= 2;
+                damage = damage * _rules.DefendDamagePercent / 100;
 
             return Math.Max(1, damage);
         }
@@ -149,7 +149,7 @@ namespace Disciples.Core.Battles
             _log.Add(new BattleEvent(BattleEventKind.RoundStarted, Round));
 
             var order = Attackers.AliveUnits.Concat(Defenders.AliveUnits)
-                .Select(u => (unit: u, roll: u.Definition.Initiative + _random.Next(0, InitiativeSpread)))
+                .Select(u => (unit: u, roll: u.Initiative + _random.Next(0, _rules.InitiativeSpread)))
                 .OrderByDescending(x => x.roll)
                 .Select(x => x.unit);
             _queue.AddRange(order);

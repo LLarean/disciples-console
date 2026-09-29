@@ -106,10 +106,10 @@ public sealed class BuildingsScreen : Screen
 
     private (string, Color) Status(Building building)
     {
-        if (building.IsBuilt)
+        if (_city.HasBuilt(building.Id))
             return ("built", Palette.Good);
 
-        if (building.Requires != null && _city.FindBuilding(building.Requires)?.IsBuilt != true)
+        if (building.Requires != null && !_city.HasBuilt(building.Requires))
             return ($"needs {RequirementName(building)}", Palette.Faint);
 
         return building.Cost <= _session.Gold ? ("available", Palette.Accent) : ("no gold", Palette.Bad);

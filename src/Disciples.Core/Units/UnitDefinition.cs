@@ -1,5 +1,6 @@
 namespace Disciples.Core.Units
 {
+    /// <summary>Static unit data shared by all instances (Type Object).</summary>
     public sealed class UnitDefinition
     {
         public UnitDefinition(
@@ -13,7 +14,12 @@ namespace Disciples.Core.Units
             AttackType attackType,
             UnitSize size,
             int cost,
-            int leadership = 0)
+            int leadership = 0,
+            int experienceToLevel = 100,
+            int experienceValue = 0,
+            int levelGrowthPercent = 0,
+            string? upgradesTo = null,
+            string? upgradeBuilding = null)
         {
             Id = id;
             Name = name;
@@ -26,6 +32,11 @@ namespace Disciples.Core.Units
             Size = size;
             Cost = cost;
             Leadership = leadership;
+            ExperienceToLevel = experienceToLevel;
+            ExperienceValue = experienceValue;
+            LevelGrowthPercent = levelGrowthPercent;
+            UpgradesTo = upgradesTo;
+            UpgradeBuilding = upgradeBuilding;
         }
 
         public string Id { get; }
@@ -49,6 +60,21 @@ namespace Disciples.Core.Units
 
         /// <summary>Squad slots a leader can command, including itself. Zero for regular units.</summary>
         public int Leadership { get; }
+
+        /// <summary>Experience needed for the next level or tier upgrade.</summary>
+        public int ExperienceToLevel { get; }
+
+        /// <summary>Experience granted to the winners for defeating this unit.</summary>
+        public int ExperienceValue { get; }
+
+        /// <summary>Percent added to HP and power per level above the first.</summary>
+        public int LevelGrowthPercent { get; }
+
+        /// <summary>Id of the next tier in the unit tree; null when the unit only gains levels.</summary>
+        public string? UpgradesTo { get; }
+
+        /// <summary>Capital building required for the upgrade to the next tier.</summary>
+        public string? UpgradeBuilding { get; }
 
         public bool IsLeader => Leadership > 0;
         public int SlotCount => Size == UnitSize.Large ? 2 : 1;

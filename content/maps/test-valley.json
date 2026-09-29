@@ -1,44 +1,61 @@
 {
-  "name": "Test Valley",
-  "gold": 300,
-  "legend": {
-    ".": "plains",
-    "=": "road",
-    "f": "forest",
-    "h": "hills",
-    "M": "mountains",
-    "~": "water"
+  "version": 1,
+  "map": {
+    "name": "Test Valley",
+    "legend": {
+      ".": "plains",
+      "=": "road",
+      "f": "forest",
+      "h": "hills",
+      "M": "mountains",
+      "~": "water"
+    },
+    "rows": [
+      "MMMMMMMMffff.........~~~~......ffffMMMMM",
+      "MMMMMMfffff.........~~~~.......fffffMMMM",
+      "MMMMhhfff..........~~~~.........fffhhMMM",
+      "MMMhhh............~~~~..........hhhhhMMM",
+      "MMhh..............~~~~............hhhhMM",
+      "Mhh....ff........~~~~.......ff......hhhM",
+      "Mh....ffff.......~~~~......ffff......hhM",
+      "M....ffffff.....~~~~.......fff........hM",
+      "M.....ffff......~~~~...................M",
+      "......ff.......~~~~.....................",
+      "....==========================..........",
+      ".............~~~~.......................",
+      "...ff.......~~~~.........ff.....hh......",
+      "..ffff.....~~~~.........ffff...hhhh.....",
+      ".ffffff....~~~~........ffffff..hhMMh....",
+      ".fffff....~~~~~~.......fffff...hMMMMh...",
+      "..fff....~~~~~~~~.......fff....hhMMhh...",
+      "........~~~~~~~~~~......................",
+      ".......~~~~~~~~~~~~...........ff........",
+      "hh....~~~~~~~~~~~~~~.........ffff.......",
+      "MMh..~~~~~~~~~~~~~~~~~......ffffff....hM",
+      "MMMh~~~~~~~~~~~~~~~~~~~~....ffff...hhMMM"
+    ]
   },
-  "rows": [
-    "MMMMMMMMffff.........~~~~......ffffMMMMM",
-    "MMMMMMfffff.........~~~~.......fffffMMMM",
-    "MMMMhhfff..........~~~~.........fffhhMMM",
-    "MMMhhh............~~~~..........hhhhhMMM",
-    "MMhh..............~~~~............hhhhMM",
-    "Mhh....ff........~~~~.......ff......hhhM",
-    "Mh....ffff.......~~~~......ffff......hhM",
-    "M....ffffff.....~~~~.......fff........hM",
-    "M.....ffff......~~~~...................M",
-    "......ff.......~~~~.....................",
-    "....==========================..........",
-    ".............~~~~.......................",
-    "...ff.......~~~~.........ff.....hh......",
-    "..ffff.....~~~~.........ffff...hhhh.....",
-    ".ffffff....~~~~........ffffff..hhMMh....",
-    ".fffff....~~~~~~.......fffff...hMMMMh...",
-    "..fff....~~~~~~~~.......fff....hhMMhh...",
-    "........~~~~~~~~~~......................",
-    ".......~~~~~~~~~~~~...........ff........",
-    "hh....~~~~~~~~~~~~~~.........ffff.......",
-    "MMh..~~~~~~~~~~~~~~~~~......ffffff....hM",
-    "MMMh~~~~~~~~~~~~~~~~~~~~....ffff...hhMMM"
-  ],
+  "turn": 1,
+  "gold": 300,
+  "party": {
+    "x": 4,
+    "y": 10,
+    "maxMovementPoints": 20,
+    "units": [
+      {
+        "id": "lord",
+        "line": "front",
+        "column": 1
+      }
+    ]
+  },
   "cities": [
     {
       "name": "Imperial Capital",
       "x": 3,
       "y": 10,
       "capital": true,
+      "owner": "player",
       "income": 100,
       "recruits": [
         "squire",
@@ -53,6 +70,7 @@
       "x": 34,
       "y": 10,
       "capital": false,
+      "owner": "neutral",
       "income": 50,
       "recruits": [
         "squire",
@@ -71,6 +89,7 @@
       "x": 22,
       "y": 17,
       "capital": false,
+      "owner": "neutral",
       "income": 50,
       "recruits": [
         "archer",
@@ -178,11 +197,5 @@
         }
       ]
     }
-  ],
-  "party": {
-    "leader": "knight",
-    "x": 4,
-    "y": 10,
-    "movementPoints": 20
-  }
+  ]
 }

@@ -1,6 +1,7 @@
 using System.Linq;
 using Disciples.Core.Battles;
 using Disciples.Core.Cities;
+using Disciples.Core.Content;
 using Disciples.Core.Map;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
@@ -9,17 +10,18 @@ namespace Disciples.Core.Session
 {
     public sealed class GameSession
     {
-        private const int CityHealPercent = 25;
-
-        public GameSession(WorldMap map, Party party, int gold, IRandom random)
+        public GameSession(GameContent content, WorldMap map, Party party, int gold, IRandom random, int turn = 1)
         {
+            Content = content;
             Map = map;
             Party = party;
             Gold = gold;
             Random = random;
-            Turn = 1;
+            Turn = turn;
         }
 
+        public GameContent Content { get; }
+        public GameRules Rules => Content.Rules;
         public WorldMap Map { get; }
         public Party Party { get; }
         public IRandom Random { get; }
@@ -52,7 +54,7 @@ namespace Disciples.Core.Session
         {
             Turn++;
             Party.RestoreMovement();
-            Gold += Map.Cities.Sum(c => c.Income);
+            Gold += Map.Cities.Where(c => c.IsPlayerOwned).Sum(c => c.Income);
 
             foreach (var city in Map.Cities)
                 HealSquad(city.Garrison);
@@ -90,21 +92,21 @@ namespace Disciples.Core.Session
 
         public BuildResult Build(City city, Building building)
         {
-            if (building.IsBuilt)
+            if (city.HasBuilt(building.Id))
                 return BuildResult.AlreadyBuilt;
 
-            if (building.Requires != null && city.FindBuilding(building.Requires)?.IsBuilt != true)
+            if (building.Requires != null && !city.HasBuilt(building.Requires))
                 return BuildResult.RequirementMissing;
 
             if (Gold < building.Cost)
                 return BuildResult.NotEnoughGold;
 
             Gold -= building.Cost;
-            building.IsBuilt = true;
+            city.MarkBuilt(building);
             return BuildResult.Built;
         }
 
-        public Battle StartBattle(NeutralSquad neutral) => new Battle(Party.Squad, neutral.Squad, Random);
+        public Battle StartBattle(NeutralSquad neutral) => new Battle(Party.Squad, neutral.Squad, Random, Rules);
 
         /// <summary>Applies battle results. A fallen leader is revived with 1 HP until leader death rules are implemented.</summary>
         public void FinishBattle(Battle battle, NeutralSquad neutral)
@@ -128,10 +130,10 @@ namespace Disciples.Core.Session
             neutral.Squad.RemoveDead();
         }
 
-        private static void HealSquad(Squad squad)
+        private void HealSquad(Squad squad)
         {
             foreach (var unit in squad.AliveUnits)
-                unit.Heal(unit.MaxHp * CityHealPercent / 100);
+                unit.Heal(unit.MaxHp * Rules.CityHealPercent / 100);
         }
     }
 }

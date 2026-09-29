@@ -20,7 +20,5 @@ namespace Disciples.Core.Cities
 
         /// <summary>Id of the building that must be built first.</summary>
         public string? Requires { get; }
-
-        public bool IsBuilt { get; internal set; }
     }
 }

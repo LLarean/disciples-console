@@ -8,16 +8,18 @@ namespace Disciples.Core.Squads
     public sealed class Party
     {
         public Party(Unit leader, Position position, int maxMovementPoints)
+            : this(SquadFor(leader), position, maxMovementPoints)
         {
-            if (!leader.IsLeader)
-                throw new ArgumentException($"{leader.Name} cannot lead a party.", nameof(leader));
+        }
 
-            Leader = leader;
-            Squad = new Squad(leader.Definition.Leadership);
-            Squad.TryPlace(leader, new SquadSlot(SquadLine.Front, 1));
+        /// <summary>Restores a party from a squad that already contains its leader.</summary>
+        public Party(Squad squad, Position position, int maxMovementPoints, int? movementPoints = null)
+        {
+            Leader = squad.Leader ?? throw new ArgumentException("A party squad needs a leader.", nameof(squad));
+            Squad = squad;
             Position = position;
             MaxMovementPoints = maxMovementPoints;
-            MovementPoints = maxMovementPoints;
+            MovementPoints = movementPoints ?? maxMovementPoints;
         }
 
         public Unit Leader { get; }
@@ -36,5 +38,15 @@ namespace Disciples.Core.Squads
         }
 
         internal void RestoreMovement() => MovementPoints = MaxMovementPoints;
+
+        private static Squad SquadFor(Unit leader)
+        {
+            if (!leader.IsLeader)
+                throw new ArgumentException($"{leader.Name} cannot lead a party.", nameof(leader));
+
+            var squad = new Squad(leader.Definition.Leadership);
+            squad.TryPlace(leader, new SquadSlot(SquadLine.Front, 1));
+            return squad;
+        }
     }
 }

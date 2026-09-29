@@ -10,10 +10,6 @@ namespace Disciples.Core.Tests.Session;
 
 public class GameSessionTests
 {
-    private static readonly Terrain Plains = new("plains", "Plains", 2);
-    private static readonly Terrain Road = new("road", "Road", 1);
-    private static readonly Terrain Water = new("water", "Water", null);
-
     private static readonly Position Start = new(1, 1);
     private static readonly Position TownPosition = new(1, 0);
     private static readonly Position EnemyPosition = new(0, 2);
@@ -37,7 +33,7 @@ public class GameSessionTests
         var enemy = new NeutralSquad("Bandits", EnemyPosition, enemySquad, 75);
 
         var map = new WorldMap("Test", tiles, [town], [enemy]);
-        return new GameSession(map, new Party(new Unit(Knight), Start, movementPoints), gold, new FixedRandom());
+        return new GameSession(TestContent, map, new Party(new Unit(Knight), Start, movementPoints), gold, new FixedRandom());
     }
 
     [Fact]

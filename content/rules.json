@@ -1,0 +1,7 @@
+{
+  "cityHealPercent": 25,
+  "initiativeSpread": 10,
+  "damageSpreadPercent": 10,
+  "defendDamagePercent": 50,
+  "levelGrowthPercent": 10
+}
