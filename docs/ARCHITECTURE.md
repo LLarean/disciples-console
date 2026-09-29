@@ -36,19 +36,27 @@ Pragmatic OOP: small mutable objects that own their state and behaviour. No dogm
 
 Planned patterns:
 - **Type Object** — `UnitDefinition` (static data) vs `Unit` (instance with HP, XP).
-- **Command** — player intents (`MoveLeader`, `HireUnit`, `DismissUnit`, `SwapSlots`, `EndTurn`) validated and executed by the game session. The same commands will be issued by Unity UI.
-- **Events** — the session raises domain events (`LeaderMoved`, `UnitHired`, `UnitDamaged`...) so a front-end can animate instead of diffing state.
+- **Command facade** — `GameSession` methods (`TryMove`, `EndTurn`, `Hire`, `Dismiss`, `Build`, `StartBattle`, `FinishBattle`) validate and execute player intents. The same calls will be issued by Unity UI.
+- **Events** — the session queues `GameEvent`s (turn started, city captured, level-up, upgrade, victory...) drained by `TakeEvents()`; battles emit `BattleEvent`s. A front-end can animate instead of diffing state.
 - **Strategy** — attack reach/targeting (`melee`, `ranged`, `all`) and damage formulas.
 - **State** — console screens (`MapScreen`, `CityScreen`, `BattleScreen`) as a screen stack.
 
-Namespaces inside Core are organised by feature: `Map`, `Units`, `Squads`, `Cities`, `Battle`, `Session`.
+Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Squads`, `Cities`, `Battles`, `Session`, `Persistence`.
+
+### Content and state (ADR 0004)
+- `GameContent` — immutable catalog: unit, terrain and building definitions plus `GameRules`. Validated on construction.
+- `GameSession` — mutable game state (map, party, cities, gold, turn, status) and commands.
+- `GameSnapshot` — plain DTO of the state; scenarios and saves use the same format. `SnapshotMapper` captures/restores it against a `GameContent`.
+- `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
 
 ## Console front-end
 Terminal.Gui v2, see ADR 0003.
 - `Shell` (root window) holds a stack of `Screen` views; only the top screen is attached and gets keys via `HandleKey`.
 - Flow: key → `Shell.OnKeyDown` → `Screen.HandleKey` → Core command → `Screen.Refresh` pushes state into child views and marks them dirty; Terminal.Gui redraws only changed cells.
+- `GameFlow` owns content, `SaveStore` and top-level transitions: main menu → map → game end.
+- Screens: `MainMenuScreen`, `PauseScreen`, `SlotsScreen` (on `MenuScreen` base), `MapScreen`, `SquadScreen`, `CityScreen`, `BuildingsScreen`, `BattleScreen`, `GameEndScreen`.
 - Widgets (`Widgets/`): `Canvas` (custom-drawn panel), `SquadView`, `MapView`, `PartyView`, `HintBar`; colors and terrain glyphs in `Palette`.
 - Only the console layer maps domain data to glyphs and colors.
 
 ## Content
-`content/` at repo root holds JSON data (units, maps), copied to output on build. Loaded by `Disciples.Tui` (`Content/ContentLoader`), converted into Core definitions.
+`content/` at repo root holds JSON data (units, terrains, buildings, rules, maps), copied to output on build. Saves are in `%LOCALAPPDATA%/DisciplesConsole/saves`. Loaded by `Disciples.Tui` (`Content/ContentLoader`), converted into Core definitions.

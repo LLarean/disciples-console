@@ -17,12 +17,14 @@ Terminal of at least 110×30 is recommended.
 ## Controls
 | Screen | Keys |
 |---|---|
-| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city, E — end turn, Esc — quit |
+| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city, S — squad, E — end turn, Esc — menu |
 | City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, B — capital buildings, Esc — cancel / leave |
+| Squad | arrows — select, Enter — pick / place unit, S / Esc — back |
 | Buildings | arrows — select, Enter — build, B / Esc — back |
-| Battle | arrows — target, Enter — act, D — defend, A — auto, X — retreat |
+| Battle | arrows — target, Enter — act, D — defend, W — wait, A — auto, X — retreat |
+| Menus | arrows — select, Enter — confirm, Esc — back |
 
-Walking into a city opens it; walking into an enemy (`†`) starts a battle.
+Walking into a city opens it; walking into an enemy (`†`) or a guarded hostile city starts a battle. Win by beating all neutral squads and owning every city; lose if the leader dies.
 
 ## Tests
 ```

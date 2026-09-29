@@ -43,8 +43,8 @@ Markers:
 | 3.5 | Attack source: weapon, fire, water, air, earth, mind, life, death | M4 (weapon only), Backlog |
 | 3.6 | Healers (heal instead of damage) | M4 |
 | 3.7 | Immunities and wards per attack source | Backlog |
-| 3.8 | Experience and level-up within the same tier (stat growth) | M5 |
-| 3.9 | Upgrade to next tier along the unit tree, gated by capital buildings | M6 |
+| 3.8 | Experience and level-up within the same tier (stat growth) | M5 — simplified: flat % growth of HP and power, full heal on level-up |
+| 3.9 | Upgrade to next tier along the unit tree, gated by capital buildings | M6 — unit waits with capped xp until the building exists |
 | 3.10 | Special effects: paralysis, poison, petrification, drain, polymorph, fear | Backlog |
 
 ## 4. Leader and squad
@@ -59,7 +59,7 @@ Markers:
 | 4.6 | Leader progression: level-up picks (leadership, movement, abilities) | Backlog |
 | 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | Backlog |
 | 4.8 | Several leaders per player | Backlog |
-| 4.9 | Squad loses leader → squad is disbanded | M4 |
+| 4.9 | Squad loses leader → squad is disbanded | M4 — simplified: single party, so the game is lost |
 
 ## 5. Capital and cities
 
@@ -72,7 +72,7 @@ Markers:
 | 5.5 | Transfer units between garrison and visiting squad | M3 |
 | 5.6 | Heal units in own city (per turn) | M3 |
 | 5.7 | City tiers 1–5 with garrison size and healing rate | Backlog |
-| 5.8 | Capture neutral/enemy city (battle vs garrison) | M5 |
+| 5.8 | Capture neutral/enemy city (battle vs garrison) | M5 — empty garrison is captured on entry |
 | 5.9 | Capital guardian (strong unit guarding the capital) | Backlog |
 | 5.10 | Capital buildings: unit-tree branches, magic tower, temple | M6 |
 | 5.11 | Hire leaders in capital | Backlog |
@@ -83,12 +83,12 @@ Markers:
 |---|----------|-----------|
 | 6.1 | Battle starts when squads meet on the map | M5 |
 | 6.2 | Turn order by initiative with small random spread, re-rolled per round | M4 |
-| 6.3 | Actions: attack, defend (armor bonus until next turn), wait (move to end of round), retreat | M4 |
+| 6.3 | Actions: attack, defend (armor bonus until next turn), wait (move to end of round, once per round), retreat | M4 — retreat has no penalty |
 | 6.4 | Melee targeting: only the enemy's nearest non-empty line; back-line melee attacker can act only if its own front line in that column is empty **(verify: column adjacency rule)** | M4 |
 | 6.5 | Ranged: any single enemy; all-targets: every enemy | M4 |
 | 6.6 | Hit chance by accuracy, damage with small random spread, armor reduces damage by % | M4 |
 | 6.7 | Healing target selection (single / all allies) | M4 |
-| 6.8 | Victory/defeat, experience distributed to survivors | M5 |
+| 6.8 | Victory/defeat, experience distributed to survivors | M5 — even split **(verify)** |
 | 6.9 | Battle vs neutral squads standing on the map | M5 |
 | 6.10 | Retreat mechanics (unit leaves battle, squad flees) | Backlog |
 | 6.11 | Auto-battle | Backlog |
@@ -114,6 +114,6 @@ Markers:
 | # | Mechanic | Milestone |
 |---|----------|-----------|
 | 9.1 | Test level loaded from data | M1 |
-| 9.2 | Save / load | Backlog |
-| 9.3 | Scenario goals (victory conditions) | Backlog |
-| 9.4 | Main menu | M0 (splash), Backlog |
+| 9.2 | Save / load | M7 — 3 slots, JSON snapshot (ADR 0004) |
+| 9.3 | Scenario goals (victory conditions) | M7 — fixed: beat all neutrals and own all cities |
+| 9.4 | Main menu | M7 — main and pause menus |
