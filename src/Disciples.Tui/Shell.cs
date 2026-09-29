@@ -47,6 +47,15 @@ public sealed class Shell : Window
         Show(screen);
     }
 
+    /// <summary>Closes every screen and shows the given one alone.</summary>
+    public void Reset(Screen screen)
+    {
+        while (_screens.Count > 0)
+            Close(_screens.Pop());
+
+        Show(screen);
+    }
+
     public void Quit() => App?.RequestStop();
 
     protected override bool OnKeyDown(Key key)

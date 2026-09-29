@@ -12,24 +12,26 @@ public sealed class MapScreen : Screen
     private const int SideWidth = 36;
     private const int LogCapacity = 50;
 
+    private readonly GameFlow _flow;
     private readonly GameSession _session;
     private readonly List<string> _log = [];
 
-    public MapScreen(GameSession session)
+    public MapScreen(GameFlow flow, GameSession session)
     {
+        _flow = flow;
         _session = session;
         _log.Add($"Welcome, {session.Party.Name}. Arrows or numpad to move.");
 
         var map = new MapView(session) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
         var party = new PartyView(session, _log) { X = Pos.Right(map), Y = 0, Width = SideWidth, Height = Dim.Fill(1) };
-        var hints = new HintBar(() => [("←↑→↓", "/ numpad — move"), ("Enter", "city"), ("E", "end turn"), ("Esc", "quit")]);
+        var hints = new HintBar(() => [("←↑→↓", "/ numpad — move"), ("Enter", "city"), ("E", "end turn"), ("Esc", "menu")]);
         Add(map, party, hints);
     }
 
     public override bool HandleKey(Key key)
     {
-        if (key == Key.Esc || key == Key.Q)
-            Shell.Quit();
+        if (key == Key.Esc)
+            Shell.Push(new PauseScreen(_flow, _session));
         else if (key == Key.E)
             EndTurn();
         else if (key == Key.Enter && _session.CurrentCity is { IsPlayerOwned: true } city)
@@ -58,7 +60,7 @@ public sealed class MapScreen : Screen
                 EnterCity(_session.CurrentCity!);
                 break;
             case MoveResult.CityCaptured:
-                Shell.Replace(new GameEndScreen(true, _session.Turn, Shell.Quit));
+                _flow.EndGame(_session);
                 break;
             case MoveResult.EnemyEncountered:
                 Engage(_session.EncounterAt(target)!);
@@ -88,7 +90,7 @@ public sealed class MapScreen : Screen
     private void Engage(Encounter encounter)
     {
         Log($"Battle with {encounter.Name}.");
-        Shell.Push(new BattleScreen(_session, encounter));
+        Shell.Push(new BattleScreen(_flow, _session, encounter));
     }
 
     private void EndTurn()

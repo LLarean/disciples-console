@@ -14,6 +14,7 @@ public sealed class BattleScreen : Screen
     private const int QueueWidth = 22;
     private const int LogSize = 7;
 
+    private readonly GameFlow _flow;
     private readonly GameSession _session;
     private readonly Encounter _encounter;
     private readonly Battle _battle;
@@ -23,8 +24,9 @@ public sealed class BattleScreen : Screen
     private int _targetIndex;
     private BattleReport? _report;
 
-    public BattleScreen(GameSession session, Encounter encounter)
+    public BattleScreen(GameFlow flow, GameSession session, Encounter encounter)
     {
+        _flow = flow;
         _session = session;
         _encounter = encounter;
         _battle = session.StartBattle(encounter);
@@ -108,7 +110,7 @@ public sealed class BattleScreen : Screen
         if (_session.Status == GameStatus.Playing)
             Shell.Pop();
         else
-            Shell.Replace(new GameEndScreen(_session.Status == GameStatus.Won, _session.Turn, Shell.Quit));
+            _flow.EndGame(_session);
     }
 
     private SquadSlot? CursorIn(Squad squad) =>
