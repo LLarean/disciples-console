@@ -86,6 +86,7 @@ public sealed class SquadView : Canvas
         var barEnd = this.HpBar(x + 2, y + 2, unit, BarLength);
         this.Hp(barEnd + 1, y + 2, unit);
         var labelEnd = this.Text(x + 2, y + 3, ViewDrawing.AttackLabel(unit.Definition), Palette.Dim);
-        this.Text(labelEnd + 1, y + 3, unit.Power.ToString(), Palette.Text);
+        var powerEnd = this.Text(labelEnd + 1, y + 3, unit.Power.ToString(), Palette.Text);
+        this.Text(powerEnd + 1, y + 3, $"L{unit.Level}", Palette.Faint);
     }
 }
