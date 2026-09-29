@@ -7,6 +7,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Solution: `Disciples.Core` (netstandard2.1), `Disciples.ConsoleApp` (net8.0 + Spectre.Console), `Disciples.Core.Tests` (xUnit)
 - [x] Docs: mechanics catalogue, roadmap, architecture, ADRs, project `CLAUDE.md`
 - [x] Screen loop prototype: full-screen layout (map panel, side panel, hint bar), key input, no flicker
+- [x] Front-end moved from Spectre.Console to Terminal.Gui (`Disciples.Tui`, ADR 0003)
 
 ## M1 — Map and movement
 - [x] Terrain, tile, map model; test map loaded from `content/maps/*.json` (1.1, 9.1)

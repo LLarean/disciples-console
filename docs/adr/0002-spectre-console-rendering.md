@@ -1,6 +1,6 @@
 # ADR 0002: Spectre.Console for rendering
 
-**Status:** accepted (revisit after M0 screen loop prototype)
+**Status:** superseded by [ADR 0003](0003-terminal-gui-front-end.md)
 
 ## Context
 The console front-end should look good: panels, borders, colors, tables. Options considered:

@@ -10,7 +10,7 @@ Console prototype of Disciples II core mechanics. Logic must stay reusable in Un
 ## Commands
 - Build: `dotnet build Disciples.sln`
 - Test: `dotnet test Disciples.sln`
-- Run: `dotnet run --project src/Disciples.ConsoleApp` (use Windows Terminal for proper UTF-8/colors)
+- Run: `dotnet run --project src/Disciples.Tui` (use Windows Terminal for proper UTF-8/colors)
 
 ## Hard rules
 - `Disciples.Core`: netstandard2.1, C# 9, no dependencies, no Console/IO/Unity. See ADR 0001.

@@ -6,8 +6,8 @@ The console app is the first of possibly several front-ends.
 
 ```
 ┌────────────────────────┐     ┌──────────────────────────┐
-│ Disciples.ConsoleApp   │     │ (future) Unity project   │
-│ Spectre.Console, input │     │ MonoBehaviours, sprites  │
+│ Disciples.Tui          │     │ (future) Unity project   │
+│ Terminal.Gui, input    │     │ MonoBehaviours, sprites  │
 │ screens, JSON loading  │     │ ScriptableObjects / JSON │
 └───────────┬────────────┘     └────────────┬─────────────┘
             │ commands ↓   ↑ state + events │
@@ -22,7 +22,7 @@ The console app is the first of possibly several front-ends.
 | Project | Target | Depends on | Responsibility |
 |---------|--------|-----------|----------------|
 | `Disciples.Core` | netstandard2.1, C# 9 | nothing | Domain model and rules |
-| `Disciples.ConsoleApp` | net8.0 | Core, Spectre.Console | Rendering, input, screens, content loading |
+| `Disciples.Tui` | net10.0 | Core, Terminal.Gui | Rendering, input, screens, content loading |
 | `Disciples.Core.Tests` | net8.0 | Core, xUnit | Rule tests |
 
 ## Core rules
@@ -44,9 +44,11 @@ Planned patterns:
 Namespaces inside Core are organised by feature: `Map`, `Units`, `Squads`, `Cities`, `Battle`, `Session`.
 
 ## Console front-end
-- Spectre.Console for layout (`Layout`, `Panel`, `Table`, markup colors) and `Live` rendering.
-- Game loop: `Console.ReadKey` → map key to input action → current screen handles it → issue Core command → re-render.
+Terminal.Gui v2, see ADR 0003.
+- `Shell` (root window) holds a stack of `Screen` views; only the top screen is attached and gets keys via `HandleKey`.
+- Flow: key → `Shell.OnKeyDown` → `Screen.HandleKey` → Core command → `Screen.Refresh` pushes state into child views and marks them dirty; Terminal.Gui redraws only changed cells.
+- Widgets (`Widgets/`): `Canvas` (custom-drawn panel), `SquadView`, `MapView`, `PartyView`, `HintBar`; colors and terrain glyphs in `Palette`.
 - Only the console layer maps domain data to glyphs and colors.
 
 ## Content
-`content/` at repo root holds JSON data (units, maps), copied to output on build. Loaded by the console app, converted into Core definitions.
+`content/` at repo root holds JSON data (units, maps), copied to output on build. Loaded by `Disciples.Tui` (`Content/ContentLoader`), converted into Core definitions.

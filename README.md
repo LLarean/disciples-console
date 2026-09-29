@@ -4,12 +4,12 @@ Console prototype of the core mechanics of *Disciples II*: global map, leader sq
 Game logic is engine-agnostic (.NET Standard 2.1) so it can later be reused with Unity graphics.
 
 ## Requirements
-- .NET 8 SDK
+- .NET 10 SDK (front-end); .NET 8 runtime for tests
 - Windows Terminal or any terminal with UTF-8 and true color
 
 ## Run
 ```
-dotnet run --project src/Disciples.ConsoleApp
+dotnet run --project src/Disciples.Tui
 ```
 
 Terminal of at least 110×30 is recommended.
@@ -18,7 +18,8 @@ Terminal of at least 110×30 is recommended.
 | Screen | Keys |
 |---|---|
 | Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city, E — end turn, Esc — quit |
-| City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, B — capital buildings, Esc — leave |
+| City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, B — capital buildings, Esc — cancel / leave |
+| Buildings | arrows — select, Enter — build, B / Esc — back |
 | Battle | arrows — target, Enter — act, D — defend, A — auto, X — retreat |
 
 Walking into a city opens it; walking into an enemy (`†`) starts a battle.
