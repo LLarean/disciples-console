@@ -60,6 +60,12 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Path preview (1.6): travel target mode, route with cost, walking along it
 - [x] Building effects beyond unit upgrades: temple adds city healing; thieves guild and magic tower wait for thieves and spells
 
+## M9 — Combat depth
+- [x] Attack sources, immunities and wards (3.5, 3.7); battles end as a retreat after a round limit
+- [ ] Status effects: paralysis, poison, petrification, drain (3.10)
+- [ ] Retreat penalty (6.10)
+- [ ] Fog of war (1.7)
+
 ## Tech debt
 - [ ] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)
 - [x] Splash screen — replaced by the main menu

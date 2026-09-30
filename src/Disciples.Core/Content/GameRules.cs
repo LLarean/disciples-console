@@ -18,6 +18,9 @@ namespace Disciples.Core.Content
         /// <summary>Movement points added by the leader's movement perk.</summary>
         public int MovementPerk { get; set; } = 4;
 
+        /// <summary>After this many rounds the attackers withdraw, so battles between mutually immune squads end.</summary>
+        public int MaxBattleRounds { get; set; } = 50;
+
         /// <summary>Leader unit ids offered when starting a new game.</summary>
         public List<string> LeaderClasses { get; set; } = new List<string>();
     }

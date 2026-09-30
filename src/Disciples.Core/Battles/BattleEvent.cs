@@ -7,6 +7,8 @@ namespace Disciples.Core.Battles
         RoundStarted,
         Hit,
         Miss,
+        Immune,
+        Warded,
         Healed,
         Defended,
         Waited,

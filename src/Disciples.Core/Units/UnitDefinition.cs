@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Disciples.Core.Units
 {
     /// <summary>Static unit data shared by all instances (Type Object).</summary>
@@ -20,7 +23,10 @@ namespace Disciples.Core.Units
             int levelGrowthPercent = 0,
             string? upgradesTo = null,
             string? upgradeBuilding = null,
-            int movement = 0)
+            int movement = 0,
+            AttackSource source = AttackSource.Weapon,
+            IEnumerable<AttackSource>? immunities = null,
+            IEnumerable<AttackSource>? wards = null)
         {
             Id = id;
             Name = name;
@@ -39,6 +45,9 @@ namespace Disciples.Core.Units
             UpgradesTo = upgradesTo;
             UpgradeBuilding = upgradeBuilding;
             Movement = movement;
+            Source = source;
+            Immunities = immunities?.ToList() ?? new List<AttackSource>();
+            Wards = wards?.ToList() ?? new List<AttackSource>();
         }
 
         public string Id { get; }
@@ -57,6 +66,13 @@ namespace Disciples.Core.Units
         public int Accuracy { get; }
 
         public AttackType AttackType { get; }
+        public AttackSource Source { get; }
+
+        /// <summary>Sources that never harm the unit.</summary>
+        public IReadOnlyList<AttackSource> Immunities { get; }
+
+        /// <summary>Sources whose first hit in each battle is absorbed.</summary>
+        public IReadOnlyList<AttackSource> Wards { get; }
         public UnitSize Size { get; }
         public int Cost { get; }
 

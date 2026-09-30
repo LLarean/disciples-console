@@ -40,9 +40,9 @@ Markers:
 | 3.2 | Unit instance: current HP, experience, level, reference to definition | M2 |
 | 3.3 | Unit size: small (1 slot) and large (2 slots: front + back of the same column) | M2 |
 | 3.4 | Attack reach: melee (adjacent), ranged (any single target), all targets | M2 (data), M4 (behaviour) |
-| 3.5 | Attack source: weapon, fire, water, air, earth, mind, life, death | M4 (weapon only), Backlog |
+| 3.5 | Attack source: weapon, fire, water, air, earth, mind, life, death | M9 (simplified; content sources **(verify)**) |
 | 3.6 | Healers (heal instead of damage) | M4 |
-| 3.7 | Immunities and wards per attack source | Backlog |
+| 3.7 | Immunities and wards per attack source | M9 (immunity: no damage; ward: absorbs the first hit per battle) |
 | 3.8 | Experience and level-up within the same tier (stat growth) | M5 — simplified: flat % growth of HP and power, full heal on level-up |
 | 3.9 | Upgrade to next tier along the unit tree, gated by capital buildings | M6 — unit waits with capped xp until the building exists |
 | 3.10 | Special effects: paralysis, poison, petrification, drain, polymorph, fear | Backlog |

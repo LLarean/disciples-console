@@ -1,7 +1,7 @@
 [
   { "id": "paladin", "name": "Paladin", "hp": 180, "armor": 15, "initiative": 50, "power": 50, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100 },
   { "id": "ranger", "name": "Ranger", "hp": 120, "armor": 5, "initiative": 60, "power": 35, "accuracy": 85, "attack": "ranged", "size": "small", "cost": 0, "leadership": 3, "movement": 28, "experienceToLevel": 200, "experienceValue": 100 },
-  { "id": "archmage", "name": "Archmage", "hp": 90, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100 },
+  { "id": "archmage", "name": "Archmage", "hp": 90, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100, "source": "air" },
 
   { "id": "squire", "name": "Squire", "hp": 100, "armor": 0, "initiative": 50, "power": 25, "accuracy": 80, "attack": "melee", "size": "small", "cost": 50, "experienceToLevel": 60, "experienceValue": 30, "upgradesTo": "knight", "upgradeBuilding": "barracks" },
   { "id": "knight", "name": "Knight", "hp": 150, "armor": 10, "initiative": 50, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "imperial-knight", "upgradeBuilding": "knight-order" },
@@ -10,18 +10,18 @@
   { "id": "archer", "name": "Archer", "hp": 45, "armor": 0, "initiative": 60, "power": 25, "accuracy": 80, "attack": "ranged", "size": "small", "cost": 40, "experienceToLevel": 50, "experienceValue": 25, "upgradesTo": "marksman", "upgradeBuilding": "shooting-range" },
   { "id": "marksman", "name": "Marksman", "hp": 70, "armor": 0, "initiative": 60, "power": 40, "accuracy": 85, "attack": "ranged", "size": "small", "cost": 0, "experienceToLevel": 150, "experienceValue": 60 },
 
-  { "id": "apprentice", "name": "Apprentice", "hp": 35, "armor": 0, "initiative": 40, "power": 15, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 60, "experienceToLevel": 60, "experienceValue": 30, "upgradesTo": "wizard", "upgradeBuilding": "mage-tower" },
-  { "id": "wizard", "name": "Wizard", "hp": 50, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "white-wizard", "upgradeBuilding": "high-tower" },
-  { "id": "white-wizard", "name": "White Wizard", "hp": 75, "armor": 0, "initiative": 40, "power": 40, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100 },
+  { "id": "apprentice", "name": "Apprentice", "hp": 35, "armor": 0, "initiative": 40, "power": 15, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 60, "experienceToLevel": 60, "experienceValue": 30, "upgradesTo": "wizard", "upgradeBuilding": "mage-tower", "source": "air" },
+  { "id": "wizard", "name": "Wizard", "hp": 50, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "white-wizard", "upgradeBuilding": "high-tower", "source": "air" },
+  { "id": "white-wizard", "name": "White Wizard", "hp": 75, "armor": 0, "initiative": 40, "power": 40, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100, "source": "air" },
 
   { "id": "acolyte", "name": "Acolyte", "hp": 50, "armor": 0, "initiative": 10, "power": 20, "accuracy": 100, "attack": "heal", "size": "small", "cost": 50, "experienceToLevel": 50, "experienceValue": 25, "upgradesTo": "priest", "upgradeBuilding": "temple" },
   { "id": "priest", "name": "Priest", "hp": 75, "armor": 0, "initiative": 10, "power": 35, "accuracy": 100, "attack": "heal", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "imperial-priestess", "upgradeBuilding": "cathedral" },
-  { "id": "imperial-priestess", "name": "Imperial Priestess", "hp": 100, "armor": 0, "initiative": 10, "power": 50, "accuracy": 100, "attack": "heal", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100 },
+  { "id": "imperial-priestess", "name": "Imperial Priestess", "hp": 100, "armor": 0, "initiative": 10, "power": 50, "accuracy": 100, "attack": "heal", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100, "wards": ["death"] },
 
   { "id": "goblin", "name": "Goblin", "hp": 50, "armor": 0, "initiative": 30, "power": 15, "accuracy": 75, "attack": "melee", "size": "small", "cost": 30, "experienceValue": 20 },
   { "id": "goblin-archer", "name": "Goblin Archer", "hp": 40, "armor": 0, "initiative": 40, "power": 15, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 30, "experienceValue": 20 },
   { "id": "orc", "name": "Orc", "hp": 200, "armor": 0, "initiative": 30, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 100, "experienceValue": 60 },
-  { "id": "shaman", "name": "Shaman", "hp": 60, "armor": 0, "initiative": 35, "power": 20, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 80, "experienceValue": 50 },
-  { "id": "orc-warlord", "name": "Orc Warlord", "hp": 200, "armor": 10, "initiative": 45, "power": 45, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 3, "movement": 16, "experienceValue": 150 },
+  { "id": "shaman", "name": "Shaman", "hp": 60, "armor": 0, "initiative": 35, "power": 20, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 80, "experienceValue": 50, "source": "fire", "immunities": ["fire"] },
+  { "id": "orc-warlord", "name": "Orc Warlord", "hp": 200, "armor": 10, "initiative": 45, "power": 45, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 3, "movement": 16, "experienceValue": 150, "wards": ["air"] },
   { "id": "ogre", "name": "Ogre", "hp": 300, "armor": 0, "initiative": 20, "power": 65, "accuracy": 80, "attack": "melee", "size": "large", "cost": 200, "experienceValue": 120 }
 ]

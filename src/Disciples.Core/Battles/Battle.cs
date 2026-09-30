@@ -23,6 +23,7 @@ namespace Disciples.Core.Battles
         private readonly List<Unit> _queue = new List<Unit>();
         private readonly HashSet<Unit> _defending = new HashSet<Unit>();
         private readonly HashSet<Unit> _waited = new HashSet<Unit>();
+        private readonly HashSet<(Unit, AttackSource)> _spentWards = new HashSet<(Unit, AttackSource)>();
         private readonly List<BattleEvent> _log = new List<BattleEvent>();
 
         public Battle(Squad attackers, Squad defenders, IRandom random, GameRules? rules = null)
@@ -121,6 +122,19 @@ namespace Disciples.Core.Battles
 
         private void Strike(Unit actor, Unit target)
         {
+            var source = actor.Definition.Source;
+            if (target.Definition.Immunities.Contains(source))
+            {
+                _log.Add(new BattleEvent(BattleEventKind.Immune, Round, actor, target));
+                return;
+            }
+
+            if (target.Definition.Wards.Contains(source) && _spentWards.Add((target, source)))
+            {
+                _log.Add(new BattleEvent(BattleEventKind.Warded, Round, actor, target));
+                return;
+            }
+
             if (_random.Next(0, 100) >= actor.Accuracy)
             {
                 _log.Add(new BattleEvent(BattleEventKind.Miss, Round, actor, target));
@@ -162,6 +176,13 @@ namespace Disciples.Core.Battles
 
         private void StartRound()
         {
+            if (Round >= _rules.MaxBattleRounds)
+            {
+                Outcome = BattleOutcome.Retreat;
+                _log.Add(new BattleEvent(BattleEventKind.Retreated, Round));
+                return;
+            }
+
             Round++;
             _waited.Clear();
             _log.Add(new BattleEvent(BattleEventKind.RoundStarted, Round));

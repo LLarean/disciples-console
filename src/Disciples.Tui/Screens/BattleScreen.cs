@@ -229,6 +229,16 @@ public sealed class BattleScreen : Screen
                 yield return (" misses ", text);
                 yield return Name(e.Target);
                 break;
+            case BattleEventKind.Immune:
+                yield return Name(e.Target);
+                yield return (" is immune to ", text);
+                yield return Name(e.Actor);
+                break;
+            case BattleEventKind.Warded:
+                yield return Name(e.Target);
+                yield return (" wards off ", text);
+                yield return Name(e.Actor);
+                break;
             case BattleEventKind.Healed:
                 yield return Name(e.Actor);
                 yield return (" heals ", text);

@@ -108,6 +108,11 @@ public sealed class SquadScreen : Screen
         Stat(canvas, y++, "Accuracy", $"{unit.Accuracy}%");
         Stat(canvas, y++, "Armor", unit.Armor.ToString());
         Stat(canvas, y++, "Initiative", unit.Initiative.ToString());
+        Stat(canvas, y++, "Source", definition.Source.ToString());
+        if (definition.Immunities.Count > 0)
+            Stat(canvas, y++, "Immune", string.Join(", ", definition.Immunities));
+        if (definition.Wards.Count > 0)
+            Stat(canvas, y++, "Ward", string.Join(", ", definition.Wards));
         if (unit.IsLeader)
             Stat(canvas, y++, "Leadership", Squad.Capacity.ToString());
 
