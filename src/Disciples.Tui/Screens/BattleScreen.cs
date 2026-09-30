@@ -246,6 +246,25 @@ public sealed class BattleScreen : Screen
                 yield return (" for ", text);
                 yield return (e.Amount.ToString(), Palette.Good);
                 break;
+            case BattleEventKind.Afflicted:
+                yield return Name(e.Actor);
+                yield return (Afflicts(e.Effect), text);
+                yield return Name(e.Target);
+                break;
+            case BattleEventKind.Drained:
+                yield return Name(e.Actor);
+                yield return (" drains ", text);
+                yield return (e.Amount.ToString(), Palette.Good);
+                yield return (" HP", text);
+                break;
+            case BattleEventKind.PoisonDamage:
+                yield return Name(e.Target);
+                yield return ($" takes {e.Amount} poison damage", text);
+                break;
+            case BattleEventKind.TurnLost:
+                yield return Name(e.Actor);
+                yield return (e.Effect == AttackEffect.Petrification ? " is stone and skips a turn" : " is paralyzed and skips a turn", Palette.Warn);
+                break;
             case BattleEventKind.Defended:
                 yield return Name(e.Actor);
                 yield return (" defends", text);
@@ -266,6 +285,14 @@ public sealed class BattleScreen : Screen
                 break;
         }
     }
+
+    private static string Afflicts(AttackEffect effect) => effect switch
+    {
+        AttackEffect.Poison => " poisons ",
+        AttackEffect.Paralysis => " paralyzes ",
+        AttackEffect.Petrification => " petrifies ",
+        _ => " afflicts "
+    };
 
     private (string, Color) Name(Unit? unit) => unit == null ? ("", Palette.Text) : (unit.Name, SideColor(unit));
 

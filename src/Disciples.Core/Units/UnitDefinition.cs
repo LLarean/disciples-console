@@ -26,7 +26,8 @@ namespace Disciples.Core.Units
             int movement = 0,
             AttackSource source = AttackSource.Weapon,
             IEnumerable<AttackSource>? immunities = null,
-            IEnumerable<AttackSource>? wards = null)
+            IEnumerable<AttackSource>? wards = null,
+            AttackEffect effect = AttackEffect.None)
         {
             Id = id;
             Name = name;
@@ -48,6 +49,7 @@ namespace Disciples.Core.Units
             Source = source;
             Immunities = immunities?.ToList() ?? new List<AttackSource>();
             Wards = wards?.ToList() ?? new List<AttackSource>();
+            Effect = effect;
         }
 
         public string Id { get; }
@@ -73,6 +75,8 @@ namespace Disciples.Core.Units
 
         /// <summary>Sources whose first hit in each battle is absorbed.</summary>
         public IReadOnlyList<AttackSource> Wards { get; }
+
+        public AttackEffect Effect { get; }
         public UnitSize Size { get; }
         public int Cost { get; }
 

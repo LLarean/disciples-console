@@ -19,9 +19,12 @@
   { "id": "imperial-priestess", "name": "Imperial Priestess", "hp": 100, "armor": 0, "initiative": 10, "power": 50, "accuracy": 100, "attack": "heal", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100, "wards": ["death"] },
 
   { "id": "goblin", "name": "Goblin", "hp": 50, "armor": 0, "initiative": 30, "power": 15, "accuracy": 75, "attack": "melee", "size": "small", "cost": 30, "experienceValue": 20 },
-  { "id": "goblin-archer", "name": "Goblin Archer", "hp": 40, "armor": 0, "initiative": 40, "power": 15, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 30, "experienceValue": 20 },
+  { "id": "goblin-archer", "name": "Goblin Archer", "hp": 40, "armor": 0, "initiative": 40, "power": 15, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 30, "experienceValue": 20, "effect": "poison" },
   { "id": "orc", "name": "Orc", "hp": 200, "armor": 0, "initiative": 30, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 100, "experienceValue": 60 },
   { "id": "shaman", "name": "Shaman", "hp": 60, "armor": 0, "initiative": 35, "power": 20, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 80, "experienceValue": 50, "source": "fire", "immunities": ["fire"] },
   { "id": "orc-warlord", "name": "Orc Warlord", "hp": 200, "armor": 10, "initiative": 45, "power": 45, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 3, "movement": 16, "experienceValue": 150, "wards": ["air"] },
-  { "id": "ogre", "name": "Ogre", "hp": 300, "armor": 0, "initiative": 20, "power": 65, "accuracy": 80, "attack": "melee", "size": "large", "cost": 200, "experienceValue": 120 }
+  { "id": "ogre", "name": "Ogre", "hp": 300, "armor": 0, "initiative": 20, "power": 65, "accuracy": 80, "attack": "melee", "size": "large", "cost": 200, "experienceValue": 120 },
+  { "id": "ghost", "name": "Ghost", "hp": 60, "armor": 0, "initiative": 50, "power": 15, "accuracy": 70, "attack": "melee", "size": "small", "cost": 0, "experienceValue": 40, "source": "mind", "effect": "paralysis", "immunities": ["mind"] },
+  { "id": "wight", "name": "Wight", "hp": 110, "armor": 0, "initiative": 40, "power": 30, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "experienceValue": 60, "source": "death", "effect": "drain", "immunities": ["death"] },
+  { "id": "gorgon", "name": "Gorgon", "hp": 90, "armor": 0, "initiative": 45, "power": 20, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 0, "experienceValue": 60, "source": "earth", "effect": "petrification" }
 ]

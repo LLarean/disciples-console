@@ -17,7 +17,7 @@ namespace Disciples.Core.Battles
         public void Act(Battle battle)
         {
             var actor = battle.Current;
-            var targets = actor == null ? new List<Unit>() : battle.ValidTargets().Where(t => CanHarm(actor, t)).ToList();
+            var targets = actor == null ? new List<Unit>() : battle.ValidTargets().Where(t => CanHarm(battle, actor, t)).ToList();
             if (actor == null || targets.Count == 0)
             {
                 battle.Defend();
@@ -30,7 +30,8 @@ namespace Disciples.Core.Battles
             battle.Act(target);
         }
 
-        private static bool CanHarm(Unit actor, Unit target) =>
-            actor.Definition.AttackType == AttackType.Heal || !target.Definition.Immunities.Contains(actor.Definition.Source);
+        private static bool CanHarm(Battle battle, Unit actor, Unit target) =>
+            actor.Definition.AttackType == AttackType.Heal
+            || !target.Definition.Immunities.Contains(actor.Definition.Source) && battle.EffectOn(target) != AttackEffect.Petrification;
     }
 }

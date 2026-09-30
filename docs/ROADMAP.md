@@ -62,7 +62,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## M9 — Combat depth
 - [x] Attack sources, immunities and wards (3.5, 3.7); battles end as a retreat after a round limit
-- [ ] Status effects: paralysis, poison, petrification, drain (3.10)
+- [x] Status effects: paralysis, poison, petrification, drain (3.10); Haunted Ruins squad on the test map
 - [ ] Retreat penalty (6.10)
 - [ ] Fog of war (1.7)
 

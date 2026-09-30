@@ -124,6 +124,17 @@
   ],
   "neutrals": [
     {
+      "name": "Haunted Ruins",
+      "x": 28,
+      "y": 6,
+      "reward": 250,
+      "units": [
+        { "id": "ghost", "line": "front", "column": 0 },
+        { "id": "wight", "line": "front", "column": 1 },
+        { "id": "gorgon", "line": "back", "column": 1 }
+      ]
+    },
+    {
       "name": "Goblin Scouts",
       "x": 10,
       "y": 10,

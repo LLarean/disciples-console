@@ -45,7 +45,7 @@ Markers:
 | 3.7 | Immunities and wards per attack source | M9 (immunity: no damage; ward: absorbs the first hit per battle) |
 | 3.8 | Experience and level-up within the same tier (stat growth) | M5 — simplified: flat % growth of HP and power, full heal on level-up |
 | 3.9 | Upgrade to next tier along the unit tree, gated by capital buildings | M6 — unit waits with capped xp until the building exists |
-| 3.10 | Special effects: paralysis, poison, petrification, drain, polymorph, fear | Backlog |
+| 3.10 | Special effects: paralysis, poison, petrification, drain, polymorph, fear | M9 (simplified: one effect per unit for `effectTurns` turns; poison ticks at turn start; paralysis/petrification skip turns, stone takes no damage; drain heals the attacker; no cures, no effect wards **(verify)**); polymorph, fear — Backlog |
 
 ## 4. Leader and squad
 

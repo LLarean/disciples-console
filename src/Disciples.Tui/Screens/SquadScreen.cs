@@ -109,6 +109,8 @@ public sealed class SquadScreen : Screen
         Stat(canvas, y++, "Armor", unit.Armor.ToString());
         Stat(canvas, y++, "Initiative", unit.Initiative.ToString());
         Stat(canvas, y++, "Source", definition.Source.ToString());
+        if (definition.Effect != AttackEffect.None)
+            Stat(canvas, y++, "Effect", definition.Effect.ToString());
         if (definition.Immunities.Count > 0)
             Stat(canvas, y++, "Immune", string.Join(", ", definition.Immunities));
         if (definition.Wards.Count > 0)

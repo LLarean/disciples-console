@@ -24,6 +24,8 @@ namespace Disciples.Core.Battles
         private readonly HashSet<Unit> _defending = new HashSet<Unit>();
         private readonly HashSet<Unit> _waited = new HashSet<Unit>();
         private readonly HashSet<(Unit, AttackSource)> _spentWards = new HashSet<(Unit, AttackSource)>();
+        private readonly HashSet<Unit> _turnStarted = new HashSet<Unit>();
+        private readonly Dictionary<Unit, Affliction> _afflictions = new Dictionary<Unit, Affliction>();
         private readonly List<BattleEvent> _log = new List<BattleEvent>();
 
         public Battle(Squad attackers, Squad defenders, IRandom random, GameRules? rules = null)
@@ -32,7 +34,7 @@ namespace Disciples.Core.Battles
             Defenders = defenders;
             _random = random;
             _rules = rules ?? new GameRules();
-            StartRound();
+            AdvanceTurn();
         }
 
         public Squad Attackers { get; }
@@ -49,6 +51,8 @@ namespace Disciples.Core.Battles
         public bool CanWait => Current != null && _queue.Count > 1 && !_waited.Contains(Current);
 
         public bool IsDefending(Unit unit) => _defending.Contains(unit);
+
+        public AttackEffect EffectOn(Unit unit) => _afflictions.TryGetValue(unit, out var affliction) ? affliction.Effect : AttackEffect.None;
 
         public Squad SquadOf(Unit unit) => Attackers.Contains(unit) ? Attackers : Defenders;
 
@@ -108,6 +112,7 @@ namespace Disciples.Core.Battles
             _queue.RemoveAt(0);
             _queue.Add(actor);
             _log.Add(new BattleEvent(BattleEventKind.Waited, Round, actor));
+            AdvanceTurn();
             return true;
         }
 
@@ -123,7 +128,7 @@ namespace Disciples.Core.Battles
         private void Strike(Unit actor, Unit target)
         {
             var source = actor.Definition.Source;
-            if (target.Definition.Immunities.Contains(source))
+            if (target.Definition.Immunities.Contains(source) || EffectOn(target) == AttackEffect.Petrification)
             {
                 _log.Add(new BattleEvent(BattleEventKind.Immune, Round, actor, target));
                 return;
@@ -146,6 +151,23 @@ namespace Disciples.Core.Battles
 
             if (!target.IsAlive)
                 _log.Add(new BattleEvent(BattleEventKind.Killed, Round, actor, target));
+
+            ApplyEffect(actor, target, dealt);
+        }
+
+        private void ApplyEffect(Unit actor, Unit target, int dealt)
+        {
+            var effect = actor.Definition.Effect;
+            if (effect == AttackEffect.Drain)
+            {
+                var restored = actor.Heal(dealt * _rules.DrainPercent / 100);
+                _log.Add(new BattleEvent(BattleEventKind.Drained, Round, actor, target, restored));
+            }
+            else if (effect != AttackEffect.None && target.IsAlive)
+            {
+                _afflictions[target] = new Affliction(effect, _rules.EffectTurns, actor.Power * _rules.PoisonPercent / 100);
+                _log.Add(new BattleEvent(BattleEventKind.Afflicted, Round, actor, target, effect: effect));
+            }
         }
 
         private int Damage(Unit actor, Unit target)
@@ -165,13 +187,56 @@ namespace Disciples.Core.Battles
         {
             _queue.RemoveAt(0);
             _queue.RemoveAll(u => !u.IsAlive);
+            UpdateOutcome();
+            AdvanceTurn();
+        }
 
+        private void UpdateOutcome()
+        {
             if (Defenders.IsDefeated)
                 Outcome = BattleOutcome.Victory;
             else if (Attackers.IsDefeated)
                 Outcome = BattleOutcome.Defeat;
-            else if (_queue.Count == 0)
-                StartRound();
+        }
+
+        /// <summary>Starts turns until a unit able to act heads the queue, applying poison and skipping disabled units.</summary>
+        private void AdvanceTurn()
+        {
+            while (!IsOver)
+            {
+                if (_queue.Count == 0)
+                    StartRound();
+                else if (StartTurn(_queue[0]))
+                    return;
+                else
+                {
+                    _queue.RemoveAt(0);
+                    _queue.RemoveAll(u => !u.IsAlive);
+                    UpdateOutcome();
+                }
+            }
+        }
+
+        /// <returns>Whether the unit can act this turn.</returns>
+        private bool StartTurn(Unit unit)
+        {
+            if (!_turnStarted.Add(unit) || !_afflictions.TryGetValue(unit, out var affliction))
+                return true;
+
+            if (--affliction.TurnsLeft == 0)
+                _afflictions.Remove(unit);
+
+            if (affliction.Effect == AttackEffect.Poison)
+            {
+                var dealt = unit.TakeDamage(affliction.Damage);
+                _log.Add(new BattleEvent(BattleEventKind.PoisonDamage, Round, target: unit, amount: dealt));
+                if (!unit.IsAlive)
+                    _log.Add(new BattleEvent(BattleEventKind.Killed, Round, target: unit));
+                return unit.IsAlive;
+            }
+
+            _log.Add(new BattleEvent(BattleEventKind.TurnLost, Round, unit, effect: affliction.Effect));
+            return false;
         }
 
         private void StartRound()
@@ -185,6 +250,7 @@ namespace Disciples.Core.Battles
 
             Round++;
             _waited.Clear();
+            _turnStarted.Clear();
             _log.Add(new BattleEvent(BattleEventKind.RoundStarted, Round));
 
             var order = Attackers.AliveUnits.Concat(Defenders.AliveUnits)
@@ -192,6 +258,20 @@ namespace Disciples.Core.Battles
                 .OrderByDescending(x => x.roll)
                 .Select(x => x.unit);
             _queue.AddRange(order);
+        }
+
+        private sealed class Affliction
+        {
+            public Affliction(AttackEffect effect, int turns, int damage)
+            {
+                Effect = effect;
+                TurnsLeft = turns;
+                Damage = damage;
+            }
+
+            public AttackEffect Effect { get; }
+            public int TurnsLeft { get; set; }
+            public int Damage { get; }
         }
     }
 }
