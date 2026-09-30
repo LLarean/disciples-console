@@ -41,7 +41,8 @@ namespace Disciples.Core.Persistence
                     Gold = s.Gold,
                     Owner = s.Owner,
                     Mercenaries = s.Mercenaries.Select(m => m.Id).ToList()
-                }).ToList()
+                }).ToList(),
+                Explored = session.Fog.ToRows()
             };
         }
 
@@ -59,7 +60,9 @@ namespace Disciples.Core.Persistence
             var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals, enemies, sites);
             var party = RestoreParty(snapshot.Party, content, "Party");
 
-            return new GameSession(content, map, party, snapshot.Gold, random, snapshot.Turn);
+            var fog = FogOfWar.FromRows(map.Width, map.Height, snapshot.Explored);
+
+            return new GameSession(content, map, party, snapshot.Gold, random, snapshot.Turn, fog);
         }
 
         private static PartySnapshot CaptureParty(Party party) => new PartySnapshot

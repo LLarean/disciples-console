@@ -6,6 +6,9 @@ namespace Disciples.Core.Content
     public sealed class GameRules
     {
         public int CityHealPercent { get; set; } = 25;
+
+        /// <summary>Radius the party and player cities reveal through the fog of war.</summary>
+        public int SightRadius { get; set; } = 4;
         public int InitiativeSpread { get; set; } = 10;
         public int DamageSpreadPercent { get; set; } = 10;
 

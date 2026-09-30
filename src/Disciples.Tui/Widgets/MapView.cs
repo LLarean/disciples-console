@@ -46,19 +46,28 @@ public sealed class MapView : Canvas
             var step = route.Steps[i];
             if (IsPlain(step))
                 this.Text((step.X - left) * TileWidth + 1, step.Y - top, i == route.Steps.Count - 1 ? "×" : "·", i < reachable ? Palette.Good : Palette.Warn,
-                    Palette.TerrainBackground(map.TerrainAt(step)), TextStyle.Bold);
+                    BackgroundAt(step), TextStyle.Bold);
         }
 
         if (cursor is { } c)
-            this.Text((c.X - left) * TileWidth + 1, c.Y - top, "◂", LeaderColor, Palette.TerrainBackground(map.TerrainAt(c)), TextStyle.Bold);
+            this.Text((c.X - left) * TileWidth + 1, c.Y - top, "◂", LeaderColor, BackgroundAt(c), TextStyle.Bold);
     }
 
+    private Color BackgroundAt(Position position) =>
+        _session.Fog.IsExplored(position) ? Palette.TerrainBackground(_session.Map.TerrainAt(position)) : Palette.Background;
+
     private bool IsPlain(Position position) =>
-        _session.Map.CityAt(position) == null && _session.Map.NeutralAt(position) == null
+        !_session.Fog.IsExplored(position) || _session.Map.CityAt(position) == null && _session.Map.NeutralAt(position) == null
         && _session.Map.EnemyAt(position) == null && _session.Map.SiteAt(position) == null;
 
     private void DrawTile(int x, int y, Position position)
     {
+        if (!_session.Fog.IsExplored(position))
+        {
+            this.Text(x, y, "  ", Palette.Faint, Palette.Background);
+            return;
+        }
+
         var terrain = _session.Map.TerrainAt(position);
         var city = _session.Map.CityAt(position);
         var cityColors = ColorsOf(city);

@@ -64,7 +64,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Attack sources, immunities and wards (3.5, 3.7); battles end as a retreat after a round limit
 - [x] Status effects: paralysis, poison, petrification, drain (3.10); Haunted Ruins squad on the test map
 - [x] Retreat penalty (6.10): the party loses the rest of its movement
-- [ ] Fog of war (1.7)
+- [x] Fog of war (1.7): party and player cities reveal `sightRadius`; explored tiles stay visible and are saved
 
 ## Tech debt
 - [ ] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)

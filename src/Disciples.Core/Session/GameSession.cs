@@ -15,7 +15,7 @@ namespace Disciples.Core.Session
     {
         private readonly List<GameEvent> _events = new List<GameEvent>();
 
-        public GameSession(GameContent content, WorldMap map, Party party, int gold, IRandom random, int turn = 1)
+        public GameSession(GameContent content, WorldMap map, Party party, int gold, IRandom random, int turn = 1, FogOfWar? fog = null)
         {
             Content = content;
             Map = map;
@@ -23,11 +23,16 @@ namespace Disciples.Core.Session
             Gold = gold;
             Random = random;
             Turn = turn;
+            Fog = fog ?? new FogOfWar(map.Width, map.Height);
+            foreach (var city in map.Cities.Where(c => c.IsPlayerOwned))
+                Fog.Reveal(city.Position, Rules.SightRadius);
+            RevealAroundParty();
         }
 
         public GameContent Content { get; }
         public GameRules Rules => Content.Rules;
         public WorldMap Map { get; }
+        public FogOfWar Fog { get; }
         public Party Party { get; }
         public IRandom Random { get; }
         public int Gold { get; private set; }
@@ -79,6 +84,7 @@ namespace Disciples.Core.Session
                 return MoveResult.NotEnoughMovement;
 
             Party.MoveTo(target, cost);
+            RevealAroundParty();
 
             if (Map.SiteAt(target) is { } site)
             {
@@ -242,6 +248,7 @@ namespace Disciples.Core.Session
             {
                 captured = encounter.City;
                 Party.MoveTo(captured.Position, 0);
+                RevealAroundParty();
                 Capture(captured);
             }
             else
@@ -267,6 +274,8 @@ namespace Disciples.Core.Session
                     break;
             }
         }
+
+        private void RevealAroundParty() => Fog.Reveal(Party.Position, Rules.SightRadius);
 
         private void Capture(City city)
         {

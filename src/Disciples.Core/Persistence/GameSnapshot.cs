@@ -25,6 +25,9 @@ namespace Disciples.Core.Persistence
         public List<PartySnapshot> Enemies { get; set; } = new List<PartySnapshot>();
 
         public List<SiteSnapshot> Sites { get; set; } = new List<SiteSnapshot>();
+
+        /// <summary>Fog of war rows, '#' for explored tiles. Empty in scenarios: the start is revealed around the party and cities.</summary>
+        public List<string> Explored { get; set; } = new List<string>();
     }
 
     public sealed class MapSnapshot
