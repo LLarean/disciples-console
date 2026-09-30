@@ -25,7 +25,7 @@ public sealed class ContentLoader(string contentRoot)
         var terrains = Read<List<TerrainData>>("terrains.json").Select(t => new Terrain(t.Id, t.Name, t.MoveCost));
         var units = Read<List<UnitData>>("units.json").Select(u => ToDefinition(u, rules));
         var buildings = Read<List<BuildingData>>("buildings.json")
-            .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires));
+            .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent));
         return new GameContent(units, terrains, buildings, rules);
     }
 
@@ -50,5 +50,5 @@ public sealed class ContentLoader(string contentRoot)
         AttackType Attack, UnitSize Size, int Cost, int Leadership, int Movement,
         int? ExperienceToLevel, int ExperienceValue, int? LevelGrowthPercent, string? UpgradesTo, string? UpgradeBuilding);
 
-    private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires);
+    private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires, int HealBonusPercent);
 }

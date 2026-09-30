@@ -4,7 +4,7 @@
   { "id": "shooting-range", "name": "Shooting Range", "branch": "Archers", "cost": 350, "description": "Archer -> Marksman" },
   { "id": "mage-tower", "name": "Mage Tower", "branch": "Mages", "cost": 450, "description": "Apprentice -> Wizard" },
   { "id": "high-tower", "name": "High Tower", "branch": "Mages", "cost": 900, "requires": "mage-tower", "description": "Wizard -> White Wizard" },
-  { "id": "temple", "name": "Temple", "branch": "Support", "cost": 400, "description": "Acolyte -> Priest" },
+  { "id": "temple", "name": "Temple", "branch": "Support", "cost": 400, "healBonusPercent": 25, "description": "Acolyte -> Priest; +25% healing in cities" },
   { "id": "cathedral", "name": "Cathedral", "branch": "Support", "cost": 900, "requires": "temple", "description": "Priest -> Imperial Priestess" },
   { "id": "thieves-guild", "name": "Thieves Guild", "branch": "Other", "cost": 500, "description": "Hire thief leaders" },
   { "id": "magic-tower", "name": "Magic Tower", "branch": "Other", "cost": 300, "description": "Spell research" }

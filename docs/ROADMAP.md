@@ -58,7 +58,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Leader progression and classes (4.5, 4.6): class choice on new game, leadership/movement perks per level
 - [x] Treasure, mines, mercenary camps on the map (1.9, 1.10); merchants wait for items (4.7)
 - [x] Path preview (1.6): travel target mode, route with cost, walking along it
-- [ ] Building effects beyond unit upgrades (thieves guild, magic tower, temple healing)
+- [x] Building effects beyond unit upgrades: temple adds city healing; thieves guild and magic tower wait for thieves and spells
 
 ## Tech debt
 - [ ] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)

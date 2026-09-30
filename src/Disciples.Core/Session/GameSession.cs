@@ -394,7 +394,10 @@ namespace Disciples.Core.Session
         private void HealSquad(Squad squad)
         {
             foreach (var unit in squad.AliveUnits)
-                unit.Heal(unit.MaxHp * Rules.CityHealPercent / 100);
+                unit.Heal(unit.MaxHp * HealPercent / 100);
         }
+
+        private int HealPercent =>
+            Rules.CityHealPercent + Content.Buildings.Where(b => HasCapitalBuilding(b.Id)).Sum(b => b.HealBonusPercent);
     }
 }

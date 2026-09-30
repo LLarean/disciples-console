@@ -74,7 +74,7 @@ Markers:
 | 5.7 | City tiers 1–5 with garrison size and healing rate | Backlog |
 | 5.8 | Capture neutral/enemy city (battle vs garrison) | M5 — empty garrison is captured on entry |
 | 5.9 | Capital guardian (strong unit guarding the capital) | Backlog |
-| 5.10 | Capital buildings: unit-tree branches, magic tower, temple | M6 |
+| 5.10 | Capital buildings: unit-tree branches, magic tower, temple | M6; M8 — temple adds `healBonusPercent` to healing in player cities **(verify: original temple heals/resurrects for gold)** |
 | 5.11 | Hire leaders in capital | Backlog |
 
 ## 6. Battle
