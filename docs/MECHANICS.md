@@ -16,7 +16,7 @@ Markers:
 | 1.3 | Leader movement points per turn, restored on end of turn | M1 |
 | 1.4 | Map objects occupying tiles: capital, cities, enemy squads, treasure, ruins | M1 (capital, city), later others |
 | 1.5 | Camera/viewport scrolling when map is larger than the screen | M1 |
-| 1.6 | Path preview (planned route with cost) | Backlog |
+| 1.6 | Path preview (planned route with cost) | M8 — cheapest route by terrain cost; steps beyond this turn's movement are marked, the destination is kept between turns |
 | 1.7 | Fog of war / exploration | Backlog |
 | 1.8 | Territory ownership and spreading land (rods, capital aura) | Backlog |
 | 1.9 | Resource sources: gold mines, mana sources | M8 — gold mines captured by stepping on them, income per turn; mana Out |

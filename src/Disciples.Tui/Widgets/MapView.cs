@@ -15,10 +15,14 @@ public sealed class MapView : Canvas
     public static readonly (Color Foreground, Color Background) HostileCityColors = (new Color(255, 120, 120), new Color(60, 20, 20));
 
     private readonly GameSession _session;
+    private readonly Func<Position?> _cursor;
+    private readonly Func<Route> _route;
 
-    public MapView(GameSession session) : base(title: session.Map.Name)
+    public MapView(GameSession session, Func<Position?> cursor, Func<Route> route) : base(title: session.Map.Name)
     {
         _session = session;
+        _cursor = cursor;
+        _route = route;
     }
 
     protected override void Draw()
@@ -26,14 +30,32 @@ public sealed class MapView : Canvas
         var map = _session.Map;
         var viewWidth = Math.Min(map.Width, Viewport.Width / TileWidth);
         var viewHeight = Math.Min(map.Height, Viewport.Height);
-        var leader = _session.Party.Position;
-        var left = Math.Clamp(leader.X - viewWidth / 2, 0, map.Width - viewWidth);
-        var top = Math.Clamp(leader.Y - viewHeight / 2, 0, map.Height - viewHeight);
+        var cursor = _cursor();
+        var center = cursor ?? _session.Party.Position;
+        var left = Math.Clamp(center.X - viewWidth / 2, 0, map.Width - viewWidth);
+        var top = Math.Clamp(center.Y - viewHeight / 2, 0, map.Height - viewHeight);
 
         for (var y = 0; y < viewHeight; y++)
         for (var x = 0; x < viewWidth; x++)
             DrawTile(x * TileWidth, y, new Position(left + x, top + y));
+
+        var route = _route();
+        var reachable = route.Reachable(_session.Party.MovementPoints);
+        for (var i = 0; i < route.Steps.Count; i++)
+        {
+            var step = route.Steps[i];
+            if (IsPlain(step))
+                this.Text((step.X - left) * TileWidth + 1, step.Y - top, i == route.Steps.Count - 1 ? "×" : "·", i < reachable ? Palette.Good : Palette.Warn,
+                    Palette.TerrainBackground(map.TerrainAt(step)), TextStyle.Bold);
+        }
+
+        if (cursor is { } c)
+            this.Text((c.X - left) * TileWidth + 1, c.Y - top, "◂", LeaderColor, Palette.TerrainBackground(map.TerrainAt(c)), TextStyle.Bold);
     }
+
+    private bool IsPlain(Position position) =>
+        _session.Map.CityAt(position) == null && _session.Map.NeutralAt(position) == null
+        && _session.Map.EnemyAt(position) == null && _session.Map.SiteAt(position) == null;
 
     private void DrawTile(int x, int y, Position position)
     {

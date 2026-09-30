@@ -29,6 +29,16 @@ namespace Disciples.Core.Map
             };
         }
 
+        /// <summary>The direction to an adjacent tile, or null when the tile is not adjacent.</summary>
+        public Direction? DirectionTo(Position next)
+        {
+            foreach (Direction direction in Enum.GetValues(typeof(Direction)))
+                if (Step(direction) == next)
+                    return direction;
+
+            return null;
+        }
+
         public bool Equals(Position other) => X == other.X && Y == other.Y;
         public override bool Equals(object? obj) => obj is Position other && Equals(other);
         public override int GetHashCode() => HashCode.Combine(X, Y);

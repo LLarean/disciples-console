@@ -94,6 +94,18 @@ namespace Disciples.Core.Session
             return MoveResult.CityCaptured;
         }
 
+        /// <summary>
+        /// Cheapest route for the party to the target. Hostile tiles are only allowed as the target, where the walk ends in a battle.
+        /// </summary>
+        public Route PlanRoute(Position target)
+        {
+            if (target == Party.Position || !Map.Contains(target))
+                return Route.None;
+
+            var path = Pathfinder.FindPath(Map, Party.Position, p => p == target, p => EncounterAt(p) != null);
+            return Route.Along(Map, path);
+        }
+
         /// <summary>Enemy leaders move, then a new turn starts. Check <see cref="IncomingAttack"/> afterwards.</summary>
         public void EndTurn()
         {

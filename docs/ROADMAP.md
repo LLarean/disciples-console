@@ -57,7 +57,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Enemy leader squads with AI turns (2.5): pathfinding, city capture, auto-resolved garrison battles, attacks on the party
 - [x] Leader progression and classes (4.5, 4.6): class choice on new game, leadership/movement perks per level
 - [x] Treasure, mines, mercenary camps on the map (1.9, 1.10); merchants wait for items (4.7)
-- [ ] Path preview (1.6)
+- [x] Path preview (1.6): travel target mode, route with cost, walking along it
 - [ ] Building effects beyond unit upgrades (thieves guild, magic tower, temple healing)
 
 ## Tech debt

@@ -16,19 +16,60 @@ public sealed class MapScreen : Screen
     private readonly GameSession _session;
     private readonly List<string> _log = [];
 
+    private Position? _cursor;
+    private Position? _destination;
+
     public MapScreen(GameFlow flow, GameSession session)
     {
         _flow = flow;
         _session = session;
         _log.Add($"Welcome, {session.Party.Name}. Arrows or numpad to move.");
 
-        var map = new MapView(session) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
+        var map = new MapView(session, () => _cursor, () => Route) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
         var party = new PartyView(session, _log) { X = Pos.Right(map), Y = 0, Width = SideWidth, Height = Dim.Fill(1) };
-        var hints = new HintBar(() => [("←↑→↓", "/ numpad — move"), ("Enter", "city"), ("S", "squad"), .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")]);
+        var hints = new HintBar(() => _cursor != null ? TargetHints : MapHints);
         Add(map, party, hints);
     }
 
-    public override bool HandleKey(Key key)
+    private Route Route => (_cursor ?? _destination) is { } target ? _session.PlanRoute(target) : Route.None;
+
+    private IEnumerable<(string, string)> MapHints =>
+    [
+        ("←↑→↓", "/ numpad — move"), ("T", "travel"), .. _destination != null ? [("G", "go on")] : Array.Empty<(string, string)>(),
+        ("Enter", "city"), ("S", "squad"), .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")
+    ];
+
+    private IEnumerable<(string, string)> TargetHints
+    {
+        get
+        {
+            var route = Route;
+            var status = route.IsEmpty ? "no route" : $"cost {route.Cost}, {_session.Party.MovementPoints} left";
+            return [("←↑→↓", "target"), ("Enter", "go"), ("Esc", "cancel"), ("·", status)];
+        }
+    }
+
+    public override bool HandleKey(Key key) => _cursor is { } cursor ? HandleTargetKey(key, cursor) : HandleMapKey(key);
+
+    private bool HandleTargetKey(Key key, Position cursor)
+    {
+        if (key == Key.Esc)
+            _cursor = null;
+        else if (key == Key.Enter || key == Key.T)
+        {
+            _destination = cursor;
+            _cursor = null;
+            Walk();
+        }
+        else if (KeyToDirection(key) is { } direction && _session.Map.Contains(cursor.Step(direction)))
+            _cursor = cursor.Step(direction);
+        else
+            return false;
+
+        return true;
+    }
+
+    private bool HandleMapKey(Key key)
     {
         if (key == Key.Esc)
             Shell.Push(new PauseScreen(_flow, _session));
@@ -42,8 +83,15 @@ public sealed class MapScreen : Screen
             EnterCity(city);
         else if (key == Key.Enter && _session.CurrentSite is { Kind: SiteKind.Camp } camp)
             Shell.Push(new CampScreen(_session, camp));
+        else if (key == Key.T)
+            _cursor = _destination ?? _session.Party.Position;
+        else if (key == Key.G && _destination != null)
+            Walk();
         else if (KeyToDirection(key) is { } direction)
+        {
+            _destination = null;
             Move(direction);
+        }
         else
             return false;
 
@@ -53,7 +101,29 @@ public sealed class MapScreen : Screen
     private IEnumerable<(string, string)> LevelUpHint =>
         _session.Party.UnspentPerks > 0 ? [("L", "level up")] : [];
 
-    private void Move(Direction direction)
+    /// <summary>Follows the route to the destination until movement runs out or something stops the party.</summary>
+    private void Walk()
+    {
+        var route = Route;
+        if (route.IsEmpty)
+        {
+            Log("No route there.");
+            _destination = null;
+            return;
+        }
+
+        foreach (var step in route.Steps)
+        {
+            if (!Move(_session.Party.Position.DirectionTo(step)!.Value))
+                break;
+        }
+
+        if (_session.Party.Position == _destination || _session.Status != GameStatus.Playing)
+            _destination = null;
+    }
+
+    /// <returns>Whether the party moved and may keep walking.</returns>
+    private bool Move(Direction direction)
     {
         var target = _session.Party.Position.Step(direction);
 
@@ -64,23 +134,25 @@ public sealed class MapScreen : Screen
         {
             case MoveResult.Moved when _session.Map.CityAt(target) is { } city:
                 EnterCity(city);
-                break;
+                return false;
             case MoveResult.CityCaptured when _session.Status == GameStatus.Playing:
                 EnterCity(_session.CurrentCity!);
-                break;
+                return false;
             case MoveResult.CityCaptured:
                 _flow.EndGame(_session);
-                break;
+                return false;
             case MoveResult.SiteVisited when _session.CurrentSite is { Kind: SiteKind.Camp } camp:
                 Log($"Visited {camp.Name}.");
                 Shell.Push(new CampScreen(_session, camp));
-                break;
+                return false;
             case MoveResult.EnemyEncountered:
                 Engage(_session.EncounterAt(target)!);
-                break;
+                return false;
             case MoveResult.Moved when _session.Party.MovementPoints == 0:
                 Log("Out of movement. Press E to end turn.");
-                break;
+                return false;
+            case MoveResult.Moved or MoveResult.SiteVisited:
+                return true;
             case MoveResult.OutOfBounds:
                 Log("The edge of the world.");
                 break;
@@ -92,6 +164,8 @@ public sealed class MapScreen : Screen
                 Log($"{terrain.Name} costs {terrain.MoveCost}, only {_session.Party.MovementPoints} left.");
                 break;
         }
+
+        return false;
     }
 
     private void EnterCity(City city)

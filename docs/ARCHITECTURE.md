@@ -48,6 +48,7 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Squ
 - `GameSession` — mutable game state (map, party, cities, gold, turn, status) and commands.
 - `GameSnapshot` — plain DTO of the state; scenarios and saves use the same format. `SnapshotMapper` captures/restores it against a `GameContent`.
 - `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
+- `Route` — planned party path with running cost (`GameSession.PlanRoute`); the front-end walks it with `TryMove`.
 - `Site` — passable map object handled on step: treasure, gold mine, mercenary camp (`WorldMap.Sites`).
 - `Party` — leader, squad and movement. Movement and squad capacity derive from the leader definition plus taken `LeaderPerk`s; one perk per leader level above the first.
 
