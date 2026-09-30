@@ -34,6 +34,7 @@ namespace Disciples.Core.Session
         public int Turn { get; private set; }
         public GameStatus Status { get; private set; }
         public City? CurrentCity => Map.CityAt(Party.Position);
+        public Site? CurrentSite => Map.SiteAt(Party.Position);
         public City? Capital => Map.Cities.FirstOrDefault(c => c.IsCapital && c.IsPlayerOwned);
 
         /// <summary>An enemy leader attacked the party during the enemy turn; the front-end must fight it.</summary>
@@ -79,6 +80,12 @@ namespace Disciples.Core.Session
 
             Party.MoveTo(target, cost);
 
+            if (Map.SiteAt(target) is { } site)
+            {
+                Visit(site);
+                return MoveResult.SiteVisited;
+            }
+
             var city = Map.CityAt(target);
             if (city == null || city.IsPlayerOwned)
                 return MoveResult.Moved;
@@ -94,7 +101,8 @@ namespace Disciples.Core.Session
 
             Turn++;
             Party.RestoreMovement();
-            Gold += Map.Cities.Where(c => c.IsPlayerOwned).Sum(c => c.Income);
+            Gold += Map.Cities.Where(c => c.IsPlayerOwned).Sum(c => c.Income)
+                    + Map.Sites.Where(s => s.Kind == SiteKind.Mine && s.Owner == Owner.Player).Sum(s => s.Gold);
 
             foreach (var city in Map.Cities.Where(c => c.IsPlayerOwned))
                 HealSquad(city.Garrison);
@@ -121,6 +129,22 @@ namespace Disciples.Core.Session
 
             Gold -= definition.Cost;
             return result;
+        }
+
+        /// <summary>Hires a mercenary straight into the party standing at the camp.</summary>
+        public HireResult HireMercenary(Site camp, UnitDefinition definition)
+        {
+            if (Party.Position != camp.Position || !camp.Mercenaries.Contains(definition))
+                return HireResult.Unavailable;
+
+            if (Gold < definition.Cost)
+                return HireResult.NotEnoughGold;
+
+            if (!Party.Squad.TryAdd(new Unit(definition)))
+                return HireResult.NoRoom;
+
+            Gold -= definition.Cost;
+            return HireResult.HiredToParty;
         }
 
         public bool Dismiss(Squad squad, Unit unit)
@@ -210,6 +234,22 @@ namespace Disciples.Core.Session
             }
 
             return new BattleReport(outcome, gold, experience, progress, captured);
+        }
+
+        private void Visit(Site site)
+        {
+            switch (site.Kind)
+            {
+                case SiteKind.Treasure:
+                    Gold += site.Gold;
+                    Map.RemoveSite(site);
+                    _events.Add(new GameEvent(GameEventKind.TreasureFound, site.Name, amount: site.Gold));
+                    break;
+                case SiteKind.Mine when site.Owner != Owner.Player:
+                    site.Capture(Owner.Player);
+                    _events.Add(new GameEvent(GameEventKind.MineCaptured, site.Name, amount: site.Gold));
+                    break;
+            }
         }
 
         private void Capture(City city)

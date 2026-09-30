@@ -40,6 +40,8 @@ public sealed class MapScreen : Screen
             Shell.Push(new PerkScreen(_session));
         else if (key == Key.Enter && _session.CurrentCity is { IsPlayerOwned: true } city)
             EnterCity(city);
+        else if (key == Key.Enter && _session.CurrentSite is { Kind: SiteKind.Camp } camp)
+            Shell.Push(new CampScreen(_session, camp));
         else if (KeyToDirection(key) is { } direction)
             Move(direction);
         else
@@ -68,6 +70,10 @@ public sealed class MapScreen : Screen
                 break;
             case MoveResult.CityCaptured:
                 _flow.EndGame(_session);
+                break;
+            case MoveResult.SiteVisited when _session.CurrentSite is { Kind: SiteKind.Camp } camp:
+                Log($"Visited {camp.Name}.");
+                Shell.Push(new CampScreen(_session, camp));
                 break;
             case MoveResult.EnemyEncountered:
                 Engage(_session.EncounterAt(target)!);

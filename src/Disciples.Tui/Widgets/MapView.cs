@@ -49,12 +49,24 @@ public sealed class MapView : Canvas
             this.Text(x, y, city.IsCapital ? "◆ " : "■ ", cityColors.Foreground, cityColors.Background, TextStyle.Bold);
         else if (_session.Map.NeutralAt(position) != null)
             this.Text(x, y, "† ", Palette.Enemy, Palette.TerrainBackground(terrain), TextStyle.Bold);
+        else if (_session.Map.SiteAt(position) is { } site)
+            this.Text(x, y, SiteGlyph(site.Kind) + " ", SiteColor(site), Palette.TerrainBackground(terrain), TextStyle.Bold);
         else
         {
             var attribute = Palette.TerrainAttribute(terrain.Id);
             this.Text(x, y, Palette.TerrainGlyph(terrain, position) + " ", attribute.Foreground, attribute.Background);
         }
     }
+
+    public static string SiteGlyph(SiteKind kind) => kind switch
+    {
+        SiteKind.Treasure => "$",
+        SiteKind.Mine => "¤",
+        _ => "▲"
+    };
+
+    public static Color SiteColor(Site site) =>
+        site.Kind == SiteKind.Mine && site.Owner == Owner.Player ? Palette.Ally : Palette.Accent;
 
     private static (Color Foreground, Color Background) ColorsOf(City? city)
     {

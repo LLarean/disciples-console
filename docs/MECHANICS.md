@@ -19,8 +19,8 @@ Markers:
 | 1.6 | Path preview (planned route with cost) | Backlog |
 | 1.7 | Fog of war / exploration | Backlog |
 | 1.8 | Territory ownership and spreading land (rods, capital aura) | Backlog |
-| 1.9 | Resource sources: gold mines, mana sources | Backlog |
-| 1.10 | Treasure chests, merchants, mercenary camps, trainers | Backlog |
+| 1.9 | Resource sources: gold mines, mana sources | M8 — gold mines captured by stepping on them, income per turn; mana Out |
+| 1.10 | Treasure chests, merchants, mercenary camps, trainers | M8 — treasure (one-time gold) and mercenary camps (hire into the party at unit cost); merchants and trainers in Backlog |
 
 ## 2. Turn structure and economy
 

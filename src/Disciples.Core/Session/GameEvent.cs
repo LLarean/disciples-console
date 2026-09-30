@@ -8,6 +8,8 @@ namespace Disciples.Core.Session
         EnemyAttacks,
         CityFell,
         CityHeld,
+        TreasureFound,
+        MineCaptured,
         UnitLeveledUp,
         UnitUpgraded,
         UnitAwaitsBuilding,

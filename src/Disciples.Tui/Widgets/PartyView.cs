@@ -87,6 +87,9 @@ public sealed class PartyView : Canvas
             .Append(("■", new Attribute(MapView.HostileCityColors.Foreground, MapView.HostileCityColors.Background), "Hostile"))
             .Append(("†", new Attribute(Palette.Enemy, Palette.Background), "Enemy"))
             .Append(("&", new Attribute(Palette.Enemy, Palette.Background), "Enemy lord"))
+            .Append(("$", new Attribute(Palette.Accent, Palette.Background), "Treasure"))
+            .Append(("¤", new Attribute(Palette.Accent, Palette.Background), "Mine"))
+            .Append(("▲", new Attribute(Palette.Accent, Palette.Background), "Camp"))
             .Append(("@", new Attribute(MapView.LeaderColor, Palette.Background), "You"))
             .ToList();
 

@@ -7,7 +7,8 @@ namespace Disciples.Core.Session
         Impassable,
         NotEnoughMovement,
         EnemyEncountered,
-        CityCaptured
+        CityCaptured,
+        SiteVisited
     }
 
     public enum GameStatus
@@ -22,7 +23,8 @@ namespace Disciples.Core.Session
         HiredToParty,
         HiredToGarrison,
         NotEnoughGold,
-        NoRoom
+        NoRoom,
+        Unavailable
     }
 
     public enum BuildResult

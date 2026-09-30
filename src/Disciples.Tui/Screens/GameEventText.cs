@@ -12,6 +12,8 @@ public static class GameEventText
         GameEventKind.EnemyAttacks => $"{e.Subject} attacks you!",
         GameEventKind.CityFell => $"{e.Subject} falls to {e.Detail}.",
         GameEventKind.CityHeld => $"{e.Subject} holds against {e.Detail}.",
+        GameEventKind.TreasureFound => $"Found {e.Subject}: +{e.Amount} gold.",
+        GameEventKind.MineCaptured => $"{e.Subject} is yours: +{e.Amount} gold per turn.",
         GameEventKind.UnitLeveledUp => $"{e.Subject} reached level {e.Amount}.",
         GameEventKind.UnitUpgraded => $"{e.Subject} became {e.Detail}.",
         GameEventKind.UnitAwaitsBuilding => $"{e.Subject} needs {e.Detail} in the capital to grow.",

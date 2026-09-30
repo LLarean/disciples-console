@@ -31,7 +31,17 @@ namespace Disciples.Core.Persistence
                     Reward = n.Reward,
                     Units = CaptureSquad(n.Squad)
                 }).ToList(),
-                Enemies = session.Map.Enemies.Select(CaptureParty).ToList()
+                Enemies = session.Map.Enemies.Select(CaptureParty).ToList(),
+                Sites = session.Map.Sites.Select(s => new SiteSnapshot
+                {
+                    Name = s.Name,
+                    Kind = s.Kind,
+                    X = s.Position.X,
+                    Y = s.Position.Y,
+                    Gold = s.Gold,
+                    Owner = s.Owner,
+                    Mercenaries = s.Mercenaries.Select(m => m.Id).ToList()
+                }).ToList()
             };
         }
 
@@ -44,7 +54,9 @@ namespace Disciples.Core.Persistence
             var neutrals = snapshot.Neutrals.Select(n => new NeutralSquad(
                 n.Name, new Position(n.X, n.Y), RestoreSquad(n.Units, new Squad(), content, n.Name), n.Reward));
             var enemies = snapshot.Enemies.Select(e => RestoreParty(e, content, "Enemy"));
-            var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals, enemies);
+            var sites = snapshot.Sites.Select(s => new Site(
+                s.Name, s.Kind, new Position(s.X, s.Y), s.Gold, s.Mercenaries.Select(content.Unit), s.Owner));
+            var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals, enemies, sites);
             var party = RestoreParty(snapshot.Party, content, "Party");
 
             return new GameSession(content, map, party, snapshot.Gold, random, snapshot.Turn);

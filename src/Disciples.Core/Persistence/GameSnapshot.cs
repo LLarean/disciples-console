@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Disciples.Core.Cities;
+using Disciples.Core.Map;
 using Disciples.Core.Squads;
 
 namespace Disciples.Core.Persistence
@@ -22,6 +23,8 @@ namespace Disciples.Core.Persistence
 
         /// <summary>Enemy leaders' parties, moved by the AI.</summary>
         public List<PartySnapshot> Enemies { get; set; } = new List<PartySnapshot>();
+
+        public List<SiteSnapshot> Sites { get; set; } = new List<SiteSnapshot>();
     }
 
     public sealed class MapSnapshot
@@ -63,6 +66,17 @@ namespace Disciples.Core.Persistence
 
         public List<string> Built { get; set; } = new List<string>();
         public List<UnitSnapshot> Garrison { get; set; } = new List<UnitSnapshot>();
+    }
+
+    public sealed class SiteSnapshot
+    {
+        public string Name { get; set; } = "";
+        public SiteKind Kind { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Gold { get; set; }
+        public Owner Owner { get; set; }
+        public List<string> Mercenaries { get; set; } = new List<string>();
     }
 
     public sealed class NeutralSnapshot

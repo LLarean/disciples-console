@@ -215,7 +215,7 @@
         }
       ]
     }
-    ],
+  ],
   "enemies": [
     {
       "x": 36,
@@ -236,6 +236,54 @@
           "line": "back",
           "column": 1
         }
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "name": "Old Chest",
+      "kind": "treasure",
+      "x": 8,
+      "y": 7,
+      "gold": 100
+    },
+    {
+      "name": "Hermit's Hoard",
+      "kind": "treasure",
+      "x": 14,
+      "y": 3,
+      "gold": 150
+    },
+    {
+      "name": "Dwarven Cache",
+      "kind": "treasure",
+      "x": 33,
+      "y": 13,
+      "gold": 200
+    },
+    {
+      "name": "Copper Mine",
+      "kind": "mine",
+      "x": 5,
+      "y": 14,
+      "gold": 30
+    },
+    {
+      "name": "Gold Mine",
+      "kind": "mine",
+      "x": 29,
+      "y": 19,
+      "gold": 60
+    },
+    {
+      "name": "Mercenary Camp",
+      "kind": "camp",
+      "x": 20,
+      "y": 12,
+      "mercenaries": [
+        "goblin-archer",
+        "orc",
+        "ogre"
       ]
     }
   ]
