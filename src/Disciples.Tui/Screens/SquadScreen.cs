@@ -109,7 +109,7 @@ public sealed class SquadScreen : Screen
         Stat(canvas, y++, "Armor", unit.Armor.ToString());
         Stat(canvas, y++, "Initiative", unit.Initiative.ToString());
         if (unit.IsLeader)
-            Stat(canvas, y++, "Leadership", definition.Leadership.ToString());
+            Stat(canvas, y++, "Leadership", Squad.Capacity.ToString());
 
         y++;
         canvas.Section(y++, "Upgrade");

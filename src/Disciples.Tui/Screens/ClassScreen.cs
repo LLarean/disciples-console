@@ -1,0 +1,17 @@
+using Disciples.Core.Units;
+using Disciples.Tui.Widgets;
+
+namespace Disciples.Tui.Screens;
+
+public sealed class ClassScreen(GameFlow flow) : MenuScreen
+{
+    protected override IReadOnlyList<string> Heading => ["Choose your leader", "the class stays for the whole game"];
+
+    protected override IReadOnlyList<MenuItem> Items =>
+        flow.LeaderClasses.Select(c => new MenuItem(c.Name, () => flow.StartNewGame(c), Detail: Describe(c))).ToList();
+
+    protected override void Back() => Shell.Pop();
+
+    private static string Describe(UnitDefinition c) =>
+        $"HP {c.MaxHp}  {ViewDrawing.AttackLabel(c)} {c.Power}  armor {c.Armor}  init {c.Initiative}  move {c.Movement}  lead {c.Leadership}";
+}

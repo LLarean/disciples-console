@@ -19,7 +19,8 @@ namespace Disciples.Core.Units
             int experienceValue = 0,
             int levelGrowthPercent = 0,
             string? upgradesTo = null,
-            string? upgradeBuilding = null)
+            string? upgradeBuilding = null,
+            int movement = 0)
         {
             Id = id;
             Name = name;
@@ -37,6 +38,7 @@ namespace Disciples.Core.Units
             LevelGrowthPercent = levelGrowthPercent;
             UpgradesTo = upgradesTo;
             UpgradeBuilding = upgradeBuilding;
+            Movement = movement;
         }
 
         public string Id { get; }
@@ -75,6 +77,9 @@ namespace Disciples.Core.Units
 
         /// <summary>Capital building required for the upgrade to the next tier.</summary>
         public string? UpgradeBuilding { get; }
+
+        /// <summary>Movement points of a leader's party per turn. Zero for regular units.</summary>
+        public int Movement { get; }
 
         public bool IsLeader => Leadership > 0;
         public int SlotCount => Size == UnitSize.Large ? 2 : 1;

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Disciples.Core.Content
 {
     /// <summary>Global balance numbers; loaded from content, defaults are for tests.</summary>
@@ -12,5 +14,11 @@ namespace Disciples.Core.Content
 
         /// <summary>Default <see cref="Units.UnitDefinition.LevelGrowthPercent"/> for units that do not set their own.</summary>
         public int LevelGrowthPercent { get; set; } = 10;
+
+        /// <summary>Movement points added by the leader's movement perk.</summary>
+        public int MovementPerk { get; set; } = 4;
+
+        /// <summary>Leader unit ids offered when starting a new game.</summary>
+        public List<string> LeaderClasses { get; set; } = new List<string>();
     }
 }

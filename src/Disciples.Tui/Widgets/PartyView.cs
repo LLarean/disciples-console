@@ -32,6 +32,12 @@ public sealed class PartyView : Canvas
         this.Text(x + 2, y, $"{_session.Gold}g", Palette.Accent);
 
         y++;
+        x = this.Text(0, y, "Lvl  ", Palette.Dim);
+        x = this.Text(x, y, party.Leader.Level.ToString(), Palette.Text, style: TextStyle.Bold);
+        if (party.UnspentPerks > 0)
+            this.Text(x + 2, y, $"{party.UnspentPerks} perk(s), press L", Palette.Good);
+
+        y++;
         x = this.Text(0, y, "Move ", Palette.Dim);
         var moveColor = party.MovementPoints == 0 ? Palette.Bad : Palette.Good;
         x = this.Bar(x, y, party.MovementPoints, party.MaxMovementPoints, 14, moveColor);

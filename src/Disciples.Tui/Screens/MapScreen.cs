@@ -24,7 +24,7 @@ public sealed class MapScreen : Screen
 
         var map = new MapView(session) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
         var party = new PartyView(session, _log) { X = Pos.Right(map), Y = 0, Width = SideWidth, Height = Dim.Fill(1) };
-        var hints = new HintBar(() => [("←↑→↓", "/ numpad — move"), ("Enter", "city"), ("S", "squad"), ("E", "end turn"), ("Esc", "menu")]);
+        var hints = new HintBar(() => [("←↑→↓", "/ numpad — move"), ("Enter", "city"), ("S", "squad"), .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")]);
         Add(map, party, hints);
     }
 
@@ -36,6 +36,8 @@ public sealed class MapScreen : Screen
             EndTurn();
         else if (key == Key.S)
             Shell.Push(new SquadScreen(_session));
+        else if (key == Key.L && _session.Party.UnspentPerks > 0)
+            Shell.Push(new PerkScreen(_session));
         else if (key == Key.Enter && _session.CurrentCity is { IsPlayerOwned: true } city)
             EnterCity(city);
         else if (KeyToDirection(key) is { } direction)
@@ -45,6 +47,9 @@ public sealed class MapScreen : Screen
 
         return true;
     }
+
+    private IEnumerable<(string, string)> LevelUpHint =>
+        _session.Party.UnspentPerks > 0 ? [("L", "level up")] : [];
 
     private void Move(Direction direction)
     {

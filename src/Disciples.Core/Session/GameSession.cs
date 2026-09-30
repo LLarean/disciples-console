@@ -132,6 +132,15 @@ namespace Disciples.Core.Session
             return true;
         }
 
+        public bool TakePerk(LeaderPerk perk)
+        {
+            if (!Party.CanTake(perk))
+                return false;
+
+            Party.Take(perk);
+            return true;
+        }
+
         public BuildResult Build(City city, Building building)
         {
             if (city.HasBuilt(building.Id))

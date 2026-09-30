@@ -23,10 +23,19 @@ namespace Disciples.Core.Content
             var brokenLink = _units.Values.FirstOrDefault(u => u.UpgradesTo != null && !_units.ContainsKey(u.UpgradesTo));
             if (brokenLink != null)
                 throw new ContentException($"Unit '{brokenLink.Id}' upgrades to unknown unit '{brokenLink.UpgradesTo}'.");
+
+            var immobile = _units.Values.FirstOrDefault(u => u.IsLeader && u.Movement <= 0);
+            if (immobile != null)
+                throw new ContentException($"Leader '{immobile.Id}' has no movement.");
+
+            var badClass = rules.LeaderClasses.FirstOrDefault(id => !_units.TryGetValue(id, out var unit) || !unit.IsLeader);
+            if (badClass != null)
+                throw new ContentException($"Leader class '{badClass}' is not a leader unit.");
         }
 
         public GameRules Rules { get; }
         public IReadOnlyList<Building> Buildings => _buildings;
+        public IEnumerable<UnitDefinition> LeaderClasses => Rules.LeaderClasses.Select(Unit);
 
         public UnitDefinition Unit(string id) =>
             _units.TryGetValue(id, out var unit) ? unit : throw new ContentException($"Unknown unit '{id}'.");

@@ -20,7 +20,7 @@ namespace Disciples.Core.Squads
         }
 
         /// <summary>Maximum occupied slots; a large unit takes two.</summary>
-        public int Capacity { get; }
+        public int Capacity { get; private set; }
 
         public IReadOnlyList<Unit> Units => SquadSlot.All.Select(UnitAt).OfType<Unit>().Distinct().ToList();
         public IEnumerable<Unit> AliveUnits => Units.Where(u => u.IsAlive);
@@ -97,6 +97,8 @@ namespace Disciples.Core.Squads
             foreach (var unit in Units.Where(u => !u.IsAlive))
                 Remove(unit);
         }
+
+        internal void SetCapacity(int capacity) => Capacity = Math.Min(capacity, MaxSlots);
 
         private void SetCell(SquadSlot slot, Unit? unit) => _cells[(int)slot.Line, slot.Column] = unit;
     }

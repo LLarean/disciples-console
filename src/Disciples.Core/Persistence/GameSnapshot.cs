@@ -38,13 +38,14 @@ namespace Disciples.Core.Persistence
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public int MaxMovementPoints { get; set; }
 
         /// <summary>Remaining points; null means full.</summary>
         public int? MovementPoints { get; set; }
 
         /// <summary>Squad units, the leader included.</summary>
         public List<UnitSnapshot> Units { get; set; } = new List<UnitSnapshot>();
+
+        public List<LeaderPerk> Perks { get; set; } = new List<LeaderPerk>();
     }
 
     public sealed class CitySnapshot

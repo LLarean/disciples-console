@@ -6,7 +6,8 @@ namespace Disciples.Core.Tests;
 
 internal static class TestUnits
 {
-    public static readonly UnitDefinition Knight = new("knight", "Knight", 150, 0, 50, 50, 80, AttackType.Melee, UnitSize.Small, 0, leadership: 4);
+    public static readonly UnitDefinition Knight = new("knight", "Knight", 150, 0, 50, 50, 80, AttackType.Melee, UnitSize.Small, 0, leadership: 4, movement: 10);
+    public static readonly UnitDefinition Ranger = new("ranger", "Ranger", 100, 0, 60, 30, 80, AttackType.Ranged, UnitSize.Small, 0, leadership: 3, movement: 14);
     public static readonly UnitDefinition Squire = new("squire", "Squire", 100, 0, 50, 25, 80, AttackType.Melee, UnitSize.Small, 50);
     public static readonly UnitDefinition Archer = new("archer", "Archer", 45, 0, 60, 25, 80, AttackType.Ranged, UnitSize.Small, 40);
     public static readonly UnitDefinition Mage = new("mage", "Mage", 35, 0, 40, 15, 100, AttackType.AllEnemies, UnitSize.Small, 60);
@@ -23,7 +24,7 @@ internal static class TestUnits
     public static readonly Terrain Water = new("water", "Water", null);
 
     public static GameContent TestContent { get; } = new(
-        [Knight, Squire, Archer, Mage, Acolyte, Ogre, Recruit, Veteran],
+        [Knight, Ranger, Squire, Archer, Mage, Acolyte, Ogre, Recruit, Veteran],
         [Plains, Road, Water],
         [],
         new GameRules());

@@ -34,7 +34,7 @@ public sealed class ContentLoader(string contentRoot)
     private static UnitDefinition ToDefinition(UnitData d, GameRules rules) =>
         new(d.Id, d.Name, d.Hp, d.Armor, d.Initiative, d.Power, d.Accuracy, d.Attack, d.Size, d.Cost, d.Leadership,
             d.ExperienceToLevel ?? 100, d.ExperienceValue, d.LevelGrowthPercent ?? rules.LevelGrowthPercent,
-            d.UpgradesTo, d.UpgradeBuilding);
+            d.UpgradesTo, d.UpgradeBuilding, d.Movement);
 
     private T Read<T>(string relativePath)
     {
@@ -47,7 +47,7 @@ public sealed class ContentLoader(string contentRoot)
 
     private sealed record UnitData(
         string Id, string Name, int Hp, int Armor, int Initiative, int Power, int Accuracy,
-        AttackType Attack, UnitSize Size, int Cost, int Leadership,
+        AttackType Attack, UnitSize Size, int Cost, int Leadership, int Movement,
         int? ExperienceToLevel, int ExperienceValue, int? LevelGrowthPercent, string? UpgradesTo, string? UpgradeBuilding);
 
     private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires);

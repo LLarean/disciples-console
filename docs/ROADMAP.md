@@ -55,7 +55,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## M8 — Opponents and the world
 - [x] Enemy leader squads with AI turns (2.5): pathfinding, city capture, auto-resolved garrison battles, attacks on the party
-- [ ] Leader progression and classes (4.5, 4.6)
+- [x] Leader progression and classes (4.5, 4.6): class choice on new game, leadership/movement perks per level
 - [ ] Treasure, mines, merchants on the map (1.9, 1.10)
 - [ ] Path preview (1.6)
 - [ ] Building effects beyond unit upgrades (thieves guild, magic tower, temple healing)
@@ -66,7 +66,8 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Picked unit (city, squad screen) is shown with the cursor frame, not the pick color, while the cursor stays on it
 - [ ] No confirmation before overwriting a save slot
 - [ ] Main menu / Quit from the pause menu drop unsaved progress without asking
-- [ ] Snapshot `Version` is written but there is no migration path; content id changes break saves
+- [ ] Snapshot `Version` is written but there is no migration path; content id changes break saves (M8 renamed `lord` and dropped `maxMovementPoints`)
+- [ ] Thief leader class and leader abilities as level-up picks
 - [ ] Save regenerates the map legend characters
 - [ ] Retreat has no penalty (the party just leaves the battle)
 - [ ] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9)

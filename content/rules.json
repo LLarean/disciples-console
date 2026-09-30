@@ -3,5 +3,7 @@
   "initiativeSpread": 10,
   "damageSpreadPercent": 10,
   "defendDamagePercent": 50,
-  "levelGrowthPercent": 10
+  "levelGrowthPercent": 10,
+  "movementPerk": 4,
+  "leaderClasses": ["paladin", "ranger", "archmage"]
 }

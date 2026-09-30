@@ -1,25 +1,38 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Disciples.Core.Content;
 using Disciples.Core.Map;
 using Disciples.Core.Units;
 
 namespace Disciples.Core.Squads
 {
+    public enum LeaderPerk
+    {
+        Leadership,
+        Movement
+    }
+
     /// <summary>A leader with its squad travelling on the world map.</summary>
     public sealed class Party
     {
-        public Party(Unit leader, Position position, int maxMovementPoints)
-            : this(SquadFor(leader), position, maxMovementPoints)
+        private readonly List<LeaderPerk> _perks;
+
+        public Party(Unit leader, Position position, int? movementPoints = null, GameRules? rules = null)
+            : this(SquadFor(leader), position, movementPoints, rules: rules)
         {
         }
 
-        /// <summary>Restores a party from a squad that already contains its leader.</summary>
-        public Party(Squad squad, Position position, int maxMovementPoints, int? movementPoints = null)
+        /// <summary>Restores a party from a squad that already contains its leader; squad capacity follows the leadership.</summary>
+        public Party(Squad squad, Position position, int? movementPoints = null, IEnumerable<LeaderPerk>? perks = null, GameRules? rules = null)
         {
             Leader = squad.Leader ?? throw new ArgumentException("A party squad needs a leader.", nameof(squad));
             Squad = squad;
             Position = position;
-            MaxMovementPoints = maxMovementPoints;
-            MovementPoints = movementPoints ?? maxMovementPoints;
+            _perks = perks?.ToList() ?? new List<LeaderPerk>();
+            MovementPerk = (rules ?? new GameRules()).MovementPerk;
+            Squad.SetCapacity(Leader.Definition.Leadership + Count(LeaderPerk.Leadership));
+            MovementPoints = movementPoints ?? MaxMovementPoints;
         }
 
         public Unit Leader { get; }
@@ -27,9 +40,26 @@ namespace Disciples.Core.Squads
         public string Name => Leader.Name;
         public Position Position { get; private set; }
         public int MovementPoints { get; private set; }
-        public int MaxMovementPoints { get; }
+        public int MaxMovementPoints => Leader.Definition.Movement + Count(LeaderPerk.Movement) * MovementPerk;
+        public int MovementPerk { get; }
+        public IReadOnlyList<LeaderPerk> Perks => _perks;
+
+        /// <summary>Each leader level above the first grants one perk.</summary>
+        public int UnspentPerks => Math.Max(0, Leader.Level - 1 - _perks.Count);
 
         public bool CanAfford(int cost) => MovementPoints >= cost;
+
+        public bool CanTake(LeaderPerk perk) =>
+            UnspentPerks > 0 && (perk != LeaderPerk.Leadership || Squad.Capacity < Squad.MaxSlots);
+
+        internal void Take(LeaderPerk perk)
+        {
+            _perks.Add(perk);
+            if (perk == LeaderPerk.Leadership)
+                Squad.SetCapacity(Squad.Capacity + 1);
+            else
+                MovementPoints += MovementPerk;
+        }
 
         internal void MoveTo(Position position, int cost)
         {
@@ -39,12 +69,14 @@ namespace Disciples.Core.Squads
 
         internal void RestoreMovement() => MovementPoints = MaxMovementPoints;
 
+        private int Count(LeaderPerk perk) => _perks.Count(p => p == perk);
+
         private static Squad SquadFor(Unit leader)
         {
             if (!leader.IsLeader)
                 throw new ArgumentException($"{leader.Name} cannot lead a party.", nameof(leader));
 
-            var squad = new Squad(leader.Definition.Leadership);
+            var squad = new Squad();
             squad.TryPlace(leader, new SquadSlot(SquadLine.Front, 1));
             return squad;
         }

@@ -2,6 +2,7 @@ using Disciples.Core;
 using Disciples.Core.Content;
 using Disciples.Core.Persistence;
 using Disciples.Core.Session;
+using Disciples.Core.Units;
 using Disciples.Tui.Content;
 using Disciples.Tui.Persistence;
 using Disciples.Tui.Screens;
@@ -20,7 +21,14 @@ public sealed class GameFlow(Shell shell, ContentLoader loader, SaveStore saves)
 
     public void ShowMainMenu() => shell.Reset(new MainMenuScreen(this));
 
-    public void StartNewGame() => Play(loader.LoadScenario(Scenario));
+    public IEnumerable<UnitDefinition> LeaderClasses => Content.LeaderClasses;
+
+    public void StartNewGame(UnitDefinition leader)
+    {
+        var snapshot = loader.LoadScenario(Scenario);
+        SnapshotMapper.ChooseLeader(snapshot, leader, Content);
+        Play(snapshot);
+    }
 
     /// <exception cref="ContentException">The save does not match the current content.</exception>
     public void LoadGame(int slot) => Play(saves.Load(slot));

@@ -40,10 +40,9 @@
   "party": {
     "x": 4,
     "y": 10,
-    "maxMovementPoints": 20,
     "units": [
       {
-        "id": "lord",
+        "id": "paladin",
         "line": "front",
         "column": 1
       }
@@ -221,7 +220,6 @@
     {
       "x": 36,
       "y": 18,
-      "maxMovementPoints": 16,
       "units": [
         {
           "id": "orc-warlord",

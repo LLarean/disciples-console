@@ -54,17 +54,26 @@ namespace Disciples.Core.Persistence
         {
             X = party.Position.X,
             Y = party.Position.Y,
-            MaxMovementPoints = party.MaxMovementPoints,
             MovementPoints = party.MovementPoints,
-            Units = CaptureSquad(party.Squad)
+            Units = CaptureSquad(party.Squad),
+            Perks = party.Perks.ToList()
         };
 
         private static Party RestoreParty(PartySnapshot data, GameContent content, string owner)
         {
-            var leader = data.Units.Select(u => content.Unit(u.Id)).FirstOrDefault(d => d.IsLeader)
-                         ?? throw new ContentException($"'{owner}' has no leader.");
-            var squad = RestoreSquad(data.Units, new Squad(leader.Leadership), content, owner);
-            return new Party(squad, new Position(data.X, data.Y), data.MaxMovementPoints, data.MovementPoints);
+            var squad = RestoreSquad(data.Units, new Squad(), content, owner);
+            if (squad.Leader == null)
+                throw new ContentException($"'{owner}' has no leader.");
+
+            return new Party(squad, new Position(data.X, data.Y), data.MovementPoints, data.Perks, content.Rules);
+        }
+
+        /// <summary>Replaces the party leader of a new game with the chosen leader class.</summary>
+        public static void ChooseLeader(GameSnapshot snapshot, UnitDefinition leader, GameContent content)
+        {
+            var current = snapshot.Party.Units.FirstOrDefault(u => content.Unit(u.Id).IsLeader)
+                          ?? throw new ContentException("The party has no leader.");
+            current.Id = leader.Id;
         }
 
         private static MapSnapshot CaptureMap(WorldMap map)

@@ -48,6 +48,7 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Squ
 - `GameSession` — mutable game state (map, party, cities, gold, turn, status) and commands.
 - `GameSnapshot` — plain DTO of the state; scenarios and saves use the same format. `SnapshotMapper` captures/restores it against a `GameContent`.
 - `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
+- `Party` — leader, squad and movement. Movement and squad capacity derive from the leader definition plus taken `LeaderPerk`s; one perk per leader level above the first.
 
 ### Enemy turn
 `GameSession.EndTurn` moves every enemy `Party` (`WorldMap.Enemies`) before the new turn starts. `Pathfinder` (Dijkstra by terrain cost) leads it to the nearest target: the player's party or a non-capital city it does not own. Garrison fights are auto-resolved with `SimpleBattleAi`; an attack on the party is exposed as `GameSession.IncomingAttack` for the front-end to fight.
@@ -57,7 +58,7 @@ Terminal.Gui v2, see ADR 0003.
 - `Shell` (root window) holds a stack of `Screen` views; only the top screen is attached and gets keys via `HandleKey`.
 - Flow: key → `Shell.OnKeyDown` → `Screen.HandleKey` → Core command → `Screen.Refresh` pushes state into child views and marks them dirty; Terminal.Gui redraws only changed cells.
 - `GameFlow` owns content, `SaveStore` and top-level transitions: main menu → map → game end.
-- Screens: `MainMenuScreen`, `PauseScreen`, `SlotsScreen` (on `MenuScreen` base), `MapScreen`, `SquadScreen`, `CityScreen`, `BuildingsScreen`, `BattleScreen`, `GameEndScreen`.
+- Screens: `MainMenuScreen`, `ClassScreen`, `PauseScreen`, `SlotsScreen`, `PerkScreen` (on `MenuScreen` base), `MapScreen`, `SquadScreen`, `CityScreen`, `BuildingsScreen`, `BattleScreen`, `GameEndScreen`.
 - Widgets (`Widgets/`): `Canvas` (custom-drawn panel), `SquadView`, `MapView`, `PartyView`, `HintBar`; colors and terrain glyphs in `Palette`.
 - Only the console layer maps domain data to glyphs and colors.
 

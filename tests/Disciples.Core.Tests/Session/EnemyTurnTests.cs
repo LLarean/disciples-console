@@ -15,7 +15,7 @@ public class EnemyTurnTests
     private static readonly Position CapitalPosition = new(0, 1);
 
     /// <summary>A plains strip 8×2: party and capital on the west, the enemy on the east.</summary>
-    private static GameSession CreateSession(Position enemyAt, int enemyMovement = 4, IEnumerable<City>? cities = null, UnitDefinition? enemyLeader = null)
+    private static GameSession CreateSession(Position enemyAt, IEnumerable<City>? cities = null, UnitDefinition? enemyLeader = null)
     {
         var tiles = new Terrain[Width, 2];
         for (var x = 0; x < Width; x++)
@@ -23,9 +23,9 @@ public class EnemyTurnTests
             tiles[x, y] = Plains;
 
         var capital = new City("Capital", CapitalPosition, true, 10);
-        var enemy = new Party(new Unit(enemyLeader ?? Knight), enemyAt, enemyMovement);
+        var enemy = new Party(new Unit(enemyLeader ?? Warlord), enemyAt);
         var map = new WorldMap("Test", tiles, new[] { capital }.Concat(cities ?? []), enemies: [enemy]);
-        return new GameSession(TestContent, map, new Party(new Unit(Knight), PartyStart, 10), 0, new FixedRandom());
+        return new GameSession(TestContent, map, new Party(new Unit(Knight), PartyStart), 0, new FixedRandom());
     }
 
     [Fact]
@@ -107,6 +107,9 @@ public class EnemyTurnTests
         Assert.Equal(GameStatus.Won, session.Status);
     }
 
+    private static readonly UnitDefinition Warlord =
+        new("warlord", "Warlord", 150, 0, 50, 50, 80, AttackType.Melee, UnitSize.Small, 0, leadership: 4, movement: 4);
+
     private static readonly UnitDefinition WeakLord =
-        new("weak-lord", "Weak Lord", 10, 0, 1, 1, 80, AttackType.Melee, UnitSize.Small, 0, leadership: 2);
+        new("weak-lord", "Weak Lord", 10, 0, 1, 1, 80, AttackType.Melee, UnitSize.Small, 0, leadership: 2, movement: 4);
 }

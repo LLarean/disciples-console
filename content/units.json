@@ -1,5 +1,7 @@
 [
-  { "id": "lord", "name": "Lord", "hp": 150, "armor": 10, "initiative": 50, "power": 50, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 4, "experienceToLevel": 200, "experienceValue": 100 },
+  { "id": "paladin", "name": "Paladin", "hp": 180, "armor": 15, "initiative": 50, "power": 50, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100 },
+  { "id": "ranger", "name": "Ranger", "hp": 120, "armor": 5, "initiative": 60, "power": 35, "accuracy": 85, "attack": "ranged", "size": "small", "cost": 0, "leadership": 3, "movement": 28, "experienceToLevel": 200, "experienceValue": 100 },
+  { "id": "archmage", "name": "Archmage", "hp": 90, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100 },
 
   { "id": "squire", "name": "Squire", "hp": 100, "armor": 0, "initiative": 50, "power": 25, "accuracy": 80, "attack": "melee", "size": "small", "cost": 50, "experienceToLevel": 60, "experienceValue": 30, "upgradesTo": "knight", "upgradeBuilding": "barracks" },
   { "id": "knight", "name": "Knight", "hp": 150, "armor": 10, "initiative": 50, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "imperial-knight", "upgradeBuilding": "knight-order" },
@@ -20,6 +22,6 @@
   { "id": "goblin-archer", "name": "Goblin Archer", "hp": 40, "armor": 0, "initiative": 40, "power": 15, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 30, "experienceValue": 20 },
   { "id": "orc", "name": "Orc", "hp": 200, "armor": 0, "initiative": 30, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 100, "experienceValue": 60 },
   { "id": "shaman", "name": "Shaman", "hp": 60, "armor": 0, "initiative": 35, "power": 20, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 80, "experienceValue": 50 },
-  { "id": "orc-warlord", "name": "Orc Warlord", "hp": 200, "armor": 10, "initiative": 45, "power": 45, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 3, "experienceValue": 150 },
+  { "id": "orc-warlord", "name": "Orc Warlord", "hp": 200, "armor": 10, "initiative": 45, "power": 45, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "leadership": 3, "movement": 16, "experienceValue": 150 },
   { "id": "ogre", "name": "Ogre", "hp": 300, "armor": 0, "initiative": 20, "power": 65, "accuracy": 80, "attack": "melee", "size": "large", "cost": 200, "experienceValue": 120 }
 ]
