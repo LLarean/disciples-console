@@ -9,7 +9,8 @@ namespace Disciples.Core.Cities
     public enum Owner
     {
         Neutral,
-        Player
+        Player,
+        Enemy
     }
 
     public sealed class City
@@ -58,6 +59,6 @@ namespace Disciples.Core.Cities
 
         internal void MarkBuilt(Building building) => _built.Add(building.Id);
 
-        internal void Capture() => Owner = Owner.Player;
+        internal void Capture(Owner owner) => Owner = owner;
     }
 }

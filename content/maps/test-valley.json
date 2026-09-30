@@ -102,6 +102,25 @@
           "column": 1
         }
       ]
+    },
+    {
+      "name": "Grimhold",
+      "x": 37,
+      "y": 17,
+      "capital": false,
+      "owner": "enemy",
+      "income": 75,
+      "recruits": [
+        "goblin",
+        "goblin-archer"
+      ],
+      "garrison": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 1
+        }
+      ]
     }
   ],
   "neutrals": [
@@ -194,6 +213,30 @@
           "id": "goblin-archer",
           "line": "back",
           "column": 2
+        }
+      ]
+    }
+    ],
+  "enemies": [
+    {
+      "x": 36,
+      "y": 18,
+      "maxMovementPoints": 16,
+      "units": [
+        {
+          "id": "orc-warlord",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 1
         }
       ]
     }

@@ -49,6 +49,9 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Squ
 - `GameSnapshot` — plain DTO of the state; scenarios and saves use the same format. `SnapshotMapper` captures/restores it against a `GameContent`.
 - `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
 
+### Enemy turn
+`GameSession.EndTurn` moves every enemy `Party` (`WorldMap.Enemies`) before the new turn starts. `Pathfinder` (Dijkstra by terrain cost) leads it to the nearest target: the player's party or a non-capital city it does not own. Garrison fights are auto-resolved with `SimpleBattleAi`; an attack on the party is exposed as `GameSession.IncomingAttack` for the front-end to fight.
+
 ## Console front-end
 Terminal.Gui v2, see ADR 0003.
 - `Shell` (root window) holds a stack of `Screen` views; only the top screen is attached and gets keys via `HandleKey`.

@@ -30,7 +30,7 @@ Markers:
 | 2.2 | Gold as the only resource | M2 |
 | 2.3 | Income per turn from capital and owned cities | M3 |
 | 2.4 | Four mana types (life, death, infernal, runic) | Out (until spells) |
-| 2.5 | Multiple players / AI turns | Backlog |
+| 2.5 | Multiple players / AI turns | M8 — simplified: enemy leaders walk to the nearest non-capital city or the party; no enemy economy |
 
 ## 3. Units
 
@@ -59,7 +59,7 @@ Markers:
 | 4.6 | Leader progression: level-up picks (leadership, movement, abilities) | Backlog |
 | 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | Backlog |
 | 4.8 | Several leaders per player | Backlog |
-| 4.9 | Squad loses leader → squad is disbanded | M4 — simplified: single party, so the game is lost |
+| 4.9 | Squad loses leader → squad is disbanded | M4 — simplified: player has a single party, so the game is lost; M8 — enemy squads are disbanded |
 
 ## 5. Capital and cities
 
@@ -115,5 +115,5 @@ Markers:
 |---|----------|-----------|
 | 9.1 | Test level loaded from data | M1 |
 | 9.2 | Save / load | M7 — 3 slots, JSON snapshot (ADR 0004) |
-| 9.3 | Scenario goals (victory conditions) | M7 — fixed: beat all neutrals and own all cities |
+| 9.3 | Scenario goals (victory conditions) | M7 — fixed: beat all neutrals and enemy leaders, own all cities |
 | 9.4 | Main menu | M7 — main and pause menus |

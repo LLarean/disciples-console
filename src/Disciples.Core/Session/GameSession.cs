@@ -36,6 +36,9 @@ namespace Disciples.Core.Session
         public City? CurrentCity => Map.CityAt(Party.Position);
         public City? Capital => Map.Cities.FirstOrDefault(c => c.IsCapital && c.IsPlayerOwned);
 
+        /// <summary>An enemy leader attacked the party during the enemy turn; the front-end must fight it.</summary>
+        public Encounter? IncomingAttack { get; private set; }
+
         public IReadOnlyList<GameEvent> TakeEvents()
         {
             var events = _events.ToList();
@@ -49,6 +52,10 @@ namespace Disciples.Core.Session
             var neutral = Map.NeutralAt(position);
             if (neutral != null)
                 return Encounter.With(neutral);
+
+            var enemy = Map.EnemyAt(position);
+            if (enemy != null)
+                return Encounter.With(enemy);
 
             var city = Map.CityAt(position);
             return city != null && !city.IsPlayerOwned && !city.Garrison.IsDefeated ? Encounter.With(city) : null;
@@ -80,8 +87,11 @@ namespace Disciples.Core.Session
             return MoveResult.CityCaptured;
         }
 
+        /// <summary>Enemy leaders move, then a new turn starts. Check <see cref="IncomingAttack"/> afterwards.</summary>
         public void EndTurn()
         {
+            MoveEnemies();
+
             Turn++;
             Party.RestoreMovement();
             Gold += Map.Cities.Where(c => c.IsPlayerOwned).Sum(c => c.Income);
@@ -148,6 +158,7 @@ namespace Disciples.Core.Session
             if (!battle.IsOver)
                 throw new InvalidOperationException("The battle is still going on.");
 
+            IncomingAttack = null;
             var outcome = battle.Outcome;
             var gold = 0;
             var experience = 0;
@@ -170,6 +181,9 @@ namespace Disciples.Core.Session
             Party.Squad.RemoveDead();
             encounter.Defenders.RemoveDead();
 
+            if (encounter.Enemy != null && !encounter.Enemy.Leader.IsAlive)
+                Map.RemoveEnemy(encounter.Enemy);
+
             if (outcome == BattleOutcome.Defeat || !Party.Leader.IsAlive)
             {
                 Status = GameStatus.Lost;
@@ -191,18 +205,113 @@ namespace Disciples.Core.Session
 
         private void Capture(City city)
         {
-            city.Capture();
+            city.Capture(Owner.Player);
             _events.Add(new GameEvent(GameEventKind.CityCaptured, city.Name));
             CheckVictory();
         }
 
         private void CheckVictory()
         {
-            if (Status == GameStatus.Playing && Map.Neutrals.Count == 0 && Map.Cities.All(c => c.IsPlayerOwned))
+            if (Status == GameStatus.Playing && Map.Neutrals.Count == 0 && Map.Enemies.Count == 0 && Map.Cities.All(c => c.IsPlayerOwned))
             {
                 Status = GameStatus.Won;
                 _events.Add(new GameEvent(GameEventKind.GameWon, Party.Name));
             }
+        }
+
+        private void MoveEnemies()
+        {
+            foreach (var enemy in Map.Enemies.ToList())
+            {
+                enemy.RestoreMovement();
+                MoveEnemy(enemy);
+            }
+        }
+
+        /// <summary>Walks towards the nearest target: the party or a city it can capture. The capital is never a target.</summary>
+        private void MoveEnemy(Party enemy)
+        {
+            var path = Pathfinder.FindPath(Map, enemy.Position, IsEnemyTarget, IsBlockedForEnemy);
+            for (var i = 0; i < path.Count; i++)
+            {
+                var step = path[i];
+                if (i == path.Count - 1)
+                {
+                    Strike(enemy, step);
+                    return;
+                }
+
+                var cost = Map.TerrainAt(step).MoveCost.GetValueOrDefault();
+                if (!enemy.CanAfford(cost))
+                    return;
+
+                enemy.MoveTo(step, cost);
+            }
+        }
+
+        private bool IsEnemyTarget(Position position)
+        {
+            if (position == Party.Position)
+                return IncomingAttack == null;
+
+            return Map.CityAt(position) is { IsCapital: false } city && city.Owner != Owner.Enemy;
+        }
+
+        private bool IsBlockedForEnemy(Position position) =>
+            position == Party.Position
+            || Map.NeutralAt(position) != null
+            || Map.EnemyAt(position) != null
+            || Map.CityAt(position) is { } city && city.Owner != Owner.Enemy;
+
+        private void Strike(Party enemy, Position target)
+        {
+            if (target == Party.Position)
+            {
+                IncomingAttack = Encounter.With(enemy);
+                _events.Add(new GameEvent(GameEventKind.EnemyAttacks, enemy.Name));
+                return;
+            }
+
+            var city = Map.CityAt(target)!;
+            if (city.Garrison.IsDefeated)
+            {
+                var cost = Map.TerrainAt(target).MoveCost.GetValueOrDefault();
+                if (enemy.CanAfford(cost))
+                    Occupy(enemy, city, cost);
+            }
+            else if (AutoBattle(enemy.Squad, city.Garrison) == BattleOutcome.Victory && enemy.Leader.IsAlive)
+            {
+                Occupy(enemy, city, 0);
+            }
+            else
+            {
+                _events.Add(new GameEvent(GameEventKind.CityHeld, city.Name, enemy.Name));
+            }
+
+            if (!enemy.Leader.IsAlive)
+            {
+                Map.RemoveEnemy(enemy);
+                CheckVictory();
+            }
+        }
+
+        private BattleOutcome AutoBattle(Squad attackers, Squad defenders)
+        {
+            var battle = new Battle(attackers, defenders, Random, Rules);
+            var ai = new SimpleBattleAi(Random);
+            while (!battle.IsOver)
+                ai.Act(battle);
+
+            attackers.RemoveDead();
+            defenders.RemoveDead();
+            return battle.Outcome;
+        }
+
+        private void Occupy(Party enemy, City city, int cost)
+        {
+            enemy.MoveTo(city.Position, cost);
+            city.Capture(Owner.Enemy);
+            _events.Add(new GameEvent(GameEventKind.CityFell, city.Name, enemy.Name));
         }
 
         private bool HasCapitalBuilding(string buildingId) => Capital?.HasBuilt(buildingId) == true;

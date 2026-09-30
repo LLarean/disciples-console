@@ -16,20 +16,12 @@ namespace Disciples.Core.Persistence
 
         public static GameSnapshot Capture(GameSession session)
         {
-            var party = session.Party;
             return new GameSnapshot
             {
                 Map = CaptureMap(session.Map),
                 Turn = session.Turn,
                 Gold = session.Gold,
-                Party = new PartySnapshot
-                {
-                    X = party.Position.X,
-                    Y = party.Position.Y,
-                    MaxMovementPoints = party.MaxMovementPoints,
-                    MovementPoints = party.MovementPoints,
-                    Units = CaptureSquad(party.Squad)
-                },
+                Party = CaptureParty(session.Party),
                 Cities = session.Map.Cities.Select(CaptureCity).ToList(),
                 Neutrals = session.Map.Neutrals.Select(n => new NeutralSnapshot
                 {
@@ -38,7 +30,8 @@ namespace Disciples.Core.Persistence
                     Y = n.Position.Y,
                     Reward = n.Reward,
                     Units = CaptureSquad(n.Squad)
-                }).ToList()
+                }).ToList(),
+                Enemies = session.Map.Enemies.Select(CaptureParty).ToList()
             };
         }
 
@@ -50,15 +43,28 @@ namespace Disciples.Core.Persistence
             var cities = snapshot.Cities.Select(c => RestoreCity(c, content));
             var neutrals = snapshot.Neutrals.Select(n => new NeutralSquad(
                 n.Name, new Position(n.X, n.Y), RestoreSquad(n.Units, new Squad(), content, n.Name), n.Reward));
-            var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals);
-
-            var partyData = snapshot.Party;
-            var leaderData = partyData.Units.Select(u => content.Unit(u.Id)).FirstOrDefault(d => d.IsLeader)
-                             ?? throw new ContentException("The party has no leader.");
-            var squad = RestoreSquad(partyData.Units, new Squad(leaderData.Leadership), content, "Party");
-            var party = new Party(squad, new Position(partyData.X, partyData.Y), partyData.MaxMovementPoints, partyData.MovementPoints);
+            var enemies = snapshot.Enemies.Select(e => RestoreParty(e, content, "Enemy"));
+            var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals, enemies);
+            var party = RestoreParty(snapshot.Party, content, "Party");
 
             return new GameSession(content, map, party, snapshot.Gold, random, snapshot.Turn);
+        }
+
+        private static PartySnapshot CaptureParty(Party party) => new PartySnapshot
+        {
+            X = party.Position.X,
+            Y = party.Position.Y,
+            MaxMovementPoints = party.MaxMovementPoints,
+            MovementPoints = party.MovementPoints,
+            Units = CaptureSquad(party.Squad)
+        };
+
+        private static Party RestoreParty(PartySnapshot data, GameContent content, string owner)
+        {
+            var leader = data.Units.Select(u => content.Unit(u.Id)).FirstOrDefault(d => d.IsLeader)
+                         ?? throw new ContentException($"'{owner}' has no leader.");
+            var squad = RestoreSquad(data.Units, new Squad(leader.Leadership), content, owner);
+            return new Party(squad, new Position(data.X, data.Y), data.MaxMovementPoints, data.MovementPoints);
         }
 
         private static MapSnapshot CaptureMap(WorldMap map)

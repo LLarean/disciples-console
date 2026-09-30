@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Disciples.Core.Cities;
+using Disciples.Core.Squads;
 
 namespace Disciples.Core.Map
 {
@@ -10,16 +11,19 @@ namespace Disciples.Core.Map
         private readonly Terrain[,] _tiles;
         private readonly List<City> _cities;
         private readonly List<NeutralSquad> _neutrals;
+        private readonly List<Party> _enemies;
 
-        public WorldMap(string name, Terrain[,] tiles, IEnumerable<City> cities, IEnumerable<NeutralSquad>? neutrals = null)
+        public WorldMap(string name, Terrain[,] tiles, IEnumerable<City> cities, IEnumerable<NeutralSquad>? neutrals = null, IEnumerable<Party>? enemies = null)
         {
             Name = name;
             _tiles = tiles;
             _cities = cities.ToList();
             _neutrals = neutrals?.ToList() ?? new List<NeutralSquad>();
+            _enemies = enemies?.ToList() ?? new List<Party>();
 
             var outside = _cities.Select(c => (c.Name, c.Position))
                 .Concat(_neutrals.Select(n => (n.Name, n.Position)))
+                .Concat(_enemies.Select(e => (e.Name, e.Position)))
                 .FirstOrDefault(o => !Contains(o.Position));
             if (outside.Name != null)
                 throw new ArgumentException($"'{outside.Name}' is outside the map.");
@@ -30,6 +34,9 @@ namespace Disciples.Core.Map
         public int Height => _tiles.GetLength(1);
         public IReadOnlyList<City> Cities => _cities;
         public IReadOnlyList<NeutralSquad> Neutrals => _neutrals;
+
+        /// <summary>Hostile leaders with their squads, moved by the AI.</summary>
+        public IReadOnlyList<Party> Enemies => _enemies;
 
         public bool Contains(Position position)
         {
@@ -42,6 +49,10 @@ namespace Disciples.Core.Map
 
         public NeutralSquad? NeutralAt(Position position) => _neutrals.FirstOrDefault(n => n.Position == position);
 
+        public Party? EnemyAt(Position position) => _enemies.FirstOrDefault(e => e.Position == position);
+
         internal void RemoveNeutral(NeutralSquad neutral) => _neutrals.Remove(neutral);
+
+        internal void RemoveEnemy(Party enemy) => _enemies.Remove(enemy);
     }
 }

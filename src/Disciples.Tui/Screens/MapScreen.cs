@@ -100,6 +100,9 @@ public sealed class MapScreen : Screen
         _session.EndTurn();
         DrainEvents();
         Log($"Gold {_session.Gold}.");
+
+        if (_session.IncomingAttack is { } attack)
+            Engage(attack);
     }
 
     protected override void UpdateViews() => DrainEvents();

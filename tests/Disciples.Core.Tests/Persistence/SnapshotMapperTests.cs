@@ -86,6 +86,24 @@ public class SnapshotMapperTests
     }
 
     [Fact]
+    public void CaptureThenRestore_KeepsEnemyLeaders()
+    {
+        var snapshot = Scenario();
+        snapshot.Enemies.Add(new PartySnapshot
+        {
+            X = 0, Y = 2, MaxMovementPoints = 8, MovementPoints = 3,
+            Units = [new UnitSnapshot { Id = "knight", Line = SquadLine.Front, Column = 1 }]
+        });
+        snapshot.Neutrals.Clear();
+
+        var restored = Restore(SnapshotMapper.Capture(Restore(snapshot)));
+
+        var enemy = restored.Map.Enemies.Single();
+        Assert.Equal((new Position(0, 2), 3, 8), (enemy.Position, enemy.MovementPoints, enemy.MaxMovementPoints));
+        Assert.Same(Knight, enemy.Leader.Definition);
+    }
+
+    [Fact]
     public void Restore_UnknownUnit_Throws()
     {
         var snapshot = Scenario();

@@ -19,6 +19,9 @@ namespace Disciples.Core.Persistence
         public PartySnapshot Party { get; set; } = new PartySnapshot();
         public List<CitySnapshot> Cities { get; set; } = new List<CitySnapshot>();
         public List<NeutralSnapshot> Neutrals { get; set; } = new List<NeutralSnapshot>();
+
+        /// <summary>Enemy leaders' parties, moved by the AI.</summary>
+        public List<PartySnapshot> Enemies { get; set; } = new List<PartySnapshot>();
     }
 
     public sealed class MapSnapshot

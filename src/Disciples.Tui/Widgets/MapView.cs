@@ -43,6 +43,8 @@ public sealed class MapView : Canvas
 
         if (position == _session.Party.Position)
             this.Text(x, y, "@ ", LeaderColor, city == null ? Palette.TerrainBackground(terrain) : cityColors.Background, TextStyle.Bold);
+        else if (_session.Map.EnemyAt(position) != null)
+            this.Text(x, y, "& ", Palette.Enemy, city == null ? Palette.TerrainBackground(terrain) : cityColors.Background, TextStyle.Bold);
         else if (city != null)
             this.Text(x, y, city.IsCapital ? "◆ " : "■ ", cityColors.Foreground, cityColors.Background, TextStyle.Bold);
         else if (_session.Map.NeutralAt(position) != null)

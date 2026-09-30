@@ -53,8 +53,8 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Victory and defeat (9.3): all neutrals beaten and all cities owned / leader dead
 - [x] Battle: wait action (6.3)
 
-## Next (candidates)
-- [ ] Enemy leader squads with AI turns (2.5)
+## M8 — Opponents and the world
+- [x] Enemy leader squads with AI turns (2.5): pathfinding, city capture, auto-resolved garrison battles, attacks on the party
 - [ ] Leader progression and classes (4.5, 4.6)
 - [ ] Treasure, mines, merchants on the map (1.9, 1.10)
 - [ ] Path preview (1.6)
@@ -74,4 +74,6 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Level growth is a flat % of base HP and power; armor, accuracy, initiative don't grow **(verify)**
 - [ ] `thieves-guild` and `magic-tower` buildings have no effect
 - [ ] Enter on the map opens only owned cities; hostile cities are entered by walking in
+- [ ] Enemy leaders have no economy: no income, hiring or healing; the capital is never their target
+- [ ] Battles between an enemy leader and a garrison are auto-resolved; only one enemy attacks the party per turn
 - [ ] Squad screen has no dismiss; unit details don't show immunities or attack source (3.5, 3.7)
