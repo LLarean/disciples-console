@@ -69,6 +69,8 @@ namespace Disciples.Core.Squads
 
         internal void RestoreMovement() => MovementPoints = MaxMovementPoints;
 
+        internal void Exhaust() => MovementPoints = 0;
+
         private int Count(LeaderPerk perk) => _perks.Count(p => p == perk);
 
         private static Squad SquadFor(Unit leader)

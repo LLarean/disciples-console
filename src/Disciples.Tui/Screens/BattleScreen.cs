@@ -149,7 +149,7 @@ public sealed class BattleScreen : Screen
                 canvas.Text(x, 0, "Defeat. Your party has fallen.", Palette.Bad, style: TextStyle.Bold);
                 break;
             case BattleOutcome.Retreat:
-                canvas.Text(x, 0, "You retreat from the battle.", Palette.Warn);
+                canvas.Text(x, 0, "You retreat from the battle and lose the rest of the move.", Palette.Warn);
                 break;
             default:
                 x = canvas.Text(x, 0, "round ", Palette.Dim);

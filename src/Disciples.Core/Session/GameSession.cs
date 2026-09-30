@@ -197,6 +197,7 @@ namespace Disciples.Core.Session
 
         /// <summary>
         /// Applies battle results: reward, shared experience and capture on victory. Losing the battle or the leader ends the game.
+        /// Retreating costs the party the rest of its movement.
         /// </summary>
         public BattleReport FinishBattle(Battle battle, Encounter encounter)
         {
@@ -228,6 +229,9 @@ namespace Disciples.Core.Session
 
             if (encounter.Enemy != null && !encounter.Enemy.Leader.IsAlive)
                 Map.RemoveEnemy(encounter.Enemy);
+
+            if (outcome == BattleOutcome.Retreat)
+                Party.Exhaust();
 
             if (outcome == BattleOutcome.Defeat || !Party.Leader.IsAlive)
             {

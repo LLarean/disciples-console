@@ -90,7 +90,7 @@ Markers:
 | 6.7 | Healing target selection (single / all allies) | M4 |
 | 6.8 | Victory/defeat, experience distributed to survivors | M5 — even split **(verify)** |
 | 6.9 | Battle vs neutral squads standing on the map | M5 |
-| 6.10 | Retreat mechanics (unit leaves battle, squad flees) | Backlog |
+| 6.10 | Retreat mechanics (unit leaves battle, squad flees) | M9 (simplified: whole squad flees, party loses the rest of its movement; per-unit escape **(verify)**) |
 | 6.11 | Auto-battle | Backlog |
 
 ## 7. Races and content
