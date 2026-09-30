@@ -9,6 +9,12 @@ namespace Disciples.Core.Content
 
         /// <summary>Radius the party and player cities reveal through the fog of war.</summary>
         public int SightRadius { get; set; } = 4;
+
+        /// <summary>Radius of land a capital claims for its owner.</summary>
+        public int CapitalTerritoryRadius { get; set; } = 5;
+
+        /// <summary>Radius of land any other city claims for its owner.</summary>
+        public int CityTerritoryRadius { get; set; } = 3;
         public int InitiativeSpread { get; set; } = 10;
         public int DamageSpreadPercent { get; set; } = 10;
 

@@ -24,6 +24,7 @@ namespace Disciples.Core.Session
             Random = random;
             Turn = turn;
             Fog = fog ?? new FogOfWar(map.Width, map.Height);
+            Territory = new Territory(map, Rules.CapitalTerritoryRadius, Rules.CityTerritoryRadius);
             foreach (var city in map.Cities.Where(c => c.IsPlayerOwned))
                 Fog.Reveal(city.Position, Rules.SightRadius);
             RevealAroundParty();
@@ -33,6 +34,7 @@ namespace Disciples.Core.Session
         public GameRules Rules => Content.Rules;
         public WorldMap Map { get; }
         public FogOfWar Fog { get; }
+        public Territory Territory { get; }
         public Party Party { get; }
         public IRandom Random { get; }
         public int Gold { get; private set; }
@@ -119,6 +121,7 @@ namespace Disciples.Core.Session
 
             Turn++;
             Party.RestoreMovement();
+            ClaimMines();
             Gold += Map.Cities.Where(c => c.IsPlayerOwned).Sum(c => c.Income)
                     + Map.Sites.Where(s => s.Kind == SiteKind.Mine && s.Owner == Owner.Player).Sum(s => s.Gold);
 
@@ -257,6 +260,20 @@ namespace Disciples.Core.Session
             }
 
             return new BattleReport(outcome, gold, experience, progress, captured);
+        }
+
+        /// <summary>Mines on owned land pass to the land's owner.</summary>
+        private void ClaimMines()
+        {
+            foreach (var mine in Map.Sites.Where(s => s.Kind == SiteKind.Mine))
+            {
+                var owner = Territory.OwnerAt(mine.Position);
+                if (owner == Owner.Neutral || owner == mine.Owner)
+                    continue;
+
+                mine.Capture(owner);
+                _events.Add(new GameEvent(owner == Owner.Player ? GameEventKind.MineCaptured : GameEventKind.MineLost, mine.Name, amount: mine.Gold));
+            }
         }
 
         private void Visit(Site site)

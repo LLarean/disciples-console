@@ -38,6 +38,12 @@ public static class Palette
 
     public static Color TerrainBackground(Terrain terrain) => GetTerrain(terrain.Id).Background;
 
+    /// <summary>Shifts a background slightly toward an owner color to mark land.</summary>
+    public static Color Tint(Color background, Color owner, int percent = 25) =>
+        new(Mix(background.R, owner.R, percent), Mix(background.G, owner.G, percent), Mix(background.B, owner.B, percent));
+
+    private static int Mix(int from, int to, int percent) => from + (to - from) * percent / 100;
+
     public static Attribute TerrainAttribute(string terrainId) =>
         new(GetTerrain(terrainId).Foreground, GetTerrain(terrainId).Background);
 

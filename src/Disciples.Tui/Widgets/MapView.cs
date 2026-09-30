@@ -54,7 +54,18 @@ public sealed class MapView : Canvas
     }
 
     private Color BackgroundAt(Position position) =>
-        _session.Fog.IsExplored(position) ? Palette.TerrainBackground(_session.Map.TerrainAt(position)) : Palette.Background;
+        _session.Fog.IsExplored(position) ? LandBackground(position) : Palette.Background;
+
+    private Color LandBackground(Position position)
+    {
+        var background = Palette.TerrainBackground(_session.Map.TerrainAt(position));
+        return _session.Territory.OwnerAt(position) switch
+        {
+            Owner.Player => Palette.Tint(background, Palette.Ally),
+            Owner.Enemy => Palette.Tint(background, Palette.Enemy),
+            _ => background
+        };
+    }
 
     private bool IsPlain(Position position) =>
         !_session.Fog.IsExplored(position) || _session.Map.CityAt(position) == null && _session.Map.NeutralAt(position) == null
@@ -73,19 +84,19 @@ public sealed class MapView : Canvas
         var cityColors = ColorsOf(city);
 
         if (position == _session.Party.Position)
-            this.Text(x, y, "@ ", LeaderColor, city == null ? Palette.TerrainBackground(terrain) : cityColors.Background, TextStyle.Bold);
+            this.Text(x, y, "@ ", LeaderColor, city == null ? LandBackground(position) : cityColors.Background, TextStyle.Bold);
         else if (_session.Map.EnemyAt(position) != null)
-            this.Text(x, y, "& ", Palette.Enemy, city == null ? Palette.TerrainBackground(terrain) : cityColors.Background, TextStyle.Bold);
+            this.Text(x, y, "& ", Palette.Enemy, city == null ? LandBackground(position) : cityColors.Background, TextStyle.Bold);
         else if (city != null)
             this.Text(x, y, city.IsCapital ? "◆ " : "■ ", cityColors.Foreground, cityColors.Background, TextStyle.Bold);
         else if (_session.Map.NeutralAt(position) != null)
-            this.Text(x, y, "† ", Palette.Enemy, Palette.TerrainBackground(terrain), TextStyle.Bold);
+            this.Text(x, y, "† ", Palette.Enemy, LandBackground(position), TextStyle.Bold);
         else if (_session.Map.SiteAt(position) is { } site)
-            this.Text(x, y, SiteGlyph(site.Kind) + " ", SiteColor(site), Palette.TerrainBackground(terrain), TextStyle.Bold);
+            this.Text(x, y, SiteGlyph(site.Kind) + " ", SiteColor(site), LandBackground(position), TextStyle.Bold);
         else
         {
             var attribute = Palette.TerrainAttribute(terrain.Id);
-            this.Text(x, y, Palette.TerrainGlyph(terrain, position) + " ", attribute.Foreground, attribute.Background);
+            this.Text(x, y, Palette.TerrainGlyph(terrain, position) + " ", attribute.Foreground, LandBackground(position));
         }
     }
 

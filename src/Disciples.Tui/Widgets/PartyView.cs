@@ -1,3 +1,4 @@
+using Disciples.Core.Cities;
 using Disciples.Core.Session;
 using Terminal.Gui.Drawing;
 using Attribute = Terminal.Gui.Drawing.Attribute;
@@ -55,7 +56,8 @@ public sealed class PartyView : Canvas
         {
             var position = party.Position;
             x = this.Text(x, y, _session.Map.TerrainAt(position).Name, Palette.Text);
-            this.Text(x + 1, y, position.ToString(), Palette.Dim);
+            x = this.Text(x + 1, y, position.ToString(), Palette.Dim);
+            this.Text(x + 1, y, LandLabel(_session.Territory.OwnerAt(position)), Palette.Dim);
         }
 
         return y + 1;
@@ -112,4 +114,11 @@ public sealed class PartyView : Canvas
         for (var i = 0; i < lines.Count; i++)
             this.Text(0, y + 1 + i, ViewDrawing.Fit(lines[i], Viewport.Width), i == lines.Count - 1 ? Palette.Text : Palette.Dim);
     }
+
+    private static string LandLabel(Owner owner) => owner switch
+    {
+        Owner.Player => "your land",
+        Owner.Enemy => "enemy land",
+        _ => "wild"
+    };
 }
