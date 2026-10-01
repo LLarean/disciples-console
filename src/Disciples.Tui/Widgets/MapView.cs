@@ -115,6 +115,7 @@ public sealed class MapView : Canvas
         SiteKind.Mine => "¤",
         SiteKind.ManaSource => "*",
         SiteKind.Merchant => "§",
+        SiteKind.Trainer => "♦",
         _ => "▲"
     };
 

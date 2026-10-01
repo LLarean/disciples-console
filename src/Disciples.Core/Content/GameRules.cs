@@ -79,6 +79,9 @@ namespace Disciples.Core.Content
         /// <summary>Percent of dealt damage a drainer restores to itself.</summary>
         public int DrainPercent { get; set; } = 50;
 
+        /// <summary>Gold a trainer takes for every point of experience.</summary>
+        public int TrainerGoldPerExperience { get; set; } = 2;
+
         /// <summary>Chance in percent that a thief's action succeeds.</summary>
         public int ThiefSuccessPercent { get; set; } = 70;
 

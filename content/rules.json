@@ -23,6 +23,7 @@
   "poisonPercent": 50,
   "drainPercent": 50,
   "polymorphPowerPercent": 25,
+  "trainerGoldPerExperience": 2,
   "thiefSuccessPercent": 70,
   "thiefFailureDamage": 40,
   "thiefPoisonDamage": 25,

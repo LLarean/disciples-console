@@ -13,10 +13,11 @@ namespace Disciples.Core.Map
         Mine,
         Camp,
         Merchant,
-        ManaSource
+        ManaSource,
+        Trainer
     }
 
-    /// <summary>A passable map object visited by stepping on it: treasure, gold mine, mana source, mercenary camp or merchant.</summary>
+    /// <summary>A passable map object visited by stepping on it: treasure, gold mine, mana source, mercenary camp, merchant or trainer.</summary>
     public sealed class Site
     {
         private readonly List<ItemDefinition> _items;

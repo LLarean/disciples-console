@@ -365,6 +365,12 @@
       ]
     },
     {
+      "name": "Sword Master's Yard",
+      "kind": "trainer",
+      "x": 22,
+      "y": 5
+    },
+    {
       "name": "Travelling Merchant",
       "kind": "merchant",
       "x": 11,

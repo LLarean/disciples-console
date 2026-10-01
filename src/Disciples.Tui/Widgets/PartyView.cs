@@ -101,6 +101,7 @@ public sealed class PartyView : Canvas
             .Append((MapView.RodGlyph, new Attribute(Palette.Ally, Palette.Background), "Rod"))
             .Append(("▲", new Attribute(Palette.Accent, Palette.Background), "Camp"))
             .Append(("§", new Attribute(Palette.Accent, Palette.Background), "Merchant"))
+            .Append(("♦", new Attribute(Palette.Accent, Palette.Background), "Trainer"))
             .Append(("@", new Attribute(MapView.LeaderColor, Palette.Background), "You"))
             .Append(("@", new Attribute(Palette.Ally, Palette.Background), "Other leader"))
             .ToList();

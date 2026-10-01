@@ -77,6 +77,14 @@ namespace Disciples.Core.Session
         NotEnoughGold
     }
 
+    public enum TrainResult
+    {
+        Trained,
+        NotEnoughGold,
+        NothingToLearn,
+        Unavailable
+    }
+
     public enum ThiefResult
     {
         Done,

@@ -264,6 +264,31 @@ namespace Disciples.Core.Session
             return BuyResult.Bought;
         }
 
+        /// <summary>A unit waiting for its upgrade building has nothing to learn until it is built.</summary>
+        public bool CanTrain(Unit unit) =>
+            unit.Definition.UpgradesTo == null || unit.Definition.UpgradeBuilding == null || HasCapitalBuilding(unit.Definition.UpgradeBuilding);
+
+        public int TrainingCost(Unit unit) =>
+            Math.Max(0, unit.Definition.ExperienceToLevel - unit.Experience) * Rules.TrainerGoldPerExperience;
+
+        /// <summary>The trainer sells a unit of the party standing there the experience it lacks to its next level or upgrade.</summary>
+        public TrainResult Train(Site trainer, Unit unit)
+        {
+            if (trainer.Kind != SiteKind.Trainer || Party.Position != trainer.Position || !unit.IsAlive || !Party.Squad.Contains(unit))
+                return TrainResult.Unavailable;
+
+            if (!CanTrain(unit))
+                return TrainResult.NothingToLearn;
+
+            var cost = TrainingCost(unit);
+            if (Gold < cost)
+                return TrainResult.NotEnoughGold;
+
+            Gold -= cost;
+            Report(Progression.Gain(unit, unit.Definition.ExperienceToLevel - unit.Experience, Content.Unit, HasCapitalBuilding));
+            return TrainResult.Trained;
+        }
+
         public bool Dismiss(Squad squad, Unit unit)
         {
             if (unit.IsLeader || unit.IsGuardian || !squad.Contains(unit))

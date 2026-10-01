@@ -102,7 +102,7 @@ public sealed class MapScreen : Screen
             Shell.Push(new PerkScreen(_session));
         else if (key == Key.Enter && _session.CurrentCity is { IsPlayerOwned: true } city)
             EnterCity(city);
-        else if (key == Key.Enter && _session.CurrentSite is { Kind: SiteKind.Camp or SiteKind.Merchant } site)
+        else if (key == Key.Enter && _session.CurrentSite is { Kind: SiteKind.Camp or SiteKind.Merchant or SiteKind.Trainer } site)
             OpenSite(site);
         else if (key == Key.C && _session.Capital is { } capital)
             EnterCity(capital);
@@ -166,7 +166,7 @@ public sealed class MapScreen : Screen
             case MoveResult.CityCaptured:
                 _flow.EndGame(_session);
                 return false;
-            case MoveResult.SiteVisited when _session.CurrentSite is { Kind: SiteKind.Camp or SiteKind.Merchant } visited:
+            case MoveResult.SiteVisited when _session.CurrentSite is { Kind: SiteKind.Camp or SiteKind.Merchant or SiteKind.Trainer } visited:
                 Log($"Visited {visited.Name}.");
                 OpenSite(visited);
                 return false;
@@ -217,8 +217,12 @@ public sealed class MapScreen : Screen
         Log($"{next.Name} takes the lead.");
     }
 
-    private void OpenSite(Site site) =>
-        Shell.Push(site.Kind == SiteKind.Merchant ? new MerchantScreen(_session, site) : new CampScreen(_session, site));
+    private void OpenSite(Site site) => Shell.Push(site.Kind switch
+    {
+        SiteKind.Merchant => new MerchantScreen(_session, site),
+        SiteKind.Trainer => new TrainerScreen(_session, site),
+        _ => new CampScreen(_session, site)
+    });
 
     private void EnterCity(City city)
     {

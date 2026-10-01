@@ -91,7 +91,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 ## M14 — Remaining classes, effects and races
 - [x] Thief leader with thieves guild actions; leader abilities as level-up picks (4.5, 4.6) — the Thief is hired once the guild is built and poisons, assassinates or robs an adjacent hostile squad; six abilities next to Leadership and Pathfinding
 - [x] Polymorph and fear (3.10); instant auto-resolve of a battle (6.11) — a polymorphed unit fights weakened and unarmored, a frightened one leaves the battle; `Q` in a battle (and `GameSession.ResolveBattle`) lets the AI finish it
-- [ ] Trainers (1.10)
+- [x] Trainers (1.10) — a trainer site sells a unit of the visiting party the experience it lacks to the next level or upgrade
 - [ ] Second race with its unit tree and capital buildings (7.3, 7.4)
 
 ## Tech debt
