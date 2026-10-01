@@ -122,7 +122,7 @@ public class PartiesTests
 
     private static GameSession CreateHiringSession(int gold, Position? partyAt = null)
     {
-        var content = new GameContent([Knight, Captain, Squire], [Plains], [], new GameRules { LeaderClasses = { "captain" } });
+        var content = new GameContent([Knight, Captain, Squire], [Plains], [], new GameRules(), races: [new Race("army", "Army", ["captain"])]);
         var tiles = new[,] { { Plains, Plains }, { Plains, Plains } };
         var capital = new City("Capital", CapitalPosition, true, 10);
         var village = new City("Village", new Position(1, 1), false, 10);

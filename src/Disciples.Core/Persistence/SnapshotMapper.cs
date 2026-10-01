@@ -20,6 +20,7 @@ namespace Disciples.Core.Persistence
             return new GameSnapshot
             {
                 Map = CaptureMap(session.Map),
+                Race = session.Race.Id,
                 Turn = session.Turn,
                 Gold = session.Gold,
                 EnemyGold = session.EnemyGold,
@@ -60,7 +61,8 @@ namespace Disciples.Core.Persistence
         {
             SnapshotMigrator.Default.Upgrade(snapshot);
 
-            var cities = snapshot.Cities.Select(c => RestoreCity(c, content));
+            var race = content.Race(snapshot.Race);
+            var cities = snapshot.Cities.Select(c => RestoreCity(c, content, race));
             var neutrals = snapshot.Neutrals.Select(n => new NeutralSquad(
                 n.Name, new Position(n.X, n.Y), RestoreSquad(n.Units, new Squad(), content, n.Name), n.Reward));
             var enemies = snapshot.Enemies.Select(e => RestoreParty(e, content, "Enemy"));
@@ -76,7 +78,7 @@ namespace Disciples.Core.Persistence
             var spellbook = new Spellbook(snapshot.Spells.Select(content.Spell), snapshot.ResearchedThisTurn, snapshot.CastThisTurn.Select(content.Spell));
 
             return new GameSession(
-                content, map, parties, snapshot.Gold, random, snapshot.Turn, fog, snapshot.Active, snapshot.EnemyGold, snapshot.Mana, spellbook);
+                content, map, parties, snapshot.Gold, random, snapshot.Turn, fog, snapshot.Active, snapshot.EnemyGold, snapshot.Mana, spellbook, race);
         }
 
         private static PartySnapshot CaptureParty(Party party) => new PartySnapshot
@@ -101,14 +103,32 @@ namespace Disciples.Core.Persistence
                 data.Items.Select(content.Item), data.Equipped.Select(content.Item));
         }
 
-        /// <summary>Replaces the leader of the starting party of a new game with the chosen leader class.</summary>
-        public static void ChooseLeader(GameSnapshot snapshot, UnitDefinition leader, GameContent content)
+        /// <summary>
+        /// Turns a scenario into a new game of the chosen race and leader class:
+        /// the starting leader and the capital's name, recruits, guardian and mana become the race's.
+        /// </summary>
+        public static void StartAs(GameSnapshot snapshot, Race race, UnitDefinition leader, GameContent content)
         {
             SnapshotMigrator.Default.Upgrade(snapshot);
+
+            if (!race.Leaders.Contains(leader.Id))
+                throw new ContentException($"'{leader.Id}' is not a leader class of '{race.Id}'.");
 
             var current = snapshot.Parties.FirstOrDefault()?.Units.FirstOrDefault(u => content.Unit(u.Id).IsLeader)
                           ?? throw new ContentException("The party has no leader.");
             current.Id = leader.Id;
+            snapshot.Race = race.Id;
+
+            var capital = snapshot.Cities.FirstOrDefault(c => c.Capital && c.Owner == Owner.Player);
+            if (capital == null)
+                return;
+
+            capital.Name = race.CapitalName ?? capital.Name;
+            capital.Recruits = race.Recruits.ToList();
+            capital.Mana = Pack(race.Mana);
+            if (race.Guardian != null)
+                foreach (var guardian in capital.Garrison.Where(u => content.Unit(u.Id).IsGuardian))
+                    guardian.Id = race.Guardian;
         }
 
         private static MapSnapshot CaptureMap(WorldMap map)
@@ -187,14 +207,14 @@ namespace Disciples.Core.Persistence
             Garrison = CaptureSquad(city.Garrison)
         };
 
-        private static City RestoreCity(CitySnapshot data, GameContent content) =>
+        private static City RestoreCity(CitySnapshot data, GameContent content, Race race) =>
             new City(
                 data.Name,
                 new Position(data.X, data.Y),
                 data.Capital,
                 data.Income,
                 data.Recruits.Select(content.Unit),
-                data.Buildings ? content.Buildings : null,
+                data.Buildings ? content.BuildingsOf(race) : null,
                 data.Owner,
                 data.Built.Select(content.BuildingId),
                 data.Tier,

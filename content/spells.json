@@ -1,8 +1,14 @@
 [
-  { "id": "healing", "name": "Healing", "kind": "heal", "amount": 30, "researchCost": { "life": 20 }, "castCost": { "life": 10 } },
-  { "id": "smite", "name": "Smite", "kind": "damage", "amount": 20, "source": "life", "researchCost": { "life": 30 }, "castCost": { "life": 15 } },
-  { "id": "rune-strike", "name": "Rune Strike", "kind": "damage", "amount": 30, "source": "earth", "researchCost": { "life": 30, "runic": 30 }, "castCost": { "runic": 20 } },
-  { "id": "fire-storm", "name": "Fire Storm", "kind": "damage", "amount": 40, "source": "fire", "researchCost": { "life": 40, "infernal": 30 }, "castCost": { "life": 10, "infernal": 20 } },
-  { "id": "plague", "name": "Plague", "kind": "damage", "amount": 35, "source": "death", "researchCost": { "life": 40, "death": 40 }, "castCost": { "death": 25 } },
-  { "id": "greater-healing", "name": "Greater Healing", "kind": "heal", "amount": 80, "researchCost": { "life": 60, "runic": 20 }, "castCost": { "life": 30 } }
+  { "id": "healing", "race": "empire", "name": "Healing", "kind": "heal", "amount": 30, "researchCost": { "life": 20 }, "castCost": { "life": 10 } },
+  { "id": "smite", "race": "empire", "name": "Smite", "kind": "damage", "amount": 20, "source": "life", "researchCost": { "life": 30 }, "castCost": { "life": 15 } },
+  { "id": "rune-strike", "race": "empire", "name": "Rune Strike", "kind": "damage", "amount": 30, "source": "earth", "researchCost": { "life": 30, "runic": 30 }, "castCost": { "runic": 20 } },
+  { "id": "fire-storm", "race": "empire", "name": "Fire Storm", "kind": "damage", "amount": 40, "source": "fire", "researchCost": { "life": 40, "infernal": 30 }, "castCost": { "life": 10, "infernal": 20 } },
+  { "id": "plague", "race": "empire", "name": "Plague", "kind": "damage", "amount": 35, "source": "death", "researchCost": { "life": 40, "death": 40 }, "castCost": { "death": 25 } },
+  { "id": "greater-healing", "race": "empire", "name": "Greater Healing", "kind": "heal", "amount": 80, "researchCost": { "life": 60, "runic": 20 }, "castCost": { "life": 30 } },
+  { "id": "blood-pact", "race": "legions", "name": "Blood Pact", "kind": "heal", "amount": 30, "researchCost": { "infernal": 20 }, "castCost": { "infernal": 10 } },
+  { "id": "hellfire", "race": "legions", "name": "Hellfire", "kind": "damage", "amount": 20, "source": "fire", "researchCost": { "infernal": 30 }, "castCost": { "infernal": 15 } },
+  { "id": "meteor", "race": "legions", "name": "Meteor", "kind": "damage", "amount": 30, "source": "earth", "researchCost": { "infernal": 30, "runic": 30 }, "castCost": { "runic": 20 } },
+  { "id": "holy-bane", "race": "legions", "name": "Holy Bane", "kind": "damage", "amount": 40, "source": "life", "researchCost": { "infernal": 40, "life": 30 }, "castCost": { "infernal": 10, "life": 20 } },
+  { "id": "curse-of-ash", "race": "legions", "name": "Curse of Ash", "kind": "damage", "amount": 35, "source": "death", "researchCost": { "infernal": 40, "death": 40 }, "castCost": { "death": 25 } },
+  { "id": "dark-renewal", "race": "legions", "name": "Dark Renewal", "kind": "heal", "amount": 80, "researchCost": { "infernal": 60, "runic": 20 }, "castCost": { "infernal": 30 } }
 ]

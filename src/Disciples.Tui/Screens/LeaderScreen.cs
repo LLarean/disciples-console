@@ -10,7 +10,7 @@ public sealed class LeaderScreen(GameSession session, City capital) : MenuScreen
     protected override IReadOnlyList<string> Heading => ["Hire a leader", $"{session.Gold} gold; the new party starts in {capital.Name}"];
 
     protected override IReadOnlyList<MenuItem> Items =>
-        session.Content.LeaderClasses
+        session.LeaderClasses
             .Select(c => new MenuItem($"{c.Name} {c.Cost}g", () => Hire(c), IsOffered(c), IsOffered(c) ? ClassScreen.Describe(c) : $"needs {GuildName}"))
             .ToList();
 

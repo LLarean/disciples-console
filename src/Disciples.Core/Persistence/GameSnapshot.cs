@@ -14,6 +14,10 @@ namespace Disciples.Core.Persistence
     {
         public int Version { get; set; } = SnapshotMigrator.Default.CurrentVersion;
         public MapSnapshot Map { get; set; } = new MapSnapshot();
+
+        /// <summary>Id of the player's race; scenarios and older saves name none and get the first race.</summary>
+        public string? Race { get; set; }
+
         public int Turn { get; set; } = 1;
         public int Gold { get; set; }
 

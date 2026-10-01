@@ -10,7 +10,7 @@ public sealed class SpellsScreen(GameFlow flow, GameSession session) : MenuScree
     protected override IReadOnlyList<string> Heading => ["Spells", $"Mana: {ManaText.Describe(session.Mana)}", ResearchNote];
 
     protected override IReadOnlyList<MenuItem> Items =>
-        session.Content.Spells.Select(ToItem).Append(new MenuItem("Back", Back)).ToList();
+        session.Spells.Select(ToItem).Append(new MenuItem("Back", Back)).ToList();
 
     protected override void Back() => Shell.Pop();
 

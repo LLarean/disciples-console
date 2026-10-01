@@ -2,7 +2,7 @@ namespace Disciples.Core.Cities
 {
     public sealed class Building
     {
-        public Building(string id, string name, string branch, int cost, string description, string? requires, int healBonusPercent = 0, bool allowsResearch = false, bool allowsThieves = false)
+        public Building(string id, string name, string branch, int cost, string description, string? requires, int healBonusPercent = 0, bool allowsResearch = false, bool allowsThieves = false, string? race = null)
         {
             Id = id;
             Name = name;
@@ -13,6 +13,7 @@ namespace Disciples.Core.Cities
             HealBonusPercent = healBonusPercent;
             AllowsResearch = allowsResearch;
             AllowsThieves = allowsThieves;
+            Race = race;
         }
 
         public string Id { get; }
@@ -32,5 +33,8 @@ namespace Disciples.Core.Cities
 
         /// <summary>Thief leaders can be hired once it is built in the capital.</summary>
         public bool AllowsThieves { get; }
+
+        /// <summary>Id of the race that builds it; null for a building of every race.</summary>
+        public string? Race { get; }
     }
 }

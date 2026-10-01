@@ -21,12 +21,16 @@ public sealed class GameFlow(Shell shell, ContentLoader loader, SaveStore saves)
 
     public void ShowMainMenu() => shell.Reset(new MainMenuScreen(this));
 
-    public IEnumerable<UnitDefinition> LeaderClasses => Content.LeaderClasses;
+    public IReadOnlyList<Race> Races => Content.Races;
 
-    public void StartNewGame(UnitDefinition leader)
+    public IEnumerable<UnitDefinition> LeadersOf(Race race) => Content.LeadersOf(race);
+
+    public IEnumerable<UnitDefinition> RecruitsOf(Race race) => Content.RecruitsOf(race);
+
+    public void StartNewGame(Race race, UnitDefinition leader)
     {
         var snapshot = loader.LoadScenario(Scenario);
-        SnapshotMapper.ChooseLeader(snapshot, leader, Content);
+        SnapshotMapper.StartAs(snapshot, race, leader, Content);
         Play(snapshot);
     }
 

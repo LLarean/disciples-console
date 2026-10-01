@@ -57,7 +57,8 @@ namespace Disciples.Core.Session
         AlreadyKnown,
         NoTower,
         AlreadyResearched,
-        NotEnoughMana
+        NotEnoughMana,
+        Unavailable
     }
 
     public enum CastResult

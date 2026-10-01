@@ -1,0 +1,20 @@
+[
+  {
+    "id": "empire",
+    "name": "The Empire",
+    "capitalName": "Imperial Capital",
+    "leaders": ["paladin", "ranger", "archmage", "archangel", "thief"],
+    "recruits": ["squire", "archer", "apprentice", "acolyte"],
+    "guardian": "myzrael",
+    "mana": { "life": 10 }
+  },
+  {
+    "id": "legions",
+    "name": "Legions of the Damned",
+    "capitalName": "Infernal Citadel",
+    "leaders": ["duke", "counselor", "arch-devil", "baroness", "thief"],
+    "recruits": ["possessed", "gargoyle", "cultist", "devil"],
+    "guardian": "ashgan",
+    "mana": { "infernal": 10 }
+  }
+]

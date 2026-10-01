@@ -15,7 +15,7 @@ namespace Disciples.Core.Magic
     {
         public SpellDefinition(
             string id, string name, SpellKind kind, int amount, Mana? researchCost = null, Mana? castCost = null,
-            AttackSource source = AttackSource.Weapon)
+            AttackSource source = AttackSource.Weapon, string? race = null)
         {
             Id = id;
             Name = name;
@@ -24,6 +24,7 @@ namespace Disciples.Core.Magic
             ResearchCost = researchCost ?? Mana.None;
             CastCost = castCost ?? Mana.None;
             Source = source;
+            Race = race;
         }
 
         public string Id { get; }
@@ -38,5 +39,8 @@ namespace Disciples.Core.Magic
 
         /// <summary>Units immune or warded against the source take no damage.</summary>
         public AttackSource Source { get; }
+
+        /// <summary>Id of the race that researches it; null for a spell of every race.</summary>
+        public string? Race { get; }
     }
 }

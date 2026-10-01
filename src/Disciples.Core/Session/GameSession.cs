@@ -26,13 +26,14 @@ namespace Disciples.Core.Session
 
         public GameSession(
             GameContent content, WorldMap map, IEnumerable<Party> parties, int gold, IRandom random, int turn = 1, FogOfWar? fog = null, int active = 0,
-            int enemyGold = 0, Mana? mana = null, Spellbook? spellbook = null)
+            int enemyGold = 0, Mana? mana = null, Spellbook? spellbook = null, Race? race = null)
         {
             _parties = parties.ToList();
             if (active < 0 || active >= _parties.Count)
                 throw new ArgumentException("The active party is not among the player's parties.", nameof(active));
 
             Content = content;
+            Race = race ?? content.DefaultRace;
             Map = map;
             Party = _parties[active];
             Gold = gold;
@@ -51,6 +52,11 @@ namespace Disciples.Core.Session
 
         public GameContent Content { get; }
         public GameRules Rules => Content.Rules;
+
+        /// <summary>The player's race: it sets the leader classes, the capital buildings and the spells.</summary>
+        public Race Race { get; }
+
+        public IEnumerable<UnitDefinition> LeaderClasses => Content.LeadersOf(Race);
         public WorldMap Map { get; }
         public FogOfWar Fog { get; }
         public Territory Territory { get; }
@@ -213,12 +219,12 @@ namespace Disciples.Core.Session
         }
 
         /// <summary>
-        /// Hires a leader of one of the leader classes in the capital; a thief needs the thieves guild built there.
+        /// Hires a leader of one of the race's leader classes in the capital; a thief needs the thieves guild built there.
         /// The new party appears in the capital and becomes active, so the capital must have no visiting party.
         /// </summary>
         public HireResult HireLeader(City city, UnitDefinition leader)
         {
-            if (!city.IsCapital || !city.IsPlayerOwned || !Rules.LeaderClasses.Contains(leader.Id) || leader.IsThief && !CanHireThieves)
+            if (!city.IsCapital || !city.IsPlayerOwned || !Race.Leaders.Contains(leader.Id) || leader.IsThief && !CanHireThieves)
                 return HireResult.Unavailable;
 
             if (PartyAt(city.Position) != null)

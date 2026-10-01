@@ -16,16 +16,20 @@ namespace Disciples.Core.Content
         private readonly List<Building> _buildings;
         private readonly Dictionary<string, ItemDefinition> _items;
         private readonly Dictionary<string, SpellDefinition> _spells;
+        private readonly List<Race> _races;
         private readonly ContentAliases _aliases;
 
         public GameContent(IEnumerable<UnitDefinition> units, IEnumerable<Terrain> terrains, IEnumerable<Building> buildings, GameRules rules, ContentAliases? aliases = null,
-            IEnumerable<ItemDefinition>? items = null, IEnumerable<SpellDefinition>? spells = null)
+            IEnumerable<ItemDefinition>? items = null, IEnumerable<SpellDefinition>? spells = null, IEnumerable<Race>? races = null)
         {
             _units = units.ToDictionary(u => u.Id);
             _terrains = terrains.ToDictionary(t => t.Id);
             _buildings = buildings.ToList();
             _items = (items ?? Enumerable.Empty<ItemDefinition>()).ToDictionary(i => i.Id);
             _spells = (spells ?? Enumerable.Empty<SpellDefinition>()).ToDictionary(s => s.Id);
+            _races = (races ?? Enumerable.Empty<Race>()).ToList();
+            if (_races.Count == 0)
+                _races.Add(new Race("default", "Default"));
             _aliases = aliases ?? new ContentAliases();
             Rules = rules;
 
@@ -47,18 +51,42 @@ namespace Disciples.Core.Content
             if (immobile != null)
                 throw new ContentException($"Leader '{immobile.Id}' has no movement.");
 
-            var badClass = rules.LeaderClasses.Concat(rules.EnemyLeaderClasses)
+            var badClass = _races.SelectMany(r => r.Leaders).Concat(rules.EnemyLeaderClasses)
                 .FirstOrDefault(id => !_units.TryGetValue(id, out var unit) || !unit.IsLeader);
             if (badClass != null)
                 throw new ContentException($"Leader class '{badClass}' is not a leader unit.");
+
+            var strayUnit = _races.SelectMany(r => r.Guardian == null ? r.Recruits : r.Recruits.Append(r.Guardian))
+                .FirstOrDefault(id => !_units.ContainsKey(id));
+            if (strayUnit != null)
+                throw new ContentException($"A race refers to unknown unit '{strayUnit}'.");
+
+            var strayRace = _buildings.Select(b => b.Race).Concat(_spells.Values.Select(s => s.Race))
+                .FirstOrDefault(id => id != null && _races.All(r => r.Id != id));
+            if (strayRace != null)
+                throw new ContentException($"Unknown race '{strayRace}'.");
         }
 
         public GameRules Rules { get; }
         public IReadOnlyList<Building> Buildings => _buildings;
         public IEnumerable<ItemDefinition> Items => _items.Values;
         public IEnumerable<SpellDefinition> Spells => _spells.Values;
-        public IEnumerable<UnitDefinition> LeaderClasses => Rules.LeaderClasses.Select(Unit);
+        public IReadOnlyList<Race> Races => _races;
+
+        /// <summary>The race of a game that names none: saves made before races, content without races.</summary>
+        public Race DefaultRace => _races[0];
         public IEnumerable<UnitDefinition> EnemyLeaderClasses => Rules.EnemyLeaderClasses.Select(Unit);
+
+        public Race Race(string? id) =>
+            id == null ? DefaultRace : _races.FirstOrDefault(r => r.Id == id) ?? throw new ContentException($"Unknown race '{id}'.");
+
+        public IEnumerable<UnitDefinition> LeadersOf(Race race) => race.Leaders.Select(Unit);
+
+        public IEnumerable<UnitDefinition> RecruitsOf(Race race) => race.Recruits.Select(Unit);
+
+        public IEnumerable<Building> BuildingsOf(Race race) => _buildings.Where(b => race.Has(b.Race));
+
+        public IEnumerable<SpellDefinition> SpellsOf(Race race) => _spells.Values.Where(s => race.Has(s.Race));
 
         public UnitDefinition Unit(string id) =>
             _units.TryGetValue(Current(id, _aliases.Units), out var unit) ? unit : throw new ContentException($"Unknown unit '{id}'.");

@@ -28,7 +28,6 @@
   "thiefFailureDamage": 40,
   "thiefPoisonDamage": 25,
   "thiefStealGold": 100,
-  "leaderClasses": ["paladin", "ranger", "archmage", "archangel", "thief"],
   "enemyLeaderClasses": ["orc-warlord"],
   "enemyLeaderLimit": 3
 }

@@ -99,8 +99,8 @@ Markers:
 |---|----------|-----------|
 | 7.1 | Empire: tier-1 units (Squire, Archer, Apprentice, Acolyte) and one leader | M2 |
 | 7.2 | Neutral units for enemy squads (incl. at least one large unit) | M2 |
-| 7.3 | Legions of the Damned, Mountain Clans, Undead Hordes | M14 (one more race), rest Backlog |
-| 7.4 | Full unit trees per race | M6 (Empire), Backlog |
+| 7.3 | Legions of the Damned, Mountain Clans, Undead Hordes | M14 — Legions of the Damned; a race (`races.json`) sets the leader classes, the capital's name, recruits, guardian and mana, and owns its buildings and spells (those without a race are common: Thieves Guild, Magic Tower); other cities keep the local recruits of the scenario and the enemy is not a race yet **(verify)**. Rest Backlog |
+| 7.4 | Full unit trees per race | M6 (Empire), M14 (Legions: Possessed, Gargoyle, Cultist, Devil branches — placeholder tree and stats, no support branch), Backlog |
 
 ## 8. Magic
 

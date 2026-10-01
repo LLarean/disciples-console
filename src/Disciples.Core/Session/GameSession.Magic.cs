@@ -29,9 +29,15 @@ namespace Disciples.Core.Session
         /// <summary>Spells are researched once the capital has a building that allows it.</summary>
         public bool CanResearch => Content.Buildings.Any(b => b.AllowsResearch && HasCapitalBuilding(b.Id));
 
-        /// <summary>Learns a spell for its research cost; one spell per turn.</summary>
+        /// <summary>Spells the player's race can research.</summary>
+        public IEnumerable<SpellDefinition> Spells => Content.SpellsOf(Race);
+
+        /// <summary>Learns a spell of the player's race for its research cost; one spell per turn.</summary>
         public ResearchResult Research(SpellDefinition spell)
         {
+            if (!Race.Has(spell.Race))
+                return ResearchResult.Unavailable;
+
             if (Spellbook.Knows(spell))
                 return ResearchResult.AlreadyKnown;
 

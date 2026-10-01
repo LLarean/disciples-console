@@ -4,6 +4,10 @@
   { "id": "archmage", "name": "Archmage", "hp": 90, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 300, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100, "source": "air" },
   { "id": "archangel", "name": "Archangel", "hp": 100, "armor": 0, "initiative": 50, "power": 30, "accuracy": 80, "attack": "melee", "size": "small", "cost": 300, "leadership": 3, "movement": 24, "experienceToLevel": 200, "experienceValue": 100, "source": "life", "rods": true },
   { "id": "thief", "name": "Thief", "hp": 90, "armor": 0, "initiative": 60, "power": 30, "accuracy": 85, "attack": "melee", "size": "small", "cost": 200, "leadership": 1, "movement": 30, "experienceToLevel": 200, "experienceValue": 80, "thief": true },
+  { "id": "duke", "name": "Duke", "hp": 200, "armor": 10, "initiative": 50, "power": 55, "accuracy": 80, "attack": "melee", "size": "small", "cost": 300, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100 },
+  { "id": "counselor", "name": "Counselor", "hp": 110, "armor": 5, "initiative": 60, "power": 40, "accuracy": 80, "attack": "ranged", "size": "small", "cost": 300, "leadership": 3, "movement": 28, "experienceToLevel": 200, "experienceValue": 100 },
+  { "id": "arch-devil", "name": "Arch-Devil", "hp": 100, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 300, "leadership": 3, "movement": 20, "experienceToLevel": 200, "experienceValue": 100, "source": "fire" },
+  { "id": "baroness", "name": "Baroness", "hp": 100, "armor": 0, "initiative": 50, "power": 30, "accuracy": 80, "attack": "melee", "size": "small", "cost": 300, "leadership": 3, "movement": 24, "experienceToLevel": 200, "experienceValue": 100, "source": "fire", "rods": true },
 
   { "id": "squire", "name": "Squire", "hp": 100, "armor": 0, "initiative": 50, "power": 25, "accuracy": 80, "attack": "melee", "size": "small", "cost": 50, "experienceToLevel": 60, "experienceValue": 30, "upgradesTo": "knight", "upgradeBuilding": "barracks" },
   { "id": "knight", "name": "Knight", "hp": 150, "armor": 10, "initiative": 50, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "imperial-knight", "upgradeBuilding": "knight-order" },
@@ -20,6 +24,20 @@
   { "id": "priest", "name": "Priest", "hp": 75, "armor": 0, "initiative": 10, "power": 35, "accuracy": 100, "attack": "heal", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "imperial-priestess", "upgradeBuilding": "cathedral" },
   { "id": "imperial-priestess", "name": "Imperial Priestess", "hp": 100, "armor": 0, "initiative": 10, "power": 50, "accuracy": 100, "attack": "heal", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100, "wards": ["death"] },
 
+  { "id": "possessed", "name": "Possessed", "hp": 120, "armor": 0, "initiative": 50, "power": 25, "accuracy": 80, "attack": "melee", "size": "small", "cost": 50, "experienceToLevel": 60, "experienceValue": 30, "upgradesTo": "berserker", "upgradeBuilding": "pit-of-rage" },
+  { "id": "berserker", "name": "Berserker", "hp": 170, "armor": 0, "initiative": 55, "power": 45, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "anti-paladin", "upgradeBuilding": "hall-of-the-fallen" },
+  { "id": "anti-paladin", "name": "Anti-Paladin", "hp": 240, "armor": 15, "initiative": 55, "power": 65, "accuracy": 85, "attack": "melee", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100 },
+
+  { "id": "gargoyle", "name": "Gargoyle", "hp": 150, "armor": 30, "initiative": 60, "power": 35, "accuracy": 80, "attack": "ranged", "size": "large", "cost": 100, "experienceToLevel": 90, "experienceValue": 50, "upgradesTo": "marble-gargoyle", "upgradeBuilding": "stone-garden", "source": "earth" },
+  { "id": "marble-gargoyle", "name": "Marble Gargoyle", "hp": 210, "armor": 40, "initiative": 60, "power": 55, "accuracy": 80, "attack": "ranged", "size": "large", "cost": 0, "experienceToLevel": 200, "experienceValue": 90, "source": "earth" },
+
+  { "id": "cultist", "name": "Cultist", "hp": 45, "armor": 0, "initiative": 40, "power": 15, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 60, "experienceToLevel": 60, "experienceValue": 30, "upgradesTo": "sorcerer", "upgradeBuilding": "pentagram", "source": "fire" },
+  { "id": "sorcerer", "name": "Sorcerer", "hp": 60, "armor": 0, "initiative": 40, "power": 25, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "experienceToLevel": 120, "experienceValue": 60, "upgradesTo": "demonologist", "upgradeBuilding": "tower-of-sorcery", "source": "fire" },
+  { "id": "demonologist", "name": "Demonologist", "hp": 85, "armor": 0, "initiative": 40, "power": 40, "accuracy": 80, "attack": "allEnemies", "size": "small", "cost": 0, "experienceToLevel": 250, "experienceValue": 100, "source": "fire", "wards": ["fire"] },
+
+  { "id": "devil", "name": "Devil", "hp": 170, "armor": 0, "initiative": 35, "power": 50, "accuracy": 80, "attack": "melee", "size": "large", "cost": 120, "experienceToLevel": 90, "experienceValue": 60, "upgradesTo": "fiend", "upgradeBuilding": "infernal-gate" },
+  { "id": "fiend", "name": "Fiend", "hp": 270, "armor": 0, "initiative": 35, "power": 80, "accuracy": 80, "attack": "melee", "size": "large", "cost": 0, "experienceToLevel": 220, "experienceValue": 110, "wards": ["fire"] },
+
   { "id": "goblin", "name": "Goblin", "hp": 50, "armor": 0, "initiative": 30, "power": 15, "accuracy": 75, "attack": "melee", "size": "small", "cost": 30, "experienceValue": 20 },
   { "id": "goblin-archer", "name": "Goblin Archer", "hp": 40, "armor": 0, "initiative": 40, "power": 15, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 30, "experienceValue": 20, "effect": "poison" },
   { "id": "orc", "name": "Orc", "hp": 200, "armor": 0, "initiative": 30, "power": 40, "accuracy": 80, "attack": "melee", "size": "small", "cost": 100, "experienceValue": 60 },
@@ -31,6 +49,7 @@
   { "id": "gorgon", "name": "Gorgon", "hp": 90, "armor": 0, "initiative": 45, "power": 20, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 0, "experienceValue": 60, "source": "earth", "effect": "petrification" },
   { "id": "banshee", "name": "Banshee", "hp": 70, "armor": 0, "initiative": 55, "power": 10, "accuracy": 70, "attack": "ranged", "size": "small", "cost": 0, "experienceValue": 60, "source": "mind", "effect": "fear", "immunities": ["mind"] },
   { "id": "witch", "name": "Witch", "hp": 70, "armor": 0, "initiative": 45, "power": 15, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 0, "experienceValue": 60, "source": "mind", "effect": "polymorph" },
+  { "id": "ashgan", "name": "Ashgan", "hp": 600, "armor": 40, "initiative": 70, "power": 90, "accuracy": 95, "attack": "allEnemies", "size": "small", "cost": 0, "experienceValue": 400, "source": "fire", "guardian": true },
   { "id": "myzrael", "name": "Myzrael", "hp": 600, "armor": 40, "initiative": 70, "power": 90, "accuracy": 95, "attack": "allEnemies", "size": "small", "cost": 0, "experienceValue": 400, "source": "life", "guardian": true },
   { "id": "orc-king", "name": "Orc King", "hp": 500, "armor": 20, "initiative": 45, "power": 80, "accuracy": 85, "attack": "melee", "size": "small", "cost": 0, "experienceValue": 300, "guardian": true }
 ]

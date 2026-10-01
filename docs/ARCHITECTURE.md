@@ -44,7 +44,8 @@ Planned patterns:
 Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Items`, `Squads`, `Cities`, `Battles`, `Session`, `Persistence`.
 
 ### Content and state (ADR 0004)
-- `GameContent` — immutable catalog: unit, terrain, building and item definitions plus `GameRules`. Validated on construction.
+- `GameContent` — immutable catalog: unit, terrain, building, item, spell and race definitions plus `GameRules`. Validated on construction.
+- `Race` — a playable race: leader classes, capital recruits, guardian, mana and capital name; buildings and spells name their race or are common. The session's `Race` comes from the snapshot (`race`, the first race when absent); `SnapshotMapper.StartAs` turns a scenario into a new game of a race.
 - `ItemDefinition` — item type object (potion, artifact, banner). Items have no instances: a party's bag and worn items are lists of definitions, saved as ids.
 - `StatBonus` — additions to battle stats. `Unit` stats stay item-free; `Party.BonusFor(unit)` sums the worn items and `Battle` takes the lookup as a delegate, so future battle-wide effects (spells) plug in the same way.
 - `GameSession` — mutable game state (map, parties, cities, gold, turn, status) and commands. `Parties` holds every player party; `Party` is the active one (`Select`), which movement, battles, perks and camps act on. City hiring goes to the party standing in the city (`PartyAt`).
@@ -67,7 +68,7 @@ Terminal.Gui v2, see ADR 0003.
 - `Shell` (root window) holds a stack of `Screen` views; only the top screen is attached and gets keys via `HandleKey`.
 - Flow: key → `Shell.OnKeyDown` → `Screen.HandleKey` → Core command → `Screen.Refresh` pushes state into child views and marks them dirty; Terminal.Gui redraws only changed cells.
 - `GameFlow` owns content, `SaveStore` and top-level transitions: main menu → map → game end.
-- Screens: `MainMenuScreen`, `ClassScreen`, `PauseScreen`, `SlotsScreen`, `PerkScreen`, `SpellsScreen`, `SpellTargetScreen`, `ThiefScreen`, `CampScreen`, `TrainerScreen`, `MerchantScreen`, `LeaderScreen`, `ItemsScreen`, `PotionScreen`, `ConfirmScreen` (on `MenuScreen` base), `MapScreen`, `SquadScreen`, `CityScreen`, `BuildingsScreen`, `BattleScreen`, `GameEndScreen`.
+- Screens: `MainMenuScreen`, `RaceScreen`, `ClassScreen`, `PauseScreen`, `SlotsScreen`, `PerkScreen`, `SpellsScreen`, `SpellTargetScreen`, `ThiefScreen`, `CampScreen`, `TrainerScreen`, `MerchantScreen`, `LeaderScreen`, `ItemsScreen`, `PotionScreen`, `ConfirmScreen` (on `MenuScreen` base), `MapScreen`, `SquadScreen`, `CityScreen`, `BuildingsScreen`, `BattleScreen`, `GameEndScreen`.
 - Widgets (`Widgets/`): `Canvas` (custom-drawn panel), `SquadView`, `MapView`, `PartyView`, `HintBar`; colors and terrain glyphs in `Palette`.
 - Only the console layer maps domain data to glyphs and colors.
 

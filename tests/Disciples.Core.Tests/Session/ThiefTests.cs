@@ -22,7 +22,8 @@ public class ThiefTests
 
     private static readonly GameContent Content = new(
         [Knight, Thief, Warlord, Squire, Archer, Guardian], [Plains], [Guild],
-        new GameRules { LeaderClasses = { "thief", "knight" }, ThiefSuccessPercent = 70, ThiefFailureDamage = 40, ThiefPoisonDamage = 25, ThiefStealGold = 100 });
+        new GameRules { ThiefSuccessPercent = 70, ThiefFailureDamage = 40, ThiefPoisonDamage = 25, ThiefStealGold = 100 },
+        races: [new Race("army", "Army", ["thief", "knight"])]);
 
     /// <summary>A plains strip 6×1: the capital on the west end, the thief at x=2 between an enemy party (west) and a neutral band (east).</summary>
     private static GameSession CreateSession(

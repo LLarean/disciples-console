@@ -6,7 +6,7 @@ public sealed class MainMenuScreen(GameFlow flow) : MenuScreen
 
     protected override IReadOnlyList<MenuItem> Items =>
     [
-        new("New game", () => Shell.Push(new ClassScreen(flow))),
+        new("New game", () => Shell.Push(new RaceScreen(flow))),
         new("Load game", () => Shell.Push(new SlotsScreen(flow, null)), flow.Saves.HasAny()),
         new("Quit", flow.Quit)
     ];

@@ -94,9 +94,6 @@ namespace Disciples.Core.Content
         /// <summary>Most gold a thief takes from the enemy treasury at once.</summary>
         public int ThiefStealGold { get; set; } = 100;
 
-        /// <summary>Leader unit ids offered when starting a new game and for hire in the capital.</summary>
-        public List<string> LeaderClasses { get; set; } = new List<string>();
-
         /// <summary>Leader unit ids the enemy hires in its capital; none means it never hires leaders.</summary>
         public List<string> EnemyLeaderClasses { get; set; } = new List<string>();
 

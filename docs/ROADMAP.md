@@ -92,7 +92,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Thief leader with thieves guild actions; leader abilities as level-up picks (4.5, 4.6) — the Thief is hired once the guild is built and poisons, assassinates or robs an adjacent hostile squad; six abilities next to Leadership and Pathfinding
 - [x] Polymorph and fear (3.10); instant auto-resolve of a battle (6.11) — a polymorphed unit fights weakened and unarmored, a frightened one leaves the battle; `Q` in a battle (and `GameSession.ResolveBattle`) lets the AI finish it
 - [x] Trainers (1.10) — a trainer site sells a unit of the visiting party the experience it lacks to the next level or upgrade
-- [ ] Second race with its unit tree and capital buildings (7.3, 7.4)
+- [x] Second race with its unit tree and capital buildings (7.3, 7.4) — `content/races.json`; a new game starts with a race choice, the Legions of the Damned get their leaders, four unit branches, capital buildings, guardian, infernal mana and spells
 
 ## Tech debt
 - [x] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)
