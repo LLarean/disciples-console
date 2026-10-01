@@ -60,6 +60,8 @@ namespace Disciples.Core.Map
 
         internal void RemoveNeutral(NeutralSquad neutral) => _neutrals.Remove(neutral);
 
+        internal void AddEnemy(Party enemy) => _enemies.Add(enemy);
+
         internal void RemoveEnemy(Party enemy) => _enemies.Remove(enemy);
 
         internal void RemoveSite(Site site) => _sites.Remove(site);

@@ -10,6 +10,7 @@ namespace Disciples.Core.Session
         CityHeld,
         TreasureFound,
         ItemFound,
+        TreasureLost,
         MineCaptured,
         MineLost,
         UnitLeveledUp,

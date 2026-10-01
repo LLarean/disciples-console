@@ -30,7 +30,7 @@ Markers:
 | 2.2 | Gold as the only resource | M2 |
 | 2.3 | Income per turn from capital and owned cities | M3 |
 | 2.4 | Four mana types (life, death, infernal, runic) | M13 |
-| 2.5 | Multiple players / AI turns | M8 — simplified: enemy leaders walk to the nearest non-capital city or the party; no enemy economy |
+| 2.5 | Multiple players / AI turns | M8 — simplified: enemy leaders walk to the nearest non-capital city or the party; M12 — enemy treasury: income from its cities and mines, healing in its cities, recruits for a leader standing in a city, new leaders in its capital up to a limit; leaders take treasure (wearing found equipment) and mines outside the player's land |
 
 ## 3. Units
 

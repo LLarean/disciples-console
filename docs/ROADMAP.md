@@ -80,7 +80,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 ## M12 — Cities and opponents
 - [x] City tiers 1–5: garrison size, healing rate, upgrade for gold (5.7) — `U` in the city; numbers in `rules.json`, capital fixed at the top tier
 - [x] Capital guardian (5.9) — a `guardian` unit in the garrison; Grimhold became the enemy capital with one
-- [ ] Enemy economy: income, hiring, healing; enemy leaders take treasure and mines (2.5)
+- [x] Enemy economy: income, hiring, healing; enemy leaders take treasure and mines (2.5) — `enemyGold` in the scenario, `enemyLeaderClasses` / `enemyLeaderLimit` in `rules.json`
 - [ ] Front-end events: enemy movement step by step, events carry objects and positions instead of names
 
 ## M13 — Magic
@@ -102,7 +102,8 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Main menu / Quit from the pause menu drop unsaved progress without asking — always asks, saved or not
 - [x] Snapshot `Version` is written but there is no migration path; content id changes break saves (M8 renamed `lord` and dropped `maxMovementPoints`) — `SnapshotMigrator` steps and `content/aliases.json`
 - [ ] Thief leader class and leader abilities as level-up picks
-- [ ] Enemy leaders ignore map sites: they neither take treasure nor capture mines
+- [x] Enemy leaders ignore map sites: they neither take treasure nor capture mines — done in M12
+- [ ] Enemy economy is minimal: garrisons are never reinforced, cities are not upgraded, nothing is built, leaders leave the capital without waiting for a full squad, found potions are not used and the items die with the leader **(verify)**
 - [x] Save regenerates the map legend characters — terrains carry a `symbol` in `terrains.json`
 - [x] Retreat has no penalty (the party just leaves the battle) — done in M9 (6.10)
 - [x] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9) — done in M10

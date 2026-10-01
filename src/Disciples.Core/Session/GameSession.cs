@@ -24,7 +24,8 @@ namespace Disciples.Core.Session
         }
 
         public GameSession(
-            GameContent content, WorldMap map, IEnumerable<Party> parties, int gold, IRandom random, int turn = 1, FogOfWar? fog = null, int active = 0)
+            GameContent content, WorldMap map, IEnumerable<Party> parties, int gold, IRandom random, int turn = 1, FogOfWar? fog = null, int active = 0,
+            int enemyGold = 0)
         {
             _parties = parties.ToList();
             if (active < 0 || active >= _parties.Count)
@@ -34,6 +35,7 @@ namespace Disciples.Core.Session
             Map = map;
             Party = _parties[active];
             Gold = gold;
+            EnemyGold = enemyGold;
             Random = random;
             Turn = turn;
             Fog = fog ?? new FogOfWar(map.Width, map.Height);
@@ -56,6 +58,7 @@ namespace Disciples.Core.Session
 
         public IRandom Random { get; }
         public int Gold { get; private set; }
+        public int EnemyGold { get; private set; }
         public int Turn { get; private set; }
         public GameStatus Status { get; private set; }
         public City? CurrentCity => Map.CityAt(Party.Position);
@@ -147,23 +150,24 @@ namespace Disciples.Core.Session
             return Route.Along(Map, path);
         }
 
-        /// <summary>Enemy leaders move, then a new turn starts. Check <see cref="IncomingAttack"/> afterwards.</summary>
+        /// <summary>The enemy takes its turn, then a new turn starts. Check <see cref="IncomingAttack"/> afterwards.</summary>
         public void EndTurn()
         {
+            SupplyEnemies();
             MoveEnemies();
+            HireEnemyLeader();
 
             Turn++;
             foreach (var party in _parties)
                 party.RestoreMovement();
             ClaimMines();
-            Gold += Map.Cities.Where(c => c.IsPlayerOwned).Sum(c => c.Income)
-                    + Map.Sites.Where(s => s.Kind == SiteKind.Mine && s.Owner == Owner.Player).Sum(s => s.Gold);
+            Gold += IncomeOf(Owner.Player);
 
             foreach (var city in Map.Cities.Where(c => c.IsPlayerOwned))
             {
-                HealSquad(city.Garrison, city);
+                HealSquad(city.Garrison, HealPercentIn(city));
                 if (PartyAt(city.Position) is { } visitor)
-                    HealSquad(visitor.Squad, city);
+                    HealSquad(visitor.Squad, HealPercentIn(city));
             }
 
             foreach (var guardian in Map.Cities.SelectMany(c => c.Garrison.AliveUnits).Where(u => u.IsGuardian))
@@ -446,6 +450,49 @@ namespace Disciples.Core.Session
             }
         }
 
+        private int IncomeOf(Owner owner) =>
+            Map.Cities.Where(c => c.Owner == owner).Sum(c => c.Income)
+            + Map.Sites.Where(s => s.Kind == SiteKind.Mine && s.Owner == owner).Sum(s => s.Gold);
+
+        /// <summary>The enemy collects income, heals in its cities and fills the squads of the leaders standing there.</summary>
+        private void SupplyEnemies()
+        {
+            EnemyGold += IncomeOf(Owner.Enemy);
+
+            foreach (var city in Map.Cities.Where(c => c.Owner == Owner.Enemy))
+            {
+                HealSquad(city.Garrison, city.HealPercent);
+                if (Map.EnemyAt(city.Position) is not { } visitor)
+                    continue;
+
+                HealSquad(visitor.Squad, city.HealPercent);
+                Reinforce(visitor, city);
+            }
+        }
+
+        /// <summary>Buys the dearest recruits the treasury affords while the squad has room.</summary>
+        private void Reinforce(Party enemy, City city)
+        {
+            foreach (var recruit in city.Recruits.Where(r => !r.IsLeader).OrderByDescending(r => r.Cost))
+                while (EnemyGold >= recruit.Cost && enemy.Squad.TryAdd(new Unit(recruit)))
+                    EnemyGold -= recruit.Cost;
+        }
+
+        /// <summary>A new leader appears in the enemy capital once it is vacant; it gets its squad on the following turns.</summary>
+        private void HireEnemyLeader()
+        {
+            var capital = Map.Cities.FirstOrDefault(c => c.IsCapital && c.Owner == Owner.Enemy);
+            if (capital == null || Map.Enemies.Count >= Rules.EnemyLeaderLimit || Map.EnemyAt(capital.Position) != null)
+                return;
+
+            var leader = Content.EnemyLeaderClasses.Where(l => l.Cost <= EnemyGold).OrderByDescending(l => l.Cost).FirstOrDefault();
+            if (leader == null)
+                return;
+
+            EnemyGold -= leader.Cost;
+            Map.AddEnemy(new Party(new Unit(leader), capital.Position, rules: Rules));
+        }
+
         private void MoveEnemies()
         {
             foreach (var enemy in Map.Enemies.ToList())
@@ -455,14 +502,15 @@ namespace Disciples.Core.Session
             }
         }
 
-        /// <summary>Walks towards the nearest target: a player party or a city it can capture. The capital is never a target.</summary>
+        /// <summary>
+        /// Walks towards the nearest target: a player party, a city it can capture, a treasure or a mine.
+        /// The capital is never a target. Sites on the way are plundered too.
+        /// </summary>
         private void MoveEnemy(Party enemy)
         {
-            var path = Pathfinder.FindPath(Map, enemy.Position, IsEnemyTarget, IsBlockedForEnemy);
-            for (var i = 0; i < path.Count; i++)
+            foreach (var step in Pathfinder.FindPath(Map, enemy.Position, IsEnemyTarget, IsBlockedForEnemy))
             {
-                var step = path[i];
-                if (i == path.Count - 1)
+                if (PartyAt(step) != null || Map.CityAt(step) is { } city && city.Owner != Owner.Enemy)
                 {
                     Strike(enemy, step);
                     return;
@@ -473,6 +521,8 @@ namespace Disciples.Core.Session
                     return;
 
                 enemy.MoveTo(step, cost);
+                if (Map.SiteAt(step) is { } site)
+                    Plunder(enemy, site);
             }
         }
 
@@ -481,7 +531,39 @@ namespace Disciples.Core.Session
             if (PartyAt(position) != null)
                 return IncomingAttack == null;
 
-            return Map.CityAt(position) is { IsCapital: false } city && city.Owner != Owner.Enemy;
+            if (Map.CityAt(position) is { } city)
+                return !city.IsCapital && city.Owner != Owner.Enemy;
+
+            return Map.SiteAt(position) is { } site && IsLoot(site) && Map.NeutralAt(position) == null && Map.EnemyAt(position) == null;
+        }
+
+        /// <summary>A mine on the player's land is not worth taking: the land claims it back.</summary>
+        private bool IsLoot(Site site) =>
+            site.Kind == SiteKind.Treasure
+            || site.Kind == SiteKind.Mine && site.Owner != Owner.Enemy && Territory.OwnerAt(site.Position) != Owner.Player;
+
+        private void Plunder(Party enemy, Site site)
+        {
+            if (!IsLoot(site))
+                return;
+
+            if (site.Kind == SiteKind.Mine)
+            {
+                site.Capture(Owner.Enemy);
+                _events.Add(new GameEvent(GameEventKind.MineLost, site.Name, enemy.Name, site.Gold));
+                return;
+            }
+
+            EnemyGold += site.Gold;
+            Map.RemoveSite(site);
+            foreach (var item in site.Items)
+            {
+                enemy.Give(item);
+                if (enemy.Equipped.All(e => e.Kind != item.Kind))
+                    enemy.Equip(item);
+            }
+
+            _events.Add(new GameEvent(GameEventKind.TreasureLost, site.Name, enemy.Name, site.Gold));
         }
 
         private bool IsBlockedForEnemy(Position position) =>
@@ -562,10 +644,10 @@ namespace Disciples.Core.Session
             }
         }
 
-        private void HealSquad(Squad squad, City city)
+        private static void HealSquad(Squad squad, int percent)
         {
             foreach (var unit in squad.AliveUnits)
-                unit.Heal(unit.MaxHp * HealPercentIn(city) / 100);
+                unit.Heal(unit.MaxHp * percent / 100);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Disciples.Core.Persistence
                 Map = CaptureMap(session.Map),
                 Turn = session.Turn,
                 Gold = session.Gold,
+                EnemyGold = session.EnemyGold,
                 Parties = session.Parties.Select(CaptureParty).ToList(),
                 Active = session.Parties.ToList().IndexOf(session.Party),
                 Cities = session.Map.Cities.Select(CaptureCity).ToList(),
@@ -65,7 +66,7 @@ namespace Disciples.Core.Persistence
             var parties = snapshot.Parties.Select(p => RestoreParty(p, content, "Party"));
             var fog = FogOfWar.FromRows(map.Width, map.Height, snapshot.Explored);
 
-            return new GameSession(content, map, parties, snapshot.Gold, random, snapshot.Turn, fog, snapshot.Active);
+            return new GameSession(content, map, parties, snapshot.Gold, random, snapshot.Turn, fog, snapshot.Active, snapshot.EnemyGold);
         }
 
         private static PartySnapshot CaptureParty(Party party) => new PartySnapshot

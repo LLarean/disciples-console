@@ -61,7 +61,7 @@ public class GuardianTests
         session.EndTurn();
 
         Assert.Equal(Guardian.MaxHp, garrison.Units.Single(u => u.IsGuardian).Hp);
-        Assert.Equal(Squire.MaxHp - 60, garrison.Units.Single(u => !u.IsGuardian).Hp);
+        Assert.Equal(Squire.MaxHp - 60 + Squire.MaxHp * 25 / 100, garrison.Units.Single(u => !u.IsGuardian).Hp);
     }
 
     [Fact]

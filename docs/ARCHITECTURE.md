@@ -57,7 +57,7 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Ite
 - `Party` — leader, squad and movement. Movement and squad capacity derive from the leader definition plus taken `LeaderPerk`s; one perk per leader level above the first.
 
 ### Enemy turn
-`GameSession.EndTurn` moves every enemy `Party` (`WorldMap.Enemies`) before the new turn starts. `Pathfinder` (Dijkstra by terrain cost) leads it to the nearest target: a player party or a non-capital city it does not own. Garrison fights are auto-resolved with `SimpleBattleAi`; an attack on a party makes that party active and is exposed as `GameSession.IncomingAttack` for the front-end to fight.
+`GameSession.EndTurn` runs the enemy turn before the new turn starts: the treasury (`EnemyGold`) collects income, enemy cities heal their garrison and visiting leader, a leader standing in a city buys recruits, every enemy `Party` (`WorldMap.Enemies`) moves, and a vacant enemy capital hires a new leader (`GameRules.EnemyLeaderClasses`, `EnemyLeaderLimit`). `Pathfinder` (Dijkstra by terrain cost) leads a party to the nearest target: a player party, a non-capital city it does not own, a treasure or a mine outside the player's land; sites it steps on are plundered. Garrison fights are auto-resolved with `SimpleBattleAi`; an attack on a party makes that party active and is exposed as `GameSession.IncomingAttack` for the front-end to fight.
 
 ## Console front-end
 Terminal.Gui v2, see ADR 0003.

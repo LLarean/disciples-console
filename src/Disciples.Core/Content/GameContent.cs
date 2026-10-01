@@ -43,7 +43,8 @@ namespace Disciples.Core.Content
             if (immobile != null)
                 throw new ContentException($"Leader '{immobile.Id}' has no movement.");
 
-            var badClass = rules.LeaderClasses.FirstOrDefault(id => !_units.TryGetValue(id, out var unit) || !unit.IsLeader);
+            var badClass = rules.LeaderClasses.Concat(rules.EnemyLeaderClasses)
+                .FirstOrDefault(id => !_units.TryGetValue(id, out var unit) || !unit.IsLeader);
             if (badClass != null)
                 throw new ContentException($"Leader class '{badClass}' is not a leader unit.");
         }
@@ -52,6 +53,7 @@ namespace Disciples.Core.Content
         public IReadOnlyList<Building> Buildings => _buildings;
         public IEnumerable<ItemDefinition> Items => _items.Values;
         public IEnumerable<UnitDefinition> LeaderClasses => Rules.LeaderClasses.Select(Unit);
+        public IEnumerable<UnitDefinition> EnemyLeaderClasses => Rules.EnemyLeaderClasses.Select(Unit);
 
         public UnitDefinition Unit(string id) =>
             _units.TryGetValue(Current(id, _aliases.Units), out var unit) ? unit : throw new ContentException($"Unknown unit '{id}'.");

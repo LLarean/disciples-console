@@ -16,6 +16,9 @@ namespace Disciples.Core.Persistence
         public int Turn { get; set; } = 1;
         public int Gold { get; set; }
 
+        /// <summary>The enemy's treasury: it pays for recruits and new leaders.</summary>
+        public int EnemyGold { get; set; }
+
         /// <summary>The player's parties.</summary>
         public List<PartySnapshot> Parties { get; set; } = new List<PartySnapshot>();
 

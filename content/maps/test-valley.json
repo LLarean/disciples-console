@@ -37,6 +37,7 @@
   },
   "turn": 1,
   "gold": 300,
+  "enemyGold": 200,
   "parties": [
     {
       "x": 4,
@@ -123,7 +124,8 @@
       "income": 75,
       "recruits": [
         "goblin",
-        "goblin-archer"
+        "goblin-archer",
+        "orc"
       ],
       "garrison": [
         {

@@ -54,6 +54,12 @@ namespace Disciples.Core.Content
         /// <summary>Leader unit ids offered when starting a new game.</summary>
         public List<string> LeaderClasses { get; set; } = new List<string>();
 
+        /// <summary>Leader unit ids the enemy hires in its capital; none means it never hires leaders.</summary>
+        public List<string> EnemyLeaderClasses { get; set; } = new List<string>();
+
+        /// <summary>The enemy hires no new leader while it has this many.</summary>
+        public int EnemyLeaderLimit { get; set; } = 3;
+
         public int GarrisonSlots(int tier) => CityGarrisonSlots + tier - 1;
 
         public int CityHealPercentAt(int tier) => CityHealPercent + (tier - 1) * CityTierHealPercent;

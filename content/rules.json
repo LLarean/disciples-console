@@ -14,5 +14,7 @@
   "effectTurns": 2,
   "poisonPercent": 50,
   "drainPercent": 50,
-  "leaderClasses": ["paladin", "ranger", "archmage"]
+  "leaderClasses": ["paladin", "ranger", "archmage"],
+  "enemyLeaderClasses": ["orc-warlord"],
+  "enemyLeaderLimit": 3
 }
