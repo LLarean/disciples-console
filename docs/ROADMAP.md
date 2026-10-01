@@ -76,7 +76,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Snapshot `Version` is written but there is no migration path; content id changes break saves (M8 renamed `lord` and dropped `maxMovementPoints`)
 - [ ] Thief leader class and leader abilities as level-up picks
 - [ ] Enemy leaders ignore map sites: they neither take treasure nor capture mines
-- [ ] Save regenerates the map legend characters
+- [x] Save regenerates the map legend characters — terrains carry a `symbol` in `terrains.json`
 - [x] Retreat has no penalty (the party just leaves the battle) — done in M9 (6.10)
 - [ ] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9)
 - [ ] Experience is split evenly among survivors, rounded up **(verify original rule)**

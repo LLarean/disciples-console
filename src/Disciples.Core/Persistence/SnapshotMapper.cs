@@ -100,7 +100,7 @@ namespace Disciples.Core.Persistence
             {
                 var row = new StringBuilder(map.Width);
                 for (var x = 0; x < map.Width; x++)
-                    row.Append(SymbolFor(map.TerrainAt(new Position(x, y)).Id, symbols));
+                    row.Append(SymbolFor(map.TerrainAt(new Position(x, y)), symbols));
                 rows.Add(row.ToString());
             }
 
@@ -112,15 +112,16 @@ namespace Disciples.Core.Persistence
             };
         }
 
-        /// <summary>Uses the first letter of the terrain id when free, so saved maps stay readable.</summary>
-        private static char SymbolFor(string terrainId, Dictionary<string, char> symbols)
+        /// <summary>Uses the terrain's own symbol or the first letter of its id when free, so saved maps stay readable.</summary>
+        private static char SymbolFor(Terrain terrain, Dictionary<string, char> symbols)
         {
-            if (symbols.TryGetValue(terrainId, out var symbol))
+            if (symbols.TryGetValue(terrain.Id, out var symbol))
                 return symbol;
 
-            var candidates = new[] { char.ToLowerInvariant(terrainId[0]), char.ToUpperInvariant(terrainId[0]) }.Concat(SpareSymbols);
+            var candidates = new[] { terrain.Symbol ?? terrain.Id[0], char.ToLowerInvariant(terrain.Id[0]), char.ToUpperInvariant(terrain.Id[0]) }
+                .Concat(SpareSymbols);
             symbol = candidates.First(c => !symbols.ContainsValue(c));
-            symbols.Add(terrainId, symbol);
+            symbols.Add(terrain.Id, symbol);
             return symbol;
         }
 

@@ -22,7 +22,7 @@ public sealed class ContentLoader(string contentRoot)
     public GameContent LoadContent()
     {
         var rules = Read<GameRules>("rules.json");
-        var terrains = Read<List<TerrainData>>("terrains.json").Select(t => new Terrain(t.Id, t.Name, t.MoveCost));
+        var terrains = Read<List<TerrainData>>("terrains.json").Select(t => new Terrain(t.Id, t.Name, t.MoveCost, t.Symbol));
         var units = Read<List<UnitData>>("units.json").Select(u => ToDefinition(u, rules));
         var buildings = Read<List<BuildingData>>("buildings.json")
             .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent));
@@ -43,7 +43,7 @@ public sealed class ContentLoader(string contentRoot)
                ?? throw new ContentException($"Empty content file '{relativePath}'.");
     }
 
-    private sealed record TerrainData(string Id, string Name, int? MoveCost);
+    private sealed record TerrainData(string Id, string Name, int? MoveCost, char? Symbol);
 
     private sealed record UnitData(
         string Id, string Name, int Hp, int Armor, int Initiative, int Power, int Accuracy,

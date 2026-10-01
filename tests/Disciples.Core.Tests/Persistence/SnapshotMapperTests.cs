@@ -85,6 +85,15 @@ public class SnapshotMapperTests
     }
 
     [Fact]
+    public void Capture_UsesTerrainSymbols_FallingBackToTheIdLetter()
+    {
+        var map = SnapshotMapper.Capture(Restore(Scenario())).Map;
+
+        Assert.Equal(["..=", ".w=", "..="], map.Rows);
+        Assert.Equal("water", map.Legend["w"]);
+    }
+
+    [Fact]
     public void CaptureThenRestore_KeepsEnemyLeaders()
     {
         var snapshot = Scenario();

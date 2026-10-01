@@ -19,8 +19,8 @@ internal static class TestUnits
     public static readonly UnitDefinition Veteran = new("veteran", "Veteran", 80, 0, 50, 30, 80, AttackType.Melee, UnitSize.Small, 0,
         experienceToLevel: 100, levelGrowthPercent: 10);
 
-    public static readonly Terrain Plains = new("plains", "Plains", 2);
-    public static readonly Terrain Road = new("road", "Road", 1);
+    public static readonly Terrain Plains = new("plains", "Plains", 2, '.');
+    public static readonly Terrain Road = new("road", "Road", 1, '=');
     public static readonly Terrain Water = new("water", "Water", null);
 
     public static GameContent TestContent { get; } = new(
