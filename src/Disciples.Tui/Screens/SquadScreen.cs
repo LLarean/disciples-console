@@ -28,7 +28,7 @@ public sealed class SquadScreen : Screen
         _squadView = new SquadView("Party") { X = 0, Y = 1, IsFocused = true };
         var details = new Canvas(DrawDetails, "Unit") { X = Pos.Right(_squadView) + 1, Y = 1, Width = DetailsWidth, Height = SquadView.PanelHeight };
         var message = new Canvas(c => c.Text(1, 0, _message.Text, _message.Color)) { X = 0, Y = Pos.Bottom(_squadView), Width = Dim.Fill(), Height = 1 };
-        var hints = new HintBar(() => [("←↑→↓", "select"), ("Enter", _picked == null ? "pick" : "place"), ("S/Esc", "back")]);
+        var hints = new HintBar(() => [("←↑→↓", "select"), ("Enter", _picked == null ? "pick" : "place"), ("D", "dismiss"), ("S/Esc", "back")]);
         Add(header, _squadView, details, message, hints);
     }
 
@@ -46,6 +46,8 @@ public sealed class SquadScreen : Screen
             _cursor = _cursor.WithLine(key == Key.CursorLeft ? SquadLine.Back : SquadLine.Front);
         else if (key == Key.Enter)
             PickOrPlace();
+        else if (key == Key.D || key == Key.Delete)
+            Dismiss();
         else
             return false;
 
@@ -80,6 +82,17 @@ public sealed class SquadScreen : Screen
         _picked = null;
         if (!SquadTransfer.Move(Squad, picked, Squad, _cursor))
             _message = ("Can't move there.", Palette.Bad);
+    }
+
+    private void Dismiss()
+    {
+        if (Squad.UnitAt(_cursor) is not { } unit)
+            return;
+
+        _picked = null;
+        _message = _session.Dismiss(Squad, unit)
+            ? ($"{unit.Name} dismissed.", Palette.Dim)
+            : ("The leader can't be dismissed.", Palette.Bad);
     }
 
     private void DrawHeader(Canvas canvas)

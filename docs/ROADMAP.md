@@ -77,7 +77,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Thief leader class and leader abilities as level-up picks
 - [ ] Enemy leaders ignore map sites: they neither take treasure nor capture mines
 - [ ] Save regenerates the map legend characters
-- [ ] Retreat has no penalty (the party just leaves the battle)
+- [x] Retreat has no penalty (the party just leaves the battle) — done in M9 (6.10)
 - [ ] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9)
 - [ ] Experience is split evenly among survivors, rounded up **(verify original rule)**
 - [ ] Level growth is a flat % of base HP and power; armor, accuracy, initiative don't grow **(verify)**
@@ -85,4 +85,4 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Enter on the map opens only owned cities; hostile cities are entered by walking in
 - [ ] Enemy leaders have no economy: no income, hiring or healing; the capital is never their target
 - [ ] Battles between an enemy leader and a garrison are auto-resolved; only one enemy attacks the party per turn
-- [ ] Squad screen has no dismiss; unit details don't show immunities or attack source (3.5, 3.7)
+- [x] Squad screen has no dismiss; unit details don't show immunities or attack source (3.5, 3.7)
