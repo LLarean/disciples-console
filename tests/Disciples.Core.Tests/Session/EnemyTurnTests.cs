@@ -40,6 +40,22 @@ public class EnemyTurnTests
     }
 
     [Fact]
+    public void EndTurn_EnemyReportsEveryStep()
+    {
+        var session = CreateSession(new Position(7, 0));
+        var enemy = session.Map.Enemies[0];
+
+        session.EndTurn();
+
+        var steps = session.TakeEvents().Where(e => e.Kind == GameEventKind.EnemyMoved).ToList();
+        Assert.Equal(2, steps.Count);
+        Assert.Equal(new Position(7, 0), steps[0].From);
+        Assert.Equal(steps[0].At, steps[1].From);
+        Assert.Equal(enemy.Position, steps[1].At);
+        Assert.All(steps, e => Assert.Same(enemy, e.Party));
+    }
+
+    [Fact]
     public void EndTurn_EnemyNextToParty_Attacks()
     {
         var session = CreateSession(new Position(3, 0));
@@ -60,7 +76,10 @@ public class EnemyTurnTests
 
         Assert.Equal(Owner.Enemy, town.Owner);
         Assert.Equal(town.Position, session.Map.Enemies[0].Position);
-        Assert.Contains(session.TakeEvents(), e => e.Kind == GameEventKind.CityFell);
+        var fell = session.TakeEvents().Single(e => e.Kind == GameEventKind.CityFell);
+        Assert.Same(town, fell.City);
+        Assert.Same(session.Map.Enemies[0], fell.Party);
+        Assert.Equal(town.Position, fell.At);
     }
 
     [Fact]

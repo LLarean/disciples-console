@@ -91,6 +91,7 @@ public class EnemyEconomyTests
 
         var leader = Assert.Single(session.Map.Enemies);
         Assert.Equal(HoldPosition, leader.Position);
+        Assert.Same(leader, session.TakeEvents().Single(e => e.Kind == GameEventKind.EnemyAppeared).Party);
         Assert.Equal(60 + 40 - Warlord.Cost, session.EnemyGold);
     }
 

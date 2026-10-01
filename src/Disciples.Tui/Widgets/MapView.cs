@@ -17,12 +17,15 @@ public sealed class MapView : Canvas
     private readonly GameSession _session;
     private readonly Func<Position?> _cursor;
     private readonly Func<Route> _route;
+    private readonly IReadOnlySet<Position> _enemyTrail;
 
-    public MapView(GameSession session, Func<Position?> cursor, Func<Route> route) : base(title: session.Map.Name)
+    /// <param name="enemyTrail">Tiles enemy leaders walked through on their last turn.</param>
+    public MapView(GameSession session, Func<Position?> cursor, Func<Route> route, IReadOnlySet<Position> enemyTrail) : base(title: session.Map.Name)
     {
         _session = session;
         _cursor = cursor;
         _route = route;
+        _enemyTrail = enemyTrail;
     }
 
     protected override void Draw()
@@ -93,6 +96,8 @@ public sealed class MapView : Canvas
             this.Text(x, y, "† ", Palette.Enemy, LandBackground(position), TextStyle.Bold);
         else if (_session.Map.SiteAt(position) is { } site)
             this.Text(x, y, SiteGlyph(site.Kind) + " ", SiteColor(site), LandBackground(position), TextStyle.Bold);
+        else if (_enemyTrail.Contains(position))
+            this.Text(x, y, "· ", Palette.Enemy, LandBackground(position));
         else
         {
             var attribute = Palette.TerrainAttribute(terrain.Id);

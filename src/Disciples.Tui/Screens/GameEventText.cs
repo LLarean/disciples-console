@@ -4,6 +4,9 @@ namespace Disciples.Tui.Screens;
 
 public static class GameEventText
 {
+    /// <summary>Enemy steps are shown on the map, not in the log.</summary>
+    public static bool IsReported(GameEvent e) => e.Kind is not (GameEventKind.EnemyMoved or GameEventKind.EnemyAppeared);
+
     public static string Describe(GameEvent e) => e.Kind switch
     {
         GameEventKind.TurnStarted => $"Turn {e.Amount}.",

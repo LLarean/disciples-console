@@ -346,7 +346,7 @@ namespace Disciples.Core.Session
                 Gold += gold;
                 experience = encounter.Defenders.Units.Sum(u => u.Definition.ExperienceValue);
                 progress = Progression.Share(Party.Squad.Units, experience, Content.Unit, HasCapitalBuilding);
-                _events.Add(new GameEvent(GameEventKind.BattleWon, encounter.Name, amount: gold));
+                _events.Add(new GameEvent(GameEventKind.BattleWon, encounter.Name, amount: gold) { Party = Party, City = encounter.City, At = Party.Position });
                 Report(progress);
 
                 if (encounter.Neutral != null)
@@ -385,7 +385,7 @@ namespace Disciples.Core.Session
         private void Disband(Party party)
         {
             _parties.Remove(party);
-            _events.Add(new GameEvent(GameEventKind.PartyLost, party.Name));
+            _events.Add(new GameEvent(GameEventKind.PartyLost, party.Name) { Party = party, At = party.Position });
 
             if (_parties.Count > 0)
             {
@@ -394,7 +394,7 @@ namespace Disciples.Core.Session
             }
 
             Status = GameStatus.Lost;
-            _events.Add(new GameEvent(GameEventKind.GameLost, party.Name));
+            _events.Add(new GameEvent(GameEventKind.GameLost, party.Name) { Party = party });
         }
 
         /// <summary>Mines on owned land pass to the land's owner.</summary>
@@ -407,7 +407,8 @@ namespace Disciples.Core.Session
                     continue;
 
                 mine.Capture(owner);
-                _events.Add(new GameEvent(owner == Owner.Player ? GameEventKind.MineCaptured : GameEventKind.MineLost, mine.Name, amount: mine.Gold));
+                var kind = owner == Owner.Player ? GameEventKind.MineCaptured : GameEventKind.MineLost;
+                _events.Add(new GameEvent(kind, mine.Name, amount: mine.Gold) { Site = mine, At = mine.Position });
             }
         }
 
@@ -418,16 +419,16 @@ namespace Disciples.Core.Session
                 case SiteKind.Treasure:
                     Gold += site.Gold;
                     Map.RemoveSite(site);
-                    _events.Add(new GameEvent(GameEventKind.TreasureFound, site.Name, amount: site.Gold));
+                    _events.Add(new GameEvent(GameEventKind.TreasureFound, site.Name, amount: site.Gold) { Site = site, Party = Party, At = site.Position });
                     foreach (var item in site.Items)
                     {
                         Party.Give(item);
-                        _events.Add(new GameEvent(GameEventKind.ItemFound, item.Name, site.Name));
+                        _events.Add(new GameEvent(GameEventKind.ItemFound, item.Name, site.Name) { Item = item, Site = site, Party = Party, At = site.Position });
                     }
                     break;
                 case SiteKind.Mine when site.Owner != Owner.Player:
                     site.Capture(Owner.Player);
-                    _events.Add(new GameEvent(GameEventKind.MineCaptured, site.Name, amount: site.Gold));
+                    _events.Add(new GameEvent(GameEventKind.MineCaptured, site.Name, amount: site.Gold) { Site = site, Party = Party, At = site.Position });
                     break;
             }
         }
@@ -437,7 +438,7 @@ namespace Disciples.Core.Session
         private void Capture(City city)
         {
             city.Capture(Owner.Player);
-            _events.Add(new GameEvent(GameEventKind.CityCaptured, city.Name));
+            _events.Add(new GameEvent(GameEventKind.CityCaptured, city.Name) { City = city, Party = Party, At = city.Position });
             CheckVictory();
         }
 
@@ -446,7 +447,7 @@ namespace Disciples.Core.Session
             if (Status == GameStatus.Playing && Map.Neutrals.Count == 0 && Map.Enemies.Count == 0 && Map.Cities.All(c => c.IsPlayerOwned))
             {
                 Status = GameStatus.Won;
-                _events.Add(new GameEvent(GameEventKind.GameWon, Party.Name));
+                _events.Add(new GameEvent(GameEventKind.GameWon, Party.Name) { Party = Party });
             }
         }
 
@@ -490,7 +491,9 @@ namespace Disciples.Core.Session
                 return;
 
             EnemyGold -= leader.Cost;
-            Map.AddEnemy(new Party(new Unit(leader), capital.Position, rules: Rules));
+            var party = new Party(new Unit(leader), capital.Position, rules: Rules);
+            Map.AddEnemy(party);
+            _events.Add(new GameEvent(GameEventKind.EnemyAppeared, party.Name, capital.Name) { Party = party, City = capital, At = capital.Position });
         }
 
         private void MoveEnemies()
@@ -520,7 +523,7 @@ namespace Disciples.Core.Session
                 if (!enemy.CanAfford(cost))
                     return;
 
-                enemy.MoveTo(step, cost);
+                Step(enemy, step, cost);
                 if (Map.SiteAt(step) is { } site)
                     Plunder(enemy, site);
             }
@@ -550,7 +553,7 @@ namespace Disciples.Core.Session
             if (site.Kind == SiteKind.Mine)
             {
                 site.Capture(Owner.Enemy);
-                _events.Add(new GameEvent(GameEventKind.MineLost, site.Name, enemy.Name, site.Gold));
+                _events.Add(new GameEvent(GameEventKind.MineLost, site.Name, enemy.Name, site.Gold) { Site = site, Party = enemy, At = site.Position });
                 return;
             }
 
@@ -563,7 +566,7 @@ namespace Disciples.Core.Session
                     enemy.Equip(item);
             }
 
-            _events.Add(new GameEvent(GameEventKind.TreasureLost, site.Name, enemy.Name, site.Gold));
+            _events.Add(new GameEvent(GameEventKind.TreasureLost, site.Name, enemy.Name, site.Gold) { Site = site, Party = enemy, At = site.Position });
         }
 
         private bool IsBlockedForEnemy(Position position) =>
@@ -578,7 +581,7 @@ namespace Disciples.Core.Session
             {
                 Party = attacked;
                 IncomingAttack = Encounter.With(enemy);
-                _events.Add(new GameEvent(GameEventKind.EnemyAttacks, enemy.Name));
+                _events.Add(new GameEvent(GameEventKind.EnemyAttacks, enemy.Name, attacked.Name) { Party = enemy, From = enemy.Position, At = target });
                 return;
             }
 
@@ -595,7 +598,7 @@ namespace Disciples.Core.Session
             }
             else
             {
-                _events.Add(new GameEvent(GameEventKind.CityHeld, city.Name, enemy.Name));
+                _events.Add(new GameEvent(GameEventKind.CityHeld, city.Name, enemy.Name) { City = city, Party = enemy, At = city.Position });
             }
 
             if (!enemy.Leader.IsAlive)
@@ -621,11 +624,18 @@ namespace Disciples.Core.Session
             return battle.Outcome;
         }
 
+        private void Step(Party enemy, Position target, int cost)
+        {
+            var from = enemy.Position;
+            enemy.MoveTo(target, cost);
+            _events.Add(new GameEvent(GameEventKind.EnemyMoved, enemy.Name) { Party = enemy, From = from, At = target });
+        }
+
         private void Occupy(Party enemy, City city, int cost)
         {
-            enemy.MoveTo(city.Position, cost);
+            Step(enemy, city.Position, cost);
             city.Capture(Owner.Enemy);
-            _events.Add(new GameEvent(GameEventKind.CityFell, city.Name, enemy.Name));
+            _events.Add(new GameEvent(GameEventKind.CityFell, city.Name, enemy.Name) { City = city, Party = enemy, At = city.Position });
         }
 
         private bool HasCapitalBuilding(string buildingId) => Capital?.HasBuilt(buildingId) == true;
@@ -640,6 +650,7 @@ namespace Disciples.Core.Session
                     ProgressKind.Upgraded => new GameEvent(GameEventKind.UnitUpgraded, p.PreviousName, p.Unit.Name),
                     _ => new GameEvent(GameEventKind.UnitAwaitsBuilding, p.Unit.Name, Content.BuildingName(p.Building ?? ""))
                 };
+                gameEvent.Unit = p.Unit;
                 _events.Add(gameEvent);
             }
         }

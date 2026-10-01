@@ -81,7 +81,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] City tiers 1–5: garrison size, healing rate, upgrade for gold (5.7) — `U` in the city; numbers in `rules.json`, capital fixed at the top tier
 - [x] Capital guardian (5.9) — a `guardian` unit in the garrison; Grimhold became the enemy capital with one
 - [x] Enemy economy: income, hiring, healing; enemy leaders take treasure and mines (2.5) — `enemyGold` in the scenario, `enemyLeaderClasses` / `enemyLeaderLimit` in `rules.json`
-- [ ] Front-end events: enemy movement step by step, events carry objects and positions instead of names
+- [x] Front-end events: enemy movement step by step, events carry objects and positions instead of names — `EnemyMoved` per step; the TUI draws the trail of the last enemy turn
 
 ## M13 — Magic
 - [ ] Mana types and mana sources (2.4, 1.9)

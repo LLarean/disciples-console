@@ -16,6 +16,7 @@ public sealed class MapScreen : Screen
     private readonly GameFlow _flow;
     private readonly GameSession _session;
     private readonly List<string> _log = [];
+    private readonly HashSet<Position> _enemyTrail = [];
 
     private Position? _cursor;
     private Position? _destination;
@@ -28,7 +29,7 @@ public sealed class MapScreen : Screen
         _leading = session.Party;
         _log.Add($"Welcome, {session.Party.Name}. Arrows or numpad to move.");
 
-        var map = new MapView(session, () => _cursor, () => Route) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
+        var map = new MapView(session, () => _cursor, () => Route, _enemyTrail) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
         var party = new PartyView(session, _log) { X = Pos.Right(map), Y = 0, Width = SideWidth, Height = Dim.Fill(1) };
         var hints = new HintBar(() => _cursor != null ? TargetHints : MapHints);
         Add(map, party, hints);
@@ -208,6 +209,7 @@ public sealed class MapScreen : Screen
 
     private void EndTurn()
     {
+        _enemyTrail.Clear();
         _session.EndTurn();
         DrainEvents();
         Log($"Gold {_session.Gold}.");
@@ -229,7 +231,12 @@ public sealed class MapScreen : Screen
     private void DrainEvents()
     {
         foreach (var gameEvent in _session.TakeEvents())
-            Log(GameEventText.Describe(gameEvent));
+        {
+            if (gameEvent is { Kind: GameEventKind.EnemyMoved, From: { } left })
+                _enemyTrail.Add(left);
+            if (GameEventText.IsReported(gameEvent))
+                Log(GameEventText.Describe(gameEvent));
+        }
     }
 
     private void Log(string message)
