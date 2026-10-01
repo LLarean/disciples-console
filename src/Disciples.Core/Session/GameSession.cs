@@ -160,10 +160,11 @@ namespace Disciples.Core.Session
                     + Map.Sites.Where(s => s.Kind == SiteKind.Mine && s.Owner == Owner.Player).Sum(s => s.Gold);
 
             foreach (var city in Map.Cities.Where(c => c.IsPlayerOwned))
-                HealSquad(city.Garrison);
-
-            foreach (var party in _parties.Where(p => Map.CityAt(p.Position)?.IsPlayerOwned == true))
-                HealSquad(party.Squad);
+            {
+                HealSquad(city.Garrison, city);
+                if (PartyAt(city.Position) is { } visitor)
+                    HealSquad(visitor.Squad, city);
+            }
 
             _events.Add(new GameEvent(GameEventKind.TurnStarted, amount: Turn));
         }
@@ -272,6 +273,27 @@ namespace Disciples.Core.Session
             city.MarkBuilt(building);
             return BuildResult.Built;
         }
+
+        /// <summary>Raises a player city to the next tier: a larger garrison and faster healing.</summary>
+        public UpgradeResult UpgradeCity(City city)
+        {
+            if (!city.IsPlayerOwned)
+                return UpgradeResult.Unavailable;
+
+            if (city.UpgradeCost is not int cost)
+                return UpgradeResult.TopTier;
+
+            if (Gold < cost)
+                return UpgradeResult.NotEnoughGold;
+
+            Gold -= cost;
+            city.Upgrade();
+            return UpgradeResult.Upgraded;
+        }
+
+        /// <summary>Percent of max HP units in the city regain per turn.</summary>
+        public int HealPercentIn(City city) =>
+            city.HealPercent + Content.Buildings.Where(b => HasCapitalBuilding(b.Id)).Sum(b => b.HealBonusPercent);
 
         /// <summary>The active party's leader uses a potion from the bag on a unit of its squad.</summary>
         public ItemResult UseItem(ItemDefinition item, Unit target)
@@ -537,13 +559,10 @@ namespace Disciples.Core.Session
             }
         }
 
-        private void HealSquad(Squad squad)
+        private void HealSquad(Squad squad, City city)
         {
             foreach (var unit in squad.AliveUnits)
-                unit.Heal(unit.MaxHp * HealPercent / 100);
+                unit.Heal(unit.MaxHp * HealPercentIn(city) / 100);
         }
-
-        private int HealPercent =>
-            Rules.CityHealPercent + Content.Buildings.Where(b => HasCapitalBuilding(b.Id)).Sum(b => b.HealBonusPercent);
     }
 }

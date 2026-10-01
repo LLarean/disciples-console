@@ -114,6 +114,7 @@
       "capital": false,
       "owner": "enemy",
       "income": 75,
+      "tier": 2,
       "recruits": [
         "goblin",
         "goblin-archer"

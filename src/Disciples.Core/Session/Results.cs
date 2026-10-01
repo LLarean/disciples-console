@@ -43,6 +43,14 @@ namespace Disciples.Core.Session
         Unavailable
     }
 
+    public enum UpgradeResult
+    {
+        Upgraded,
+        TopTier,
+        NotEnoughGold,
+        Unavailable
+    }
+
     public enum BuildResult
     {
         Built,

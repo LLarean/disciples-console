@@ -1,5 +1,8 @@
 {
-  "cityHealPercent": 25,
+  "cityHealPercent": 15,
+  "cityTierHealPercent": 10,
+  "cityGarrisonSlots": 2,
+  "cityUpgradeCosts": [200, 400, 700, 1000],
   "sightRadius": 4,
   "capitalTerritoryRadius": 5,
   "cityTerritoryRadius": 3,

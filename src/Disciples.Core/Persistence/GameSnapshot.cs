@@ -75,6 +75,7 @@ namespace Disciples.Core.Persistence
         public bool Capital { get; set; }
         public Owner Owner { get; set; }
         public int Income { get; set; }
+        public int Tier { get; set; } = 1;
         public List<string> Recruits { get; set; } = new List<string>();
 
         /// <summary>Whether the city offers the building tree.</summary>

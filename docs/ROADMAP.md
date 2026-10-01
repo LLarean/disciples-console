@@ -78,7 +78,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Treasure holds items; merchants sell them (1.10) — `§` on the map; limited stock, no buying back
 
 ## M12 — Cities and opponents
-- [ ] City tiers 1–5: garrison size, healing rate, upgrade for gold (5.7)
+- [x] City tiers 1–5: garrison size, healing rate, upgrade for gold (5.7) — `U` in the city; numbers in `rules.json`, capital fixed at the top tier
 - [ ] Capital guardian (5.9)
 - [ ] Enemy economy: income, hiring, healing; enemy leaders take treasure and mines (2.5)
 - [ ] Front-end events: enemy movement step by step, events carry objects and positions instead of names
@@ -108,6 +108,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9) — done in M10
 - [ ] Leaders of one class share a name, so the log cannot tell two Paladins apart; no cap on the number of leaders **(verify)**
 - [ ] Items: no leader abilities gate artifacts and banners, potions only heal and work only on the map, the bag is unlimited and is lost with the party, merchants don't buy items **(verify)**; battle cards show power without item bonuses
+- [ ] City tiers: garrison slots, healing and upgrade costs per tier are placeholders; income does not grow with the tier **(verify)**
 - [ ] Losing the last leader loses the game even with gold to hire a new one **(verify: the original loses on the capital)**
 - [ ] Experience is split evenly among survivors, rounded up **(verify original rule)**
 - [ ] Level growth is a flat % of base HP and power; armor, accuracy, initiative don't grow **(verify)**

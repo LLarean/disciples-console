@@ -60,6 +60,8 @@ public sealed class CityScreen : Screen
             Shell.Push(new BuildingsScreen(_session, _city));
         else if (key == Key.L && _city.IsCapital)
             Shell.Push(new LeaderScreen(_session, _city));
+        else if (key == Key.U && _city.UpgradeCost != null)
+            Upgrade();
         else if (key == Key.Tab)
             CycleFocus();
         else if (key == Key.CursorUp || key == Key.CursorDown)
@@ -187,12 +189,22 @@ public sealed class CityScreen : Screen
             : ("The leader can't be dismissed.", Palette.Bad);
     }
 
+    private void Upgrade()
+    {
+        var cost = _city.UpgradeCost;
+        _message = _session.UpgradeCity(_city) == UpgradeResult.Upgraded
+            ? ($"{_city.Name} grows to tier {_city.Tier}.", Palette.Good)
+            : ($"Not enough gold: the next tier costs {cost}.", Palette.Bad);
+    }
+
     private void DrawHeader(Canvas canvas)
     {
         var x = canvas.Text(1, 0, _city.Name, Palette.Accent, style: TextStyle.Bold);
-        x = canvas.Text(x + 2, 0, _city.IsCapital ? "Capital" : "City", _city.IsCapital ? Palette.Accent : Palette.Dim);
+        x = canvas.Text(x + 2, 0, _city.IsCapital ? "Capital" : $"City, tier {_city.Tier}", _city.IsCapital ? Palette.Accent : Palette.Dim);
         x = canvas.Text(x + 2, 0, "income ", Palette.Dim);
         x = canvas.Text(x, 0, _city.Income.ToString(), Palette.Text);
+        x = canvas.Text(x + 3, 0, "healing ", Palette.Dim);
+        x = canvas.Text(x, 0, $"{_session.HealPercentIn(_city)}%", Palette.Text);
         x = canvas.Text(x + 3, 0, "gold ", Palette.Dim);
         x = canvas.Text(x, 0, _session.Gold.ToString(), Palette.Accent);
         x = canvas.Text(x + 3, 0, "turn ", Palette.Dim);
@@ -242,6 +254,8 @@ public sealed class CityScreen : Screen
         yield return ("←↑→↓", "select");
         yield return ("Enter", _focus == Focus.Recruits ? "hire" : _picked == null ? "pick unit" : "place unit");
         yield return ("D", "dismiss");
+        if (_city.UpgradeCost is { } cost)
+            yield return ("U", $"upgrade {cost}g");
         if (_city.IsCapital)
         {
             yield return ("B", "buildings");

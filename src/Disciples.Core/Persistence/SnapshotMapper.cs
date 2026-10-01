@@ -168,15 +168,15 @@ namespace Disciples.Core.Persistence
             Capital = city.IsCapital,
             Owner = city.Owner,
             Income = city.Income,
+            Tier = city.Tier,
             Recruits = city.Recruits.Select(r => r.Id).ToList(),
             Buildings = city.Buildings.Count > 0,
             Built = city.BuiltIds.ToList(),
             Garrison = CaptureSquad(city.Garrison)
         };
 
-        private static City RestoreCity(CitySnapshot data, GameContent content)
-        {
-            var city = new City(
+        private static City RestoreCity(CitySnapshot data, GameContent content) =>
+            new City(
                 data.Name,
                 new Position(data.X, data.Y),
                 data.Capital,
@@ -184,10 +184,10 @@ namespace Disciples.Core.Persistence
                 data.Recruits.Select(content.Unit),
                 data.Buildings ? content.Buildings : null,
                 data.Owner,
-                data.Built.Select(content.BuildingId));
-            RestoreSquad(data.Garrison, city.Garrison, content, data.Name);
-            return city;
-        }
+                data.Built.Select(content.BuildingId),
+                data.Tier,
+                content.Rules,
+                RestoreSquad(data.Garrison, new Squad(), content, data.Name));
 
         private static List<UnitSnapshot> CaptureSquad(Squad squad) =>
             squad.Units.Select(u =>

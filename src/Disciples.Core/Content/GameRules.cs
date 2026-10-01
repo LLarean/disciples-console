@@ -5,7 +5,19 @@ namespace Disciples.Core.Content
     /// <summary>Global balance numbers; loaded from content, defaults are for tests.</summary>
     public sealed class GameRules
     {
+        /// <summary>Percent of max HP units regain per turn in a tier-1 city.</summary>
         public int CityHealPercent { get; set; } = 25;
+
+        /// <summary>Healing added by each city tier above the first.</summary>
+        public int CityTierHealPercent { get; set; }
+
+        /// <summary>Garrison slots of a tier-1 city; each tier adds one.</summary>
+        public int CityGarrisonSlots { get; set; } = 6;
+
+        /// <summary>Gold to raise a city to tier 2, 3 and so on; the list length sets the top tier. Capitals are always at the top tier.</summary>
+        public List<int> CityUpgradeCosts { get; set; } = new List<int>();
+
+        public int MaxCityTier => CityUpgradeCosts.Count + 1;
 
         /// <summary>Radius the party and player cities reveal through the fog of war.</summary>
         public int SightRadius { get; set; } = 4;
@@ -41,5 +53,9 @@ namespace Disciples.Core.Content
 
         /// <summary>Leader unit ids offered when starting a new game.</summary>
         public List<string> LeaderClasses { get; set; } = new List<string>();
+
+        public int GarrisonSlots(int tier) => CityGarrisonSlots + tier - 1;
+
+        public int CityHealPercentAt(int tier) => CityHealPercent + (tier - 1) * CityTierHealPercent;
     }
 }
