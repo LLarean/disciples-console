@@ -1,0 +1,10 @@
+[
+  { "id": "healing-potion", "name": "Healing Potion", "kind": "potion", "cost": 50, "heal": 50 },
+  { "id": "greater-healing-potion", "name": "Greater Healing Potion", "kind": "potion", "cost": 120, "heal": 150 },
+  { "id": "rune-sword", "name": "Rune Sword", "kind": "artifact", "cost": 300, "powerPercent": 20 },
+  { "id": "dwarven-bracer", "name": "Dwarven Bracer", "kind": "artifact", "cost": 300, "armor": 15 },
+  { "id": "ring-of-ages", "name": "Ring of Ages", "kind": "artifact", "cost": 250, "initiative": 15, "accuracy": 5 },
+  { "id": "banner-of-war", "name": "Banner of War", "kind": "banner", "cost": 400, "powerPercent": 10 },
+  { "id": "banner-of-fortitude", "name": "Banner of Fortitude", "kind": "banner", "cost": 400, "armor": 10 },
+  { "id": "banner-of-striking", "name": "Banner of Striking", "kind": "banner", "cost": 350, "accuracy": 10 }
+]

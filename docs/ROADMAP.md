@@ -73,7 +73,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Leader death disbands only that party; the game is lost when no leader is left (4.9)
 
 ## M11 — Items
-- [ ] Item definitions in `content/items.json`, leader inventory (4.7)
+- [x] Item definitions in `content/items.json`, leader inventory (4.7) — an unlimited bag saved with the party
 - [ ] Potions used on units; artifacts and banners with passive bonuses
 - [ ] Treasure holds items; merchants sell them (1.10)
 

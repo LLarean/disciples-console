@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Disciples.Core.Cities;
 using Disciples.Core.Content;
+using Disciples.Core.Items;
 using Disciples.Core.Map;
 using Disciples.Core.Persistence;
 using Disciples.Core.Units;
@@ -26,7 +27,9 @@ public sealed class ContentLoader(string contentRoot)
         var units = Read<List<UnitData>>("units.json").Select(u => ToDefinition(u, rules));
         var buildings = Read<List<BuildingData>>("buildings.json")
             .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent));
-        return new GameContent(units, terrains, buildings, rules, Read<ContentAliases>("aliases.json"));
+        var items = Read<List<ItemData>>("items.json")
+            .Select(i => new ItemDefinition(i.Id, i.Name, i.Kind, i.Cost, i.Heal, new StatBonus(i.Armor, i.PowerPercent, i.Initiative, i.Accuracy)));
+        return new GameContent(units, terrains, buildings, rules, Read<ContentAliases>("aliases.json"), items);
     }
 
     public GameSnapshot LoadScenario(string id) => Read<GameSnapshot>(Path.Combine("maps", id + ".json"));
@@ -50,6 +53,8 @@ public sealed class ContentLoader(string contentRoot)
         AttackType Attack, UnitSize Size, int Cost, int Leadership, int Movement,
         int? ExperienceToLevel, int ExperienceValue, int? LevelGrowthPercent, string? UpgradesTo, string? UpgradeBuilding,
         AttackSource? Source, List<AttackSource>? Immunities, List<AttackSource>? Wards, AttackEffect? Effect);
+
+    private sealed record ItemData(string Id, string Name, ItemKind Kind, int Cost, int Heal, int Armor, int PowerPercent, int Initiative, int Accuracy);
 
     private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires, int HealBonusPercent);
 }

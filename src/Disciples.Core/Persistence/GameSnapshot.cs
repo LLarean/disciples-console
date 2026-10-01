@@ -59,6 +59,9 @@ namespace Disciples.Core.Persistence
         public List<UnitSnapshot> Units { get; set; } = new List<UnitSnapshot>();
 
         public List<LeaderPerk> Perks { get; set; } = new List<LeaderPerk>();
+
+        /// <summary>Ids of carried items.</summary>
+        public List<string> Items { get; set; } = new List<string>();
     }
 
     public sealed class CitySnapshot

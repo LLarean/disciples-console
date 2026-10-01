@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Disciples.Core.Cities;
+using Disciples.Core.Items;
 using Disciples.Core.Map;
 using Disciples.Core.Units;
 
@@ -12,20 +13,23 @@ namespace Disciples.Core.Content
         private readonly Dictionary<string, UnitDefinition> _units;
         private readonly Dictionary<string, Terrain> _terrains;
         private readonly List<Building> _buildings;
-
+        private readonly Dictionary<string, ItemDefinition> _items;
         private readonly ContentAliases _aliases;
 
-        public GameContent(IEnumerable<UnitDefinition> units, IEnumerable<Terrain> terrains, IEnumerable<Building> buildings, GameRules rules, ContentAliases? aliases = null)
+        public GameContent(IEnumerable<UnitDefinition> units, IEnumerable<Terrain> terrains, IEnumerable<Building> buildings, GameRules rules, ContentAliases? aliases = null,
+            IEnumerable<ItemDefinition>? items = null)
         {
             _units = units.ToDictionary(u => u.Id);
             _terrains = terrains.ToDictionary(t => t.Id);
             _buildings = buildings.ToList();
+            _items = (items ?? Enumerable.Empty<ItemDefinition>()).ToDictionary(i => i.Id);
             _aliases = aliases ?? new ContentAliases();
             Rules = rules;
 
             var deadAlias = _aliases.Units.Where(a => !_units.ContainsKey(a.Value))
                 .Concat(_aliases.Terrains.Where(a => !_terrains.ContainsKey(a.Value)))
                 .Concat(_aliases.Buildings.Where(a => _buildings.All(b => b.Id != a.Value)))
+                .Concat(_aliases.Items.Where(a => !_items.ContainsKey(a.Value)))
                 .Select(a => a.Key)
                 .FirstOrDefault();
             if (deadAlias != null)
@@ -46,6 +50,7 @@ namespace Disciples.Core.Content
 
         public GameRules Rules { get; }
         public IReadOnlyList<Building> Buildings => _buildings;
+        public IEnumerable<ItemDefinition> Items => _items.Values;
         public IEnumerable<UnitDefinition> LeaderClasses => Rules.LeaderClasses.Select(Unit);
 
         public UnitDefinition Unit(string id) =>
@@ -53,6 +58,9 @@ namespace Disciples.Core.Content
 
         public Terrain Terrain(string id) =>
             _terrains.TryGetValue(Current(id, _aliases.Terrains), out var terrain) ? terrain : throw new ContentException($"Unknown terrain '{id}'.");
+
+        public ItemDefinition Item(string id) =>
+            _items.TryGetValue(Current(id, _aliases.Items), out var item) ? item : throw new ContentException($"Unknown item '{id}'.");
 
         /// <summary>Current id of a building that may be stored under a retired id.</summary>
         public string BuildingId(string id) => Current(id, _aliases.Buildings);

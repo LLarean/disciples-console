@@ -47,6 +47,9 @@
           "line": "front",
           "column": 1
         }
+      ],
+      "items": [
+        "healing-potion"
       ]
     }
   ],

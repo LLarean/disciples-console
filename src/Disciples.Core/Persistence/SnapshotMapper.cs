@@ -73,7 +73,8 @@ namespace Disciples.Core.Persistence
             Y = party.Position.Y,
             MovementPoints = party.MovementPoints,
             Units = CaptureSquad(party.Squad),
-            Perks = party.Perks.ToList()
+            Perks = party.Perks.ToList(),
+            Items = party.Items.Select(i => i.Id).ToList()
         };
 
         private static Party RestoreParty(PartySnapshot data, GameContent content, string owner)
@@ -82,7 +83,7 @@ namespace Disciples.Core.Persistence
             if (squad.Leader == null)
                 throw new ContentException($"'{owner}' has no leader.");
 
-            return new Party(squad, new Position(data.X, data.Y), data.MovementPoints, data.Perks, content.Rules);
+            return new Party(squad, new Position(data.X, data.Y), data.MovementPoints, data.Perks, content.Rules, data.Items.Select(content.Item));
         }
 
         /// <summary>Replaces the leader of the starting party of a new game with the chosen leader class.</summary>

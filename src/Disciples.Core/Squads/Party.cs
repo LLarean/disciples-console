@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Disciples.Core.Content;
+using Disciples.Core.Items;
 using Disciples.Core.Map;
 using Disciples.Core.Units;
 
@@ -17,6 +18,7 @@ namespace Disciples.Core.Squads
     public sealed class Party
     {
         private readonly List<LeaderPerk> _perks;
+        private readonly List<ItemDefinition> _items;
 
         public Party(Unit leader, Position position, int? movementPoints = null, GameRules? rules = null)
             : this(SquadFor(leader), position, movementPoints, rules: rules)
@@ -24,12 +26,14 @@ namespace Disciples.Core.Squads
         }
 
         /// <summary>Restores a party from a squad that already contains its leader; squad capacity follows the leadership.</summary>
-        public Party(Squad squad, Position position, int? movementPoints = null, IEnumerable<LeaderPerk>? perks = null, GameRules? rules = null)
+        public Party(Squad squad, Position position, int? movementPoints = null, IEnumerable<LeaderPerk>? perks = null, GameRules? rules = null,
+            IEnumerable<ItemDefinition>? items = null)
         {
             Leader = squad.Leader ?? throw new ArgumentException("A party squad needs a leader.", nameof(squad));
             Squad = squad;
             Position = position;
             _perks = perks?.ToList() ?? new List<LeaderPerk>();
+            _items = items?.ToList() ?? new List<ItemDefinition>();
             MovementPerk = (rules ?? new GameRules()).MovementPerk;
             Squad.SetCapacity(Leader.Definition.Leadership + Count(LeaderPerk.Leadership));
             MovementPoints = movementPoints ?? MaxMovementPoints;
@@ -43,6 +47,9 @@ namespace Disciples.Core.Squads
         public int MaxMovementPoints => Leader.Definition.Movement + Count(LeaderPerk.Movement) * MovementPerk;
         public int MovementPerk { get; }
         public IReadOnlyList<LeaderPerk> Perks => _perks;
+
+        /// <summary>Items the leader carries; the bag has no size limit.</summary>
+        public IReadOnlyList<ItemDefinition> Items => _items;
 
         /// <summary>Each leader level above the first grants one perk.</summary>
         public int UnspentPerks => Math.Max(0, Leader.Level - 1 - _perks.Count);
@@ -60,6 +67,11 @@ namespace Disciples.Core.Squads
             else
                 MovementPoints += MovementPerk;
         }
+
+        internal void Give(ItemDefinition item) => _items.Add(item);
+
+        /// <summary>Removes one such item from the bag.</summary>
+        internal bool Take(ItemDefinition item) => _items.Remove(item);
 
         internal void MoveTo(Position position, int cost)
         {

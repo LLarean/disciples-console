@@ -1,4 +1,5 @@
 using Disciples.Core.Content;
+using Disciples.Core.Items;
 using Disciples.Core.Map;
 using Disciples.Core.Units;
 
@@ -23,9 +24,15 @@ internal static class TestUnits
     public static readonly Terrain Road = new("road", "Road", 1, '=');
     public static readonly Terrain Water = new("water", "Water", null);
 
+    public static readonly ItemDefinition Potion = new("potion", "Potion", ItemKind.Potion, 50, heal: 40);
+    public static readonly ItemDefinition Sword = new("sword", "Sword", ItemKind.Artifact, 300, bonus: new StatBonus(powerPercent: 20, initiative: 10));
+    public static readonly ItemDefinition Shield = new("shield", "Shield", ItemKind.Artifact, 300, bonus: new StatBonus(armor: 20));
+    public static readonly ItemDefinition Banner = new("banner", "Banner", ItemKind.Banner, 400, bonus: new StatBonus(armor: 10, accuracy: 5));
+
     public static GameContent TestContent { get; } = new(
         [Knight, Ranger, Squire, Archer, Mage, Acolyte, Ogre, Recruit, Veteran],
         [Plains, Road, Water],
         [],
-        new GameRules());
+        new GameRules(),
+        items: [Potion, Sword, Shield, Banner]);
 }
