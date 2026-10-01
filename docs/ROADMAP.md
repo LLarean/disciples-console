@@ -67,6 +67,33 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Fog of war (1.7): party and player cities reveal `sightRadius`; explored tiles stay visible and are saved
 - [x] Territory (1.8): cities claim land around them, nearest city wins; mines on owned land pass to its owner at turn end
 
+## M10 — Several leaders
+- [ ] Session holds several player parties, one of them active; commands act on the active party (4.8)
+- [ ] Hire leaders in the capital (5.11); switch between parties on the map
+- [ ] Leader death disbands only that party; the game is lost when no leader is left (4.9)
+
+## M11 — Items
+- [ ] Item definitions in `content/items.json`, leader inventory (4.7)
+- [ ] Potions used on units; artifacts and banners with passive bonuses
+- [ ] Treasure holds items; merchants sell them (1.10)
+
+## M12 — Cities and opponents
+- [ ] City tiers 1–5: garrison size, healing rate, upgrade for gold (5.7)
+- [ ] Capital guardian (5.9)
+- [ ] Enemy economy: income, hiring, healing; enemy leaders take treasure and mines (2.5)
+- [ ] Front-end events: enemy movement step by step, events carry objects and positions instead of names
+
+## M13 — Magic
+- [ ] Mana types and mana sources (2.4, 1.9)
+- [ ] Spell research in the magic tower, casting on the map (8.1)
+- [ ] Rods spread territory (1.8)
+
+## M14 — Remaining classes, effects and races
+- [ ] Thief leader with thieves guild actions; leader abilities as level-up picks (4.5, 4.6)
+- [ ] Polymorph and fear (3.10); instant auto-resolve of a battle (6.11)
+- [ ] Trainers (1.10)
+- [ ] Second race with its unit tree and capital buildings (7.3, 7.4)
+
 ## Tech debt
 - [x] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)
 - [x] Splash screen — replaced by the main menu

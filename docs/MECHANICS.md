@@ -29,7 +29,7 @@ Markers:
 | 2.1 | Turn counter, end-turn action | M1 |
 | 2.2 | Gold as the only resource | M2 |
 | 2.3 | Income per turn from capital and owned cities | M3 |
-| 2.4 | Four mana types (life, death, infernal, runic) | Out (until spells) |
+| 2.4 | Four mana types (life, death, infernal, runic) | M13 |
 | 2.5 | Multiple players / AI turns | M8 — simplified: enemy leaders walk to the nearest non-capital city or the party; no enemy economy |
 
 ## 3. Units
@@ -57,8 +57,8 @@ Markers:
 | 4.4 | Swap / move units between slots, respecting large units | M2 |
 | 4.5 | Leader classes: warrior, scout, mage, thief — differ in stats and movement | M8 — Paladin, Ranger, Archmage chosen on new game; thief in Backlog |
 | 4.6 | Leader progression: level-up picks (leadership, movement, abilities) | M8 — simplified: one pick per level, +1 leadership (up to 6) or +`movementPerk` movement; abilities in Backlog **(verify: starting leadership and pick list)** |
-| 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | Backlog |
-| 4.8 | Several leaders per player | Backlog |
+| 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | M11 |
+| 4.8 | Several leaders per player | M10 |
 | 4.9 | Squad loses leader → squad is disbanded | M4 — simplified: player has a single party, so the game is lost; M8 — enemy squads are disbanded |
 
 ## 5. Capital and cities
@@ -71,11 +71,11 @@ Markers:
 | 5.4 | Dismiss a unit (no refund) | M3 |
 | 5.5 | Transfer units between garrison and visiting squad | M3 |
 | 5.6 | Heal units in own city (per turn) | M3 |
-| 5.7 | City tiers 1–5 with garrison size and healing rate | Backlog |
+| 5.7 | City tiers 1–5 with garrison size and healing rate | M12 |
 | 5.8 | Capture neutral/enemy city (battle vs garrison) | M5 — empty garrison is captured on entry |
-| 5.9 | Capital guardian (strong unit guarding the capital) | Backlog |
+| 5.9 | Capital guardian (strong unit guarding the capital) | M12 |
 | 5.10 | Capital buildings: unit-tree branches, magic tower, temple | M6; M8 — temple adds `healBonusPercent` to healing in player cities **(verify: original temple heals/resurrects for gold)** |
-| 5.11 | Hire leaders in capital | Backlog |
+| 5.11 | Hire leaders in capital | M10 |
 
 ## 6. Battle
 
@@ -91,7 +91,7 @@ Markers:
 | 6.8 | Victory/defeat, experience distributed to survivors | M5 — even split **(verify)** |
 | 6.9 | Battle vs neutral squads standing on the map | M5 |
 | 6.10 | Retreat mechanics (unit leaves battle, squad flees) | M9 (simplified: whole squad flees, party loses the rest of its movement; per-unit escape **(verify)**) |
-| 6.11 | Auto-battle | Backlog |
+| 6.11 | Auto-battle | M14 |
 
 ## 7. Races and content
 
@@ -99,14 +99,14 @@ Markers:
 |---|----------|-----------|
 | 7.1 | Empire: tier-1 units (Squire, Archer, Apprentice, Acolyte) and one leader | M2 |
 | 7.2 | Neutral units for enemy squads (incl. at least one large unit) | M2 |
-| 7.3 | Legions of the Damned, Mountain Clans, Undead Hordes | Backlog |
+| 7.3 | Legions of the Damned, Mountain Clans, Undead Hordes | M14 (one more race), rest Backlog |
 | 7.4 | Full unit trees per race | M6 (Empire), Backlog |
 
 ## 8. Magic
 
 | # | Mechanic | Milestone |
 |---|----------|-----------|
-| 8.1 | Spell research in capital, casting on the map | Out |
+| 8.1 | Spell research in capital, casting on the map | M13 |
 | 8.2 | Summons | Out |
 
 ## 9. Meta
