@@ -21,7 +21,7 @@ Terminal of at least 110×30 is recommended.
 | City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, U — upgrade the city tier, B — capital buildings, L — hire a leader (capital), Esc — cancel / leave |
 | Squad | arrows — select, Enter — pick / place unit, D — dismiss, S / Esc — back |
 | Buildings | arrows — select, Enter — build, B / Esc — back |
-| Battle | arrows — target, Enter — act, D — defend, W — wait, A — auto, X — retreat |
+| Battle | arrows — target, Enter — act, D — defend, W — wait, A — auto (one action), Q — finish the battle automatically, X — retreat |
 | Items | arrows — select, Enter — drink a potion / wear or take off an artifact or banner, Esc — back |
 | Spells | arrows — select, Enter — research a spell (needs the Magic Tower in the capital) / cast a known one and pick its target, Esc — back |
 | Menus | arrows — select, Enter — confirm, Esc — back |

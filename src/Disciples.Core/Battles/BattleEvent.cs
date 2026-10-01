@@ -13,6 +13,7 @@ namespace Disciples.Core.Battles
         Drained,
         PoisonDamage,
         TurnLost,
+        Fled,
         Healed,
         Defended,
         Waited,

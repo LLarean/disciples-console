@@ -30,6 +30,13 @@ namespace Disciples.Core.Battles
             battle.Act(target);
         }
 
+        /// <summary>Plays both sides until the battle is over.</summary>
+        public void Resolve(Battle battle)
+        {
+            while (!battle.IsOver)
+                Act(battle);
+        }
+
         private static bool CanHarm(Battle battle, Unit actor, Unit target) =>
             actor.Definition.AttackType == AttackType.Heal
             || !target.Definition.Immunities.Contains(actor.Definition.Source) && battle.EffectOn(target) != AttackEffect.Petrification;

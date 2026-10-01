@@ -14,15 +14,21 @@ public class StatusEffectTests
 
     private static readonly UnitDefinition Dummy = new("dummy", "Dummy", 200, 0, 10, 10, 100, AttackType.Melee, UnitSize.Small, 0);
 
-    private static (Battle Battle, Unit Striker, Unit Target) Duel(AttackEffect effect, int strikerHp = 100)
+    private static readonly UnitDefinition Armored = new("armored", "Armored", 200, 50, 10, 40, 100, AttackType.Melee, UnitSize.Small, 0);
+    private static readonly UnitDefinition Warden = new("warden", "Warden", 200, 0, 10, 10, 100, AttackType.Melee, UnitSize.Small, 0, guardian: true);
+
+    private static (Battle Battle, Unit Striker, Unit Target) Duel(AttackEffect effect, int strikerHp = 100, UnitDefinition? victim = null) =>
+        Fight(new Unit(Striker(effect), hp: strikerHp), new Unit(victim ?? Dummy));
+
+    private static (Battle Battle, Unit Attacker, Unit Defender) Fight(Unit attacker, Unit defender, Unit? secondDefender = null)
     {
         var attackers = new Squad();
-        var striker = new Unit(Striker(effect), hp: strikerHp);
-        attackers.TryPlace(striker, new SquadSlot(SquadLine.Front, 0));
+        attackers.TryPlace(attacker, new SquadSlot(SquadLine.Front, 0));
         var defenders = new Squad();
-        var target = new Unit(Dummy);
-        defenders.TryPlace(target, new SquadSlot(SquadLine.Front, 0));
-        return (new Battle(attackers, defenders, new FixedRandom(), Rules), striker, target);
+        defenders.TryPlace(defender, new SquadSlot(SquadLine.Front, 0));
+        if (secondDefender != null)
+            defenders.TryPlace(secondDefender, new SquadSlot(SquadLine.Front, 1));
+        return (new Battle(attackers, defenders, new FixedRandom(), Rules), attacker, defender);
     }
 
     [Fact]
@@ -70,6 +76,91 @@ public class StatusEffectTests
 
         Assert.Equal(180, target.Hp);
         Assert.Contains(battle.Log, e => e.Kind == BattleEventKind.Immune);
+    }
+
+    [Fact]
+    public void Polymorph_CutsPowerAndArmor()
+    {
+        var (battle, striker, target) = Duel(AttackEffect.Polymorph, victim: Armored);
+
+        battle.Act(target);
+        Assert.Equal(190, target.Hp);
+        Assert.Equal(10, battle.PowerOf(target));
+
+        battle.Act(striker);
+        battle.Act(target);
+
+        Assert.Equal(90, striker.Hp);
+        Assert.Equal(170, target.Hp);
+    }
+
+    [Fact]
+    public void Polymorph_WearsOffAfterEffectTurns()
+    {
+        var (battle, _, target) = Duel(AttackEffect.Polymorph);
+
+        battle.Act(target);
+        for (var i = 0; i < 3; i++)
+            battle.Defend();
+        Assert.Equal(AttackEffect.Polymorph, battle.EffectOn(target));
+
+        battle.Defend();
+
+        Assert.Same(target, battle.Current);
+        Assert.Equal(AttackEffect.None, battle.EffectOn(target));
+    }
+
+    [Fact]
+    public void Fear_TargetLeavesTheBattle()
+    {
+        var other = new Unit(Dummy);
+        var (battle, striker, target) = Fight(new Unit(Striker(AttackEffect.Fear)), new Unit(Dummy), other);
+
+        battle.Act(target);
+
+        Assert.True(battle.HasFled(target));
+        Assert.True(target.IsAlive);
+        Assert.Same(other, battle.Current);
+        Assert.Contains(battle.Log, e => e.Kind == BattleEventKind.Fled && e.Actor == target);
+
+        battle.Defend();
+
+        Assert.Same(striker, battle.Current);
+        Assert.Equal([other], battle.ValidTargets());
+        Assert.DoesNotContain(target, battle.Queue);
+    }
+
+    [Fact]
+    public void Fear_LastDefenderFlees_BattleIsWonAndTheRunawayIsGone()
+    {
+        var (battle, _, target) = Duel(AttackEffect.Fear);
+
+        battle.Act(target);
+
+        Assert.Equal(BattleOutcome.Victory, battle.Outcome);
+        Assert.False(target.IsAlive);
+    }
+
+    [Fact]
+    public void Fear_LastAttackerFlees_BattleEndsInRetreat()
+    {
+        var (battle, attacker, _) = Fight(new Unit(Dummy), new Unit(Striker(AttackEffect.Fear)));
+
+        battle.Act(attacker);
+
+        Assert.Equal(BattleOutcome.Retreat, battle.Outcome);
+        Assert.True(attacker.IsAlive);
+    }
+
+    [Fact]
+    public void Fear_Guardian_StandsItsGround()
+    {
+        var (battle, _, target) = Duel(AttackEffect.Fear, victim: Warden);
+
+        battle.Act(target);
+
+        Assert.Same(target, battle.Current);
+        Assert.Equal(AttackEffect.None, battle.EffectOn(target));
     }
 
     [Fact]

@@ -340,8 +340,16 @@ namespace Disciples.Core.Session
         public Battle StartBattle(Encounter encounter) =>
             new Battle(Party.Squad, encounter.Defenders, Random, Rules, BonusesOf(Party, encounter.Enemy));
 
+        /// <summary>Fights the battle to the end without the player: both sides are played by <see cref="SimpleBattleAi"/>.</summary>
+        public BattleReport ResolveBattle(Encounter encounter)
+        {
+            var battle = StartBattle(encounter);
+            new SimpleBattleAi(Random).Resolve(battle);
+            return FinishBattle(battle, encounter);
+        }
+
         /// <summary>
-        /// Applies battle results: reward, shared experience and capture on victory. Losing the battle or the leader disbands the party;
+        /// Applies battle results: reward, experience shared by those who stayed in the fight, and capture on victory. Losing the battle or the leader disbands the party;
         /// the game is lost when it was the last one.
         /// Retreating costs the party the rest of its movement.
         /// </summary>
@@ -362,7 +370,7 @@ namespace Disciples.Core.Session
                 gold = encounter.Reward;
                 Gold += gold;
                 experience = encounter.Defenders.Units.Sum(u => u.Definition.ExperienceValue) * Party.ExperiencePercent / 100;
-                progress = Progression.Share(Party.Squad.Units, experience, Content.Unit, HasCapitalBuilding);
+                progress = Progression.Share(Party.Squad.Units.Where(u => !battle.HasFled(u)), experience, Content.Unit, HasCapitalBuilding);
                 _events.Add(new GameEvent(GameEventKind.BattleWon, encounter.Name, amount: gold) { Party = Party, City = encounter.City, At = Party.Position });
                 Report(progress);
 
@@ -636,9 +644,7 @@ namespace Disciples.Core.Session
         {
             var attackers = attacker.Squad;
             var battle = new Battle(attackers, defenders, Random, Rules, BonusesOf(attacker));
-            var ai = new SimpleBattleAi(Random);
-            while (!battle.IsOver)
-                ai.Act(battle);
+            new SimpleBattleAi(Random).Resolve(battle);
 
             attackers.RemoveDead();
             defenders.RemoveDead();

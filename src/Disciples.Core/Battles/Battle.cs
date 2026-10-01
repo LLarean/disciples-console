@@ -27,6 +27,7 @@ namespace Disciples.Core.Battles
         private readonly HashSet<(Unit, AttackSource)> _spentWards = new HashSet<(Unit, AttackSource)>();
         private readonly HashSet<Unit> _turnStarted = new HashSet<Unit>();
         private readonly Dictionary<Unit, Affliction> _afflictions = new Dictionary<Unit, Affliction>();
+        private readonly HashSet<Unit> _fled = new HashSet<Unit>();
         private readonly List<BattleEvent> _log = new List<BattleEvent>();
 
         public Battle(Squad attackers, Squad defenders, IRandom random, GameRules? rules = null, Func<Unit, StatBonus>? bonuses = null)
@@ -54,8 +55,12 @@ namespace Disciples.Core.Battles
 
         public bool IsDefending(Unit unit) => _defending.Contains(unit);
 
-        /// <summary>The unit's power with item bonuses.</summary>
-        public int PowerOf(Unit unit) => _bonuses(unit).PowerOf(unit);
+        /// <summary>A frightened unit that left the battle: it neither acts nor can be targeted.</summary>
+        public bool HasFled(Unit unit) => _fled.Contains(unit);
+
+        /// <summary>The unit's power with item bonuses; a polymorphed unit keeps only a part of it.</summary>
+        public int PowerOf(Unit unit) =>
+            _bonuses(unit).PowerOf(unit) * (EffectOn(unit) == AttackEffect.Polymorph ? _rules.PolymorphPowerPercent : 100) / 100;
 
         public AttackEffect EffectOn(Unit unit) => _afflictions.TryGetValue(unit, out var affliction) ? affliction.Effect : AttackEffect.None;
 
@@ -66,7 +71,7 @@ namespace Disciples.Core.Battles
         public IReadOnlyList<Unit> ValidTargets()
         {
             var actor = Current;
-            return actor == null ? Array.Empty<Unit>() : TargetRules.ValidTargets(actor, SquadOf(actor), OpponentsOf(actor));
+            return actor == null ? Array.Empty<Unit>() : TargetRules.ValidTargets(actor, SquadOf(actor), OpponentsOf(actor), IsFighting);
         }
 
         /// <summary>Attacks or heals the target. Units hitting all enemies ignore the target choice.</summary>
@@ -84,7 +89,7 @@ namespace Disciples.Core.Battles
                     _log.Add(new BattleEvent(BattleEventKind.Healed, Round, actor, target, healed));
                     break;
                 case AttackType.AllEnemies:
-                    foreach (var enemy in OpponentsOf(actor).AliveUnits.ToList())
+                    foreach (var enemy in OpponentsOf(actor).Units.Where(IsFighting).ToList())
                         Strike(actor, enemy);
                     break;
                 default:
@@ -168,7 +173,7 @@ namespace Disciples.Core.Battles
                 var restored = actor.Heal(dealt * _rules.DrainPercent / 100);
                 _log.Add(new BattleEvent(BattleEventKind.Drained, Round, actor, target, restored));
             }
-            else if (effect != AttackEffect.None && target.IsAlive)
+            else if (effect != AttackEffect.None && target.IsAlive && !(effect == AttackEffect.Fear && target.IsGuardian))
             {
                 _afflictions[target] = new Affliction(effect, _rules.EffectTurns, PowerOf(actor) * _rules.PoisonPercent / 100);
                 _log.Add(new BattleEvent(BattleEventKind.Afflicted, Round, actor, target, effect: effect));
@@ -180,7 +185,8 @@ namespace Disciples.Core.Battles
             var power = PowerOf(actor);
             var spread = power * _rules.DamageSpreadPercent / 100;
             var damage = power + _random.Next(-spread, spread + 1);
-            damage = damage * (100 - _bonuses(target).ArmorOf(target)) / 100;
+            if (EffectOn(target) != AttackEffect.Polymorph)
+                damage = damage * (100 - _bonuses(target).ArmorOf(target)) / 100;
 
             if (IsDefending(target))
                 damage = damage * _rules.DefendDamagePercent / 100;
@@ -196,15 +202,35 @@ namespace Disciples.Core.Battles
             AdvanceTurn();
         }
 
+        private bool IsFighting(Unit unit) => unit.IsAlive && !HasFled(unit);
+
+        /// <summary>
+        /// A side loses when nobody of it is left fighting. Defenders who fled a lost battle scatter for good;
+        /// attackers who fled turn the defeat into a retreat.
+        /// </summary>
         private void UpdateOutcome()
         {
-            if (Defenders.IsDefeated)
+            if (IsOver)
+                return;
+
+            if (!Defenders.Units.Any(IsFighting))
+            {
                 Outcome = BattleOutcome.Victory;
+                foreach (var runaway in Defenders.AliveUnits.ToList())
+                    runaway.TakeDamage(runaway.Hp);
+            }
             else if (Attackers.IsDefeated)
+            {
                 Outcome = BattleOutcome.Defeat;
+            }
+            else if (!Attackers.Units.Any(IsFighting))
+            {
+                Outcome = BattleOutcome.Retreat;
+                _log.Add(new BattleEvent(BattleEventKind.Retreated, Round));
+            }
         }
 
-        /// <summary>Starts turns until a unit able to act heads the queue, applying poison and skipping disabled units.</summary>
+        /// <summary>Starts turns until a unit able to act heads the queue, applying poison and skipping disabled or fleeing units.</summary>
         private void AdvanceTurn()
         {
             while (!IsOver)
@@ -228,8 +254,22 @@ namespace Disciples.Core.Battles
             if (!_turnStarted.Add(unit) || !_afflictions.TryGetValue(unit, out var affliction))
                 return true;
 
-            if (--affliction.TurnsLeft == 0)
+            if (affliction.Effect == AttackEffect.Polymorph)
+            {
+                if (affliction.TurnsLeft-- == 0)
+                    _afflictions.Remove(unit);
+                return true;
+            }
+
+            if (--affliction.TurnsLeft == 0 || affliction.Effect == AttackEffect.Fear)
                 _afflictions.Remove(unit);
+
+            if (affliction.Effect == AttackEffect.Fear)
+            {
+                _fled.Add(unit);
+                _log.Add(new BattleEvent(BattleEventKind.Fled, Round, unit));
+                return false;
+            }
 
             if (affliction.Effect == AttackEffect.Poison)
             {
@@ -258,7 +298,7 @@ namespace Disciples.Core.Battles
             _turnStarted.Clear();
             _log.Add(new BattleEvent(BattleEventKind.RoundStarted, Round));
 
-            var order = Attackers.AliveUnits.Concat(Defenders.AliveUnits)
+            var order = Attackers.Units.Concat(Defenders.Units).Where(IsFighting)
                 .Select(u => (unit: u, roll: _bonuses(u).InitiativeOf(u) + _random.Next(0, _rules.InitiativeSpread)))
                 .OrderByDescending(x => x.roll)
                 .Select(x => x.unit);

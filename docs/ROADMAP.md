@@ -90,7 +90,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## M14 — Remaining classes, effects and races
 - [x] Thief leader with thieves guild actions; leader abilities as level-up picks (4.5, 4.6) — the Thief is hired once the guild is built and poisons, assassinates or robs an adjacent hostile squad; six abilities next to Leadership and Pathfinding
-- [ ] Polymorph and fear (3.10); instant auto-resolve of a battle (6.11)
+- [x] Polymorph and fear (3.10); instant auto-resolve of a battle (6.11) — a polymorphed unit fights weakened and unarmored, a frightened one leaves the battle; `Q` in a battle (and `GameSession.ResolveBattle`) lets the AI finish it
 - [ ] Trainers (1.10)
 - [ ] Second race with its unit tree and capital buildings (7.3, 7.4)
 
@@ -104,6 +104,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Thief leader class and leader abilities as level-up picks
 - [x] Enemy leaders ignore map sites: they neither take treasure nor capture mines — done in M12
 - [ ] Rods claim their land at once instead of spreading it over turns, any party breaks a hostile rod, the enemy breaks rods but plants none **(verify)**
+- [ ] Fear and polymorph are simplified: a defender that fled a lost battle is gone, an attacker that fled survives and gets no experience, guardians never flee, polymorph only cuts power and armor instead of changing the unit **(verify)**
 - [ ] Thief actions are three (poison, assassinate, steal gold) with one success chance; no spying, duels or item theft, the enemy has no thieves **(verify)**
 - [ ] Magic is minimal: only damage and healing spells, no spell levels, no summons, buffs or curses; the enemy neither researches nor casts **(verify)**
 - [ ] Enemy economy is minimal: garrisons are never reinforced, cities are not upgraded, nothing is built, leaders leave the capital without waiting for a full squad, found potions are not used and the items die with the leader **(verify)**

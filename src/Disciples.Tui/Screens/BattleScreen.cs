@@ -65,6 +65,8 @@ public sealed class BattleScreen : Screen
             AfterPlayerAction(() => _battle.Wait());
         else if (key == Key.A)
             AfterPlayerAction(() => _ai.Act(_battle));
+        else if (key == Key.Q)
+            AfterPlayerAction(() => _ai.Resolve(_battle));
         else if (key == Key.X)
             AfterPlayerAction(_battle.Retreat);
         else
@@ -78,6 +80,8 @@ public sealed class BattleScreen : Screen
         _playerView.IsFocused = _battle.IsAttackersTurn && !_battle.IsOver;
         _playerView.Selection = CursorIn(_battle.Attackers);
         _playerView.Highlight = HighlightOf;
+        _playerView.Status = StatusOf;
+        _enemyView.Status = StatusOf;
         _enemyView.Selection = CursorIn(_battle.Defenders);
         _enemyView.Highlight = HighlightOf;
     }
@@ -129,6 +133,17 @@ public sealed class BattleScreen : Screen
 
         return _battle.Current?.Definition.AttackType == AttackType.Heal ? Palette.Good : Palette.Enemy;
     }
+
+    private string StatusOf(Unit unit) =>
+        !unit.IsAlive ? "" : _battle.HasFled(unit) ? "fled" : _battle.EffectOn(unit) switch
+        {
+            AttackEffect.Poison => "poisoned",
+            AttackEffect.Paralysis => "paralyzed",
+            AttackEffect.Petrification => "stone",
+            AttackEffect.Polymorph => "polymorphed",
+            AttackEffect.Fear => "frightened",
+            _ => ""
+        };
 
     private Color SideColor(Unit unit) => _battle.Attackers.Contains(unit) ? Palette.Ally : Palette.Enemy;
 
@@ -265,6 +280,10 @@ public sealed class BattleScreen : Screen
                 yield return Name(e.Actor);
                 yield return (e.Effect == AttackEffect.Petrification ? " is stone and skips a turn" : " is paralyzed and skips a turn", Palette.Warn);
                 break;
+            case BattleEventKind.Fled:
+                yield return Name(e.Actor);
+                yield return (" flees the battle in fear", Palette.Warn);
+                break;
             case BattleEventKind.Defended:
                 yield return Name(e.Actor);
                 yield return (" defends", text);
@@ -291,6 +310,8 @@ public sealed class BattleScreen : Screen
         AttackEffect.Poison => " poisons ",
         AttackEffect.Paralysis => " paralyzes ",
         AttackEffect.Petrification => " petrifies ",
+        AttackEffect.Polymorph => " polymorphs ",
+        AttackEffect.Fear => " frightens ",
         _ => " afflicts "
     };
 
@@ -316,6 +337,7 @@ public sealed class BattleScreen : Screen
         if (_battle.CanWait)
             yield return ("W", "wait");
         yield return ("A", "auto");
+        yield return ("Q", "finish automatically");
         yield return ("X", "retreat (end battle)");
     }
 }

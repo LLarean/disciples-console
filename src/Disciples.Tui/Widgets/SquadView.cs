@@ -26,6 +26,7 @@ public sealed class SquadView : Canvas
     public SquadSlot? Selection { get; set; }
     public Unit? Picked { get; set; }
     public Func<Unit, Color?> Highlight { get; set; } = _ => null;
+    public Func<Unit, string> Status { get; set; } = _ => "";
 
     protected override void Draw()
     {
@@ -88,6 +89,10 @@ public sealed class SquadView : Canvas
         this.Hp(barEnd + 1, y + 2, unit);
         var labelEnd = this.Text(x + 2, y + 3, ViewDrawing.AttackLabel(unit.Definition), Palette.Dim);
         var powerEnd = this.Text(labelEnd + 1, y + 3, unit.Power.ToString(), Palette.Text);
-        this.Text(powerEnd + 1, y + 3, $"L{unit.Level}", Palette.Faint);
+        var status = Status(unit);
+        if (status.Length == 0)
+            this.Text(powerEnd + 1, y + 3, $"L{unit.Level}", Palette.Faint);
+        else
+            this.Text(powerEnd + 1, y + 3, ViewDrawing.Fit(status, x + width - 2 - (powerEnd + 1)), Palette.Warn);
     }
 }

@@ -7,6 +7,10 @@ namespace Disciples.Core.Units
         Drain,
         Poison,
         Paralysis,
-        Petrification
+        Petrification,
+        /// <summary>The target fights weakened and without armor for a few turns.</summary>
+        Polymorph,
+        /// <summary>The target leaves the battle when its next turn comes.</summary>
+        Fear
     }
 }
