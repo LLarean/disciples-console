@@ -4,7 +4,7 @@ Console prototype of the core mechanics of *Disciples II*: global map, leader sq
 Game logic is engine-agnostic (.NET Standard 2.1) so it can later be reused with Unity graphics.
 
 ## Requirements
-- .NET 10 SDK (front-end); .NET 8 runtime for tests
+- .NET 10 SDK
 - Windows Terminal or any terminal with UTF-8 and true color
 
 ## Run

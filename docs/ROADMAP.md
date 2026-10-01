@@ -68,7 +68,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Territory (1.8): cities claim land around them, nearest city wins; mines on owned land pass to its owner at turn end
 
 ## Tech debt
-- [ ] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)
+- [x] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)
 - [x] Splash screen — replaced by the main menu
 - [x] Picked unit (city, squad screen) is shown with the cursor frame, not the pick color, while the cursor stays on it
 - [x] No confirmation before overwriting a save slot

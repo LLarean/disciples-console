@@ -23,7 +23,7 @@ The console app is the first of possibly several front-ends.
 |---------|--------|-----------|----------------|
 | `Disciples.Core` | netstandard2.1, C# 9 | nothing | Domain model and rules |
 | `Disciples.Tui` | net10.0 | Core, Terminal.Gui | Rendering, input, screens, content loading |
-| `Disciples.Core.Tests` | net8.0 | Core, xUnit | Rule tests |
+| `Disciples.Core.Tests` | net10.0 | Core, xUnit | Rule tests |
 
 ## Core rules
 - No `System.Console`, no file IO, no `UnityEngine`, no third-party packages.
