@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Disciples.Core.Cities;
 using Disciples.Core.Items;
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Units;
 
@@ -14,15 +15,17 @@ namespace Disciples.Core.Content
         private readonly Dictionary<string, Terrain> _terrains;
         private readonly List<Building> _buildings;
         private readonly Dictionary<string, ItemDefinition> _items;
+        private readonly Dictionary<string, SpellDefinition> _spells;
         private readonly ContentAliases _aliases;
 
         public GameContent(IEnumerable<UnitDefinition> units, IEnumerable<Terrain> terrains, IEnumerable<Building> buildings, GameRules rules, ContentAliases? aliases = null,
-            IEnumerable<ItemDefinition>? items = null)
+            IEnumerable<ItemDefinition>? items = null, IEnumerable<SpellDefinition>? spells = null)
         {
             _units = units.ToDictionary(u => u.Id);
             _terrains = terrains.ToDictionary(t => t.Id);
             _buildings = buildings.ToList();
             _items = (items ?? Enumerable.Empty<ItemDefinition>()).ToDictionary(i => i.Id);
+            _spells = (spells ?? Enumerable.Empty<SpellDefinition>()).ToDictionary(s => s.Id);
             _aliases = aliases ?? new ContentAliases();
             Rules = rules;
 
@@ -30,6 +33,7 @@ namespace Disciples.Core.Content
                 .Concat(_aliases.Terrains.Where(a => !_terrains.ContainsKey(a.Value)))
                 .Concat(_aliases.Buildings.Where(a => _buildings.All(b => b.Id != a.Value)))
                 .Concat(_aliases.Items.Where(a => !_items.ContainsKey(a.Value)))
+                .Concat(_aliases.Spells.Where(a => !_spells.ContainsKey(a.Value)))
                 .Select(a => a.Key)
                 .FirstOrDefault();
             if (deadAlias != null)
@@ -52,6 +56,7 @@ namespace Disciples.Core.Content
         public GameRules Rules { get; }
         public IReadOnlyList<Building> Buildings => _buildings;
         public IEnumerable<ItemDefinition> Items => _items.Values;
+        public IEnumerable<SpellDefinition> Spells => _spells.Values;
         public IEnumerable<UnitDefinition> LeaderClasses => Rules.LeaderClasses.Select(Unit);
         public IEnumerable<UnitDefinition> EnemyLeaderClasses => Rules.EnemyLeaderClasses.Select(Unit);
 
@@ -63,6 +68,9 @@ namespace Disciples.Core.Content
 
         public ItemDefinition Item(string id) =>
             _items.TryGetValue(Current(id, _aliases.Items), out var item) ? item : throw new ContentException($"Unknown item '{id}'.");
+
+        public SpellDefinition Spell(string id) =>
+            _spells.TryGetValue(Current(id, _aliases.Spells), out var spell) ? spell : throw new ContentException($"Unknown spell '{id}'.");
 
         /// <summary>Current id of a building that may be stored under a retired id.</summary>
         public string BuildingId(string id) => Current(id, _aliases.Buildings);

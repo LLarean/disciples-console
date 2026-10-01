@@ -1,3 +1,4 @@
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Session;
 using Disciples.Tui.Widgets;
@@ -22,6 +23,10 @@ public static class GameEventText
         GameEventKind.MineCaptured => $"{e.Subject} is yours: +{Yield(e)} per turn.",
         GameEventKind.TreasureLost => $"{e.Detail} carries off {e.Subject}.",
         GameEventKind.MineLost => e.Detail.Length > 0 ? $"{e.Detail} seizes {e.Subject}." : $"{e.Subject} fell to enemy land.",
+        GameEventKind.SpellCast => e.Spell?.Kind == SpellKind.Heal
+            ? $"{e.Subject} heals {e.Detail} by {e.Amount}."
+            : $"{e.Subject} hits {e.Detail} for {e.Amount}.",
+        GameEventKind.SquadDestroyed => $"{e.Subject} is destroyed.",
         GameEventKind.UnitLeveledUp => $"{e.Subject} reached level {e.Amount}.",
         GameEventKind.UnitUpgraded => $"{e.Subject} became {e.Detail}.",
         GameEventKind.UnitAwaitsBuilding => $"{e.Subject} needs {e.Detail} in the capital to grow.",

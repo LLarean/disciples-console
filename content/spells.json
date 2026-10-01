@@ -1,0 +1,8 @@
+[
+  { "id": "healing", "name": "Healing", "kind": "heal", "amount": 30, "researchCost": { "life": 20 }, "castCost": { "life": 10 } },
+  { "id": "smite", "name": "Smite", "kind": "damage", "amount": 20, "source": "life", "researchCost": { "life": 30 }, "castCost": { "life": 15 } },
+  { "id": "rune-strike", "name": "Rune Strike", "kind": "damage", "amount": 30, "source": "earth", "researchCost": { "life": 30, "runic": 30 }, "castCost": { "runic": 20 } },
+  { "id": "fire-storm", "name": "Fire Storm", "kind": "damage", "amount": 40, "source": "fire", "researchCost": { "life": 40, "infernal": 30 }, "castCost": { "life": 10, "infernal": 20 } },
+  { "id": "plague", "name": "Plague", "kind": "damage", "amount": 35, "source": "death", "researchCost": { "life": 40, "death": 40 }, "castCost": { "death": 25 } },
+  { "id": "greater-healing", "name": "Greater Healing", "kind": "heal", "amount": 80, "researchCost": { "life": 60, "runic": 20 }, "castCost": { "life": 30 } }
+]

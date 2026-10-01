@@ -22,6 +22,14 @@ namespace Disciples.Core.Persistence
 
         public Mana? Mana { get; set; }
 
+        /// <summary>Ids of the researched spells.</summary>
+        public List<string> Spells { get; set; } = new List<string>();
+
+        public bool ResearchedThisTurn { get; set; }
+
+        /// <summary>Ids of the spells already cast this turn.</summary>
+        public List<string> CastThisTurn { get; set; } = new List<string>();
+
         /// <summary>The player's parties.</summary>
         public List<PartySnapshot> Parties { get; set; } = new List<PartySnapshot>();
 
@@ -85,6 +93,7 @@ namespace Disciples.Core.Persistence
 
         /// <summary>Mana per turn; set on capitals.</summary>
         public Mana? Mana { get; set; }
+
         public List<string> Recruits { get; set; } = new List<string>();
 
         /// <summary>Whether the city offers the building tree.</summary>

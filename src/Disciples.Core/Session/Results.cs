@@ -51,6 +51,24 @@ namespace Disciples.Core.Session
         Unavailable
     }
 
+    public enum ResearchResult
+    {
+        Researched,
+        AlreadyKnown,
+        NoTower,
+        AlreadyResearched,
+        NotEnoughMana
+    }
+
+    public enum CastResult
+    {
+        Cast,
+        Unknown,
+        AlreadyCast,
+        NotEnoughMana,
+        NoTarget
+    }
+
     public enum BuildResult
     {
         Built,

@@ -36,7 +36,7 @@ Pragmatic OOP: small mutable objects that own their state and behaviour. No dogm
 
 Planned patterns:
 - **Type Object** — `UnitDefinition` (static data) vs `Unit` (instance with HP, XP).
-- **Command facade** — `GameSession` methods (`TryMove`, `EndTurn`, `Hire`, `Dismiss`, `Build`, `UpgradeCity`, `UseItem`, `Equip`, `BuyItem`, `StartBattle`, `FinishBattle`) validate and execute player intents. The same calls will be issued by Unity UI.
+- **Command facade** — `GameSession` methods (`TryMove`, `EndTurn`, `Hire`, `Dismiss`, `Build`, `UpgradeCity`, `UseItem`, `Equip`, `BuyItem`, `Research`, `Cast`, `StartBattle`, `FinishBattle`) validate and execute player intents. The same calls will be issued by Unity UI.
 - **Events** — the session queues `GameEvent`s (turn started, city captured, level-up, upgrade, victory...) drained by `TakeEvents()`; battles emit `BattleEvent`s. A `GameEvent` carries display names for text and, where it has them, the objects and positions involved (`Party`, `City`, `Site`, `Unit`, `Item`, `From`, `At`); enemy leaders report every step as `EnemyMoved`. A front-end can animate instead of diffing state.
 - **Strategy** — attack reach/targeting (`melee`, `ranged`, `all`) and damage formulas.
 - **State** — console screens (`MapScreen`, `CityScreen`, `BattleScreen`) as a screen stack.
@@ -52,8 +52,9 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Ite
 - `SnapshotMigrator` — upgrades an older snapshot to the current `Version` one step at a time before it is restored. A format change adds a step; a renamed content id adds an entry to `ContentAliases` (`content/aliases.json`) instead, which `GameContent` resolves on lookup.
 - `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
 - `Route` — planned party path with running cost (`GameSession.PlanRoute`); the front-end walks it with `TryMove`.
-- `Site` — passable map object handled on step: treasure, gold mine, mana source, mercenary camp, merchant (`WorldMap.Sites`). Mines and mana sources (`IsResource`) have an owner and pay it every turn.
-- `Mana` — immutable amount of each of the four mana types, used as stock (`GameSession.Mana`), income per turn (`City.Mana`, `Site.Mana`) and price. A treasure's items go to the visiting party; a merchant's items are its stock.
+- `Site` — passable map object handled on step: treasure, gold mine, mana source, mercenary camp, merchant (`WorldMap.Sites`). Mines and mana sources (`IsResource`) have an owner and pay it every turn. A treasure's items go to the visiting party; a merchant's items are its stock.
+- `Mana` — immutable amount of each of the four mana types, used as stock (`GameSession.Mana`), income per turn (`City.Mana`, `Site.Mana`) and price.
+- `SpellDefinition` / `Spellbook` — spell type objects from `spells.json` and the player's researched spells with this turn's research and casts. The commands (`Research`, `SpellTargets`, `Cast`) live in `GameSession.Magic.cs`, a partial of the facade.
 - `City` — owner, garrison, recruits, buildings and tier. The tier sets the garrison capacity and the healing rate from `GameRules`; a snapshot without a tier restores as tier 1, and a garrison larger than its tier allows is kept as is.
 - `Party` — leader, squad and movement. Movement and squad capacity derive from the leader definition plus taken `LeaderPerk`s; one perk per leader level above the first.
 

@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Disciples.Core.Cities;
 using Disciples.Core.Content;
 using Disciples.Core.Items;
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Persistence;
 using Disciples.Core.Units;
@@ -26,10 +27,12 @@ public sealed class ContentLoader(string contentRoot)
         var terrains = Read<List<TerrainData>>("terrains.json").Select(t => new Terrain(t.Id, t.Name, t.MoveCost, t.Symbol));
         var units = Read<List<UnitData>>("units.json").Select(u => ToDefinition(u, rules));
         var buildings = Read<List<BuildingData>>("buildings.json")
-            .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent));
+            .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent, b.Research));
         var items = Read<List<ItemData>>("items.json")
             .Select(i => new ItemDefinition(i.Id, i.Name, i.Kind, i.Cost, i.Heal, new StatBonus(i.Armor, i.PowerPercent, i.Initiative, i.Accuracy)));
-        return new GameContent(units, terrains, buildings, rules, Read<ContentAliases>("aliases.json"), items);
+        var spells = Read<List<SpellData>>("spells.json")
+            .Select(s => new SpellDefinition(s.Id, s.Name, s.Kind, s.Amount, s.ResearchCost, s.CastCost, s.Source ?? AttackSource.Weapon));
+        return new GameContent(units, terrains, buildings, rules, Read<ContentAliases>("aliases.json"), items, spells);
     }
 
     public GameSnapshot LoadScenario(string id) => Read<GameSnapshot>(Path.Combine("maps", id + ".json"));
@@ -56,5 +59,7 @@ public sealed class ContentLoader(string contentRoot)
 
     private sealed record ItemData(string Id, string Name, ItemKind Kind, int Cost, int Heal, int Armor, int PowerPercent, int Initiative, int Accuracy);
 
-    private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires, int HealBonusPercent);
+    private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires, int HealBonusPercent, bool Research);
+
+    private sealed record SpellData(string Id, string Name, SpellKind Kind, int Amount, AttackSource? Source, Mana? ResearchCost, Mana? CastCost);
 }

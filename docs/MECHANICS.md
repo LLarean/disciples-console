@@ -106,7 +106,7 @@ Markers:
 
 | # | Mechanic | Milestone |
 |---|----------|-----------|
-| 8.1 | Spell research in capital, casting on the map | M13 |
+| 8.1 | Spell research in capital, casting on the map | M13 — research needs the Magic Tower in the capital and costs mana, one spell per turn; a known spell is cast for mana once per turn at an explored tile: damage hits every unit of a hostile squad ignoring armor (immune and warded units are spared), healing restores the player's squad; a squad wiped by a spell gives no gold or experience **(verify)** |
 | 8.2 | Summons | Out |
 
 ## 9. Meta

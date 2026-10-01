@@ -13,7 +13,7 @@ using Disciples.Core.Units;
 namespace Disciples.Core.Session
 {
     /// <summary>Command facade over the game state; front-ends call its methods and drain <see cref="TakeEvents"/>.</summary>
-    public sealed class GameSession
+    public sealed partial class GameSession
     {
         private readonly List<GameEvent> _events = new List<GameEvent>();
 
@@ -26,7 +26,7 @@ namespace Disciples.Core.Session
 
         public GameSession(
             GameContent content, WorldMap map, IEnumerable<Party> parties, int gold, IRandom random, int turn = 1, FogOfWar? fog = null, int active = 0,
-            int enemyGold = 0, Mana? mana = null)
+            int enemyGold = 0, Mana? mana = null, Spellbook? spellbook = null)
         {
             _parties = parties.ToList();
             if (active < 0 || active >= _parties.Count)
@@ -38,6 +38,7 @@ namespace Disciples.Core.Session
             Gold = gold;
             EnemyGold = enemyGold;
             Mana = mana ?? Mana.None;
+            Spellbook = spellbook ?? new Spellbook();
             Random = random;
             Turn = turn;
             Fog = fog ?? new FogOfWar(map.Width, map.Height);
@@ -173,6 +174,7 @@ namespace Disciples.Core.Session
             ClaimMines();
             Gold += IncomeOf(Owner.Player);
             Mana = Mana.Plus(ManaIncome);
+            Spellbook.StartTurn();
 
             foreach (var city in Map.Cities.Where(c => c.IsPlayerOwned))
             {

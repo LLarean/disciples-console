@@ -1,5 +1,6 @@
 using Disciples.Core.Cities;
 using Disciples.Core.Items;
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
@@ -22,6 +23,9 @@ namespace Disciples.Core.Session
         /// <summary>A mine or a mana source became the player's; see <see cref="GameEvent.Site"/>.</summary>
         MineCaptured,
         MineLost,
+        SpellCast,
+        /// <summary>A hostile squad was wiped out by a spell.</summary>
+        SquadDestroyed,
         UnitLeveledUp,
         UnitUpgraded,
         UnitAwaitsBuilding,
@@ -56,6 +60,7 @@ namespace Disciples.Core.Session
         public Site? Site { get; internal set; }
         public Unit? Unit { get; internal set; }
         public ItemDefinition? Item { get; internal set; }
+        public SpellDefinition? Spell { get; internal set; }
 
         /// <summary>Where a moving party came from.</summary>
         public Position? From { get; internal set; }

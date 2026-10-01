@@ -2,7 +2,7 @@ namespace Disciples.Core.Cities
 {
     public sealed class Building
     {
-        public Building(string id, string name, string branch, int cost, string description, string? requires, int healBonusPercent = 0)
+        public Building(string id, string name, string branch, int cost, string description, string? requires, int healBonusPercent = 0, bool allowsResearch = false)
         {
             Id = id;
             Name = name;
@@ -11,6 +11,7 @@ namespace Disciples.Core.Cities
             Description = description;
             Requires = requires;
             HealBonusPercent = healBonusPercent;
+            AllowsResearch = allowsResearch;
         }
 
         public string Id { get; }
@@ -24,5 +25,8 @@ namespace Disciples.Core.Cities
 
         /// <summary>Extra healing per turn in player cities once built in the capital.</summary>
         public int HealBonusPercent { get; }
+
+        /// <summary>Spells can be researched once it is built in the capital.</summary>
+        public bool AllowsResearch { get; }
     }
 }

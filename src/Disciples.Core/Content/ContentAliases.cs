@@ -9,5 +9,6 @@ namespace Disciples.Core.Content
         public Dictionary<string, string> Terrains { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Buildings { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> Items { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Spells { get; set; } = new Dictionary<string, string>();
     }
 }
