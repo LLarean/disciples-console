@@ -90,10 +90,9 @@ public sealed class CityScreen : Screen
     private void UpdateSquadView(SquadView view, Squad squad, Focus focus, SquadSlot cursor)
     {
         var isFocused = _focus == focus;
-        var picked = _picked is { } p && p.Squad == squad ? squad.UnitAt(p.Slot) : null;
         view.IsFocused = isFocused;
         view.Selection = isFocused ? cursor : null;
-        view.Highlight = unit => unit == picked ? Palette.Picked : null;
+        view.Picked = _picked is { } picked && picked.Squad == squad ? squad.UnitAt(picked.Slot) : null;
     }
 
     private void Back()

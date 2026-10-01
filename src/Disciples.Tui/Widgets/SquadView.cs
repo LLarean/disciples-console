@@ -24,6 +24,7 @@ public sealed class SquadView : Canvas
     public Squad? Squad { get; set; }
     public bool FacesLeft { get; }
     public SquadSlot? Selection { get; set; }
+    public Unit? Picked { get; set; }
     public Func<Unit, Color?> Highlight { get; set; } = _ => null;
 
     protected override void Draw()
@@ -71,7 +72,7 @@ public sealed class SquadView : Canvas
 
     private void DrawCard(int x, int y, int width, Unit unit, bool isCursor)
     {
-        var color = isCursor ? Palette.Accent : Highlight(unit) ?? (unit.IsAlive ? Palette.Dim : Palette.Faint);
+        var color = unit == Picked ? Palette.Picked : isCursor ? Palette.Accent : Highlight(unit) ?? (unit.IsAlive ? Palette.Dim : Palette.Faint);
         this.Box(x, y, width, CardHeight, color, isCursor);
 
         var name = ViewDrawing.Fit(unit.Name, width - 4);

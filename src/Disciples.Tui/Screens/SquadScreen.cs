@@ -54,11 +54,10 @@ public sealed class SquadScreen : Screen
 
     protected override void UpdateViews()
     {
-        var picked = _picked is { } slot ? Squad.UnitAt(slot) : null;
         _squadView.Squad = Squad;
         _squadView.Title = $"Party {Squad.UsedSlots}/{Squad.Capacity}";
         _squadView.Selection = _cursor;
-        _squadView.Highlight = unit => unit == picked ? Palette.Picked : null;
+        _squadView.Picked = _picked is { } slot ? Squad.UnitAt(slot) : null;
     }
 
     private void Back()
