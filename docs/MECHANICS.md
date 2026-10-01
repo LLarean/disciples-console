@@ -73,7 +73,7 @@ Markers:
 | 5.6 | Heal units in own city (per turn) | M3 |
 | 5.7 | City tiers 1–5 with garrison size and healing rate | M12 — tier adds a garrison slot and `cityTierHealPercent` healing; upgraded for gold (`cityUpgradeCosts`); the capital is always at the top tier; numbers are placeholders **(verify)** |
 | 5.8 | Capture neutral/enemy city (battle vs garrison) | M5 — empty garrison is captured on entry |
-| 5.9 | Capital guardian (strong unit guarding the capital) | M12 |
+| 5.9 | Capital guardian (strong unit guarding the capital) | M12 — a unit flagged `guardian` in the garrison: cannot leave it or be dismissed, fully restored every turn, takes a garrison slot; stays dead once slain **(verify)** |
 | 5.10 | Capital buildings: unit-tree branches, magic tower, temple | M6; M8 — temple adds `healBonusPercent` to healing in player cities **(verify: original temple heals/resurrects for gold)** |
 | 5.11 | Hire leaders in capital | M10 — any leader class for its `cost`; the party appears in the capital, which must have no visitor; leader limit **(verify)** |
 

@@ -166,6 +166,9 @@ namespace Disciples.Core.Session
                     HealSquad(visitor.Squad, city);
             }
 
+            foreach (var guardian in Map.Cities.SelectMany(c => c.Garrison.AliveUnits).Where(u => u.IsGuardian))
+                guardian.Heal(guardian.MaxHp);
+
             _events.Add(new GameEvent(GameEventKind.TurnStarted, amount: Turn));
         }
 
@@ -242,7 +245,7 @@ namespace Disciples.Core.Session
 
         public bool Dismiss(Squad squad, Unit unit)
         {
-            if (unit.IsLeader || !squad.Contains(unit))
+            if (unit.IsLeader || unit.IsGuardian || !squad.Contains(unit))
                 return false;
 
             squad.Remove(unit);

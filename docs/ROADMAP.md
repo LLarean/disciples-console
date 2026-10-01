@@ -79,7 +79,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## M12 — Cities and opponents
 - [x] City tiers 1–5: garrison size, healing rate, upgrade for gold (5.7) — `U` in the city; numbers in `rules.json`, capital fixed at the top tier
-- [ ] Capital guardian (5.9)
+- [x] Capital guardian (5.9) — a `guardian` unit in the garrison; Grimhold became the enemy capital with one
 - [ ] Enemy economy: income, hiring, healing; enemy leaders take treasure and mines (2.5)
 - [ ] Front-end events: enemy movement step by step, events carry objects and positions instead of names
 
@@ -109,6 +109,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Leaders of one class share a name, so the log cannot tell two Paladins apart; no cap on the number of leaders **(verify)**
 - [ ] Items: no leader abilities gate artifacts and banners, potions only heal and work only on the map, the bag is unlimited and is lost with the party, merchants don't buy items **(verify)**; battle cards show power without item bonuses
 - [ ] City tiers: garrison slots, healing and upgrade costs per tier are placeholders; income does not grow with the tier **(verify)**
+- [ ] Guardian: a slain guardian does not return; it is an ordinary garrison unit rather than a separate defender slot **(verify)**
 - [ ] Losing the last leader loses the game even with gold to hire a new one **(verify: the original loses on the capital)**
 - [ ] Experience is split evenly among survivors, rounded up **(verify original rule)**
 - [ ] Level growth is a flat % of base HP and power; armor, accuracy, initiative don't grow **(verify)**

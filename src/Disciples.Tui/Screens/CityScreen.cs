@@ -56,7 +56,7 @@ public sealed class CityScreen : Screen
 
         if (key == Key.Esc)
             Back();
-        else if (key == Key.B && _city.IsCapital)
+        else if (key == Key.B && _city.Buildings.Count > 0)
             Shell.Push(new BuildingsScreen(_session, _city));
         else if (key == Key.L && _city.IsCapital)
             Shell.Push(new LeaderScreen(_session, _city));
@@ -175,7 +175,7 @@ public sealed class CityScreen : Screen
 
         _picked = null;
         if (!SquadTransfer.Move(picked.Squad, picked.Slot, squad, cursor))
-            _message = ("Can't move there: no room, or the leader would leave the party.", Palette.Bad);
+            _message = ("Can't move there: no room, or a leader or guardian would leave its squad.", Palette.Bad);
     }
 
     private void Dismiss()
@@ -186,7 +186,7 @@ public sealed class CityScreen : Screen
         _picked = null;
         _message = _session.Dismiss(FocusedSquad, unit)
             ? ($"{unit.Name} dismissed.", Palette.Dim)
-            : ("The leader can't be dismissed.", Palette.Bad);
+            : ($"{unit.Name} can't be dismissed.", Palette.Bad);
     }
 
     private void Upgrade()
@@ -256,11 +256,10 @@ public sealed class CityScreen : Screen
         yield return ("D", "dismiss");
         if (_city.UpgradeCost is { } cost)
             yield return ("U", $"upgrade {cost}g");
-        if (_city.IsCapital)
-        {
+        if (_city.Buildings.Count > 0)
             yield return ("B", "buildings");
+        if (_city.IsCapital)
             yield return ("L", "hire leader");
-        }
         yield return ("Esc", _picked == null ? "leave" : "cancel");
     }
 }

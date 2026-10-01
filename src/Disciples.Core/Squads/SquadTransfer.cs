@@ -1,10 +1,13 @@
+using Disciples.Core.Units;
+
 namespace Disciples.Core.Squads
 {
     public static class SquadTransfer
     {
         /// <summary>
         /// Moves the unit at <paramref name="fromSlot"/> to <paramref name="toSlot"/>, swapping with the unit there if any.
-        /// Works within one squad or between two. Leaves both squads unchanged when the result would not fit.
+        /// Works within one squad or between two. Leaves both squads unchanged when the result would not fit
+        /// or when a leader or a guardian would change squads.
         /// </summary>
         public static bool Move(Squad from, SquadSlot fromSlot, Squad to, SquadSlot toSlot)
         {
@@ -16,8 +19,7 @@ namespace Disciples.Core.Squads
             if (displaced == moving)
                 return false;
 
-            var leaderChangesSquad = from != to && (moving.IsLeader || displaced?.IsLeader == true);
-            if (leaderChangesSquad)
+            if (from != to && (IsBound(moving) || displaced != null && IsBound(displaced)))
                 return false;
 
             var movingOrigin = from.SlotOf(moving);
@@ -39,5 +41,7 @@ namespace Disciples.Core.Squads
             from.TryPlace(moving, movingOrigin);
             return false;
         }
+
+        private static bool IsBound(Unit unit) => unit.IsLeader || unit.IsGuardian;
     }
 }

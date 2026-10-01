@@ -27,6 +27,7 @@ namespace Disciples.Core.Units
         public bool IsAlive => Hp > 0;
         public bool IsLarge => Definition.Size == UnitSize.Large;
         public bool IsLeader => Definition.IsLeader;
+        public bool IsGuardian => Definition.IsGuardian;
         public bool IsWounded => IsAlive && Hp < MaxHp;
 
         public int TakeDamage(int amount)

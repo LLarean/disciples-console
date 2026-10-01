@@ -27,7 +27,8 @@ namespace Disciples.Core.Units
             AttackSource source = AttackSource.Weapon,
             IEnumerable<AttackSource>? immunities = null,
             IEnumerable<AttackSource>? wards = null,
-            AttackEffect effect = AttackEffect.None)
+            AttackEffect effect = AttackEffect.None,
+            bool guardian = false)
         {
             Id = id;
             Name = name;
@@ -50,6 +51,7 @@ namespace Disciples.Core.Units
             Immunities = immunities?.ToList() ?? new List<AttackSource>();
             Wards = wards?.ToList() ?? new List<AttackSource>();
             Effect = effect;
+            IsGuardian = guardian;
         }
 
         public string Id { get; }
@@ -102,6 +104,9 @@ namespace Disciples.Core.Units
         public int Movement { get; }
 
         public bool IsLeader => Leadership > 0;
+
+        /// <summary>Bound to its city: never leaves the garrison, cannot be dismissed and is fully restored every turn.</summary>
+        public bool IsGuardian { get; }
         public int SlotCount => Size == UnitSize.Large ? 2 : 1;
     }
 }

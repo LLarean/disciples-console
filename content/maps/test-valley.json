@@ -67,7 +67,14 @@
         "apprentice",
         "acolyte"
       ],
-      "buildings": true
+      "buildings": true,
+      "garrison": [
+        {
+          "id": "myzrael",
+          "line": "back",
+          "column": 1
+        }
+      ]
     },
     {
       "name": "Wolfsdale",
@@ -111,10 +118,9 @@
       "name": "Grimhold",
       "x": 37,
       "y": 17,
-      "capital": false,
+      "capital": true,
       "owner": "enemy",
       "income": 75,
-      "tier": 2,
       "recruits": [
         "goblin",
         "goblin-archer"
@@ -122,6 +128,11 @@
       "garrison": [
         {
           "id": "orc",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "orc-king",
           "line": "front",
           "column": 1
         }

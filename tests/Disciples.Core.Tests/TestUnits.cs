@@ -15,6 +15,8 @@ internal static class TestUnits
     public static readonly UnitDefinition Acolyte = new("acolyte", "Acolyte", 50, 0, 10, 20, 100, AttackType.Heal, UnitSize.Small, 50);
     public static readonly UnitDefinition Ogre = new("ogre", "Ogre", 300, 0, 20, 65, 80, AttackType.Melee, UnitSize.Large, 200);
 
+    public static readonly UnitDefinition Guardian = new("guardian", "Guardian", 400, 0, 50, 60, 80, AttackType.Melee, UnitSize.Small, 0, guardian: true);
+
     public static readonly UnitDefinition Recruit = new("recruit", "Recruit", 50, 0, 50, 20, 80, AttackType.Melee, UnitSize.Small, 30,
         experienceToLevel: 50, experienceValue: 25, levelGrowthPercent: 10, upgradesTo: "veteran", upgradeBuilding: "barracks");
     public static readonly UnitDefinition Veteran = new("veteran", "Veteran", 80, 0, 50, 30, 80, AttackType.Melee, UnitSize.Small, 0,
@@ -30,7 +32,7 @@ internal static class TestUnits
     public static readonly ItemDefinition Banner = new("banner", "Banner", ItemKind.Banner, 400, bonus: new StatBonus(armor: 10, accuracy: 5));
 
     public static GameContent TestContent { get; } = new(
-        [Knight, Ranger, Squire, Archer, Mage, Acolyte, Ogre, Recruit, Veteran],
+        [Knight, Ranger, Squire, Archer, Mage, Acolyte, Ogre, Guardian, Recruit, Veteran],
         [Plains, Road, Water],
         [],
         new GameRules(),

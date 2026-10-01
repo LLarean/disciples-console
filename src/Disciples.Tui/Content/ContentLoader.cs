@@ -37,7 +37,7 @@ public sealed class ContentLoader(string contentRoot)
     private static UnitDefinition ToDefinition(UnitData d, GameRules rules) =>
         new(d.Id, d.Name, d.Hp, d.Armor, d.Initiative, d.Power, d.Accuracy, d.Attack, d.Size, d.Cost, d.Leadership,
             d.ExperienceToLevel ?? 100, d.ExperienceValue, d.LevelGrowthPercent ?? rules.LevelGrowthPercent,
-            d.UpgradesTo, d.UpgradeBuilding, d.Movement, d.Source ?? AttackSource.Weapon, d.Immunities, d.Wards, d.Effect ?? AttackEffect.None);
+            d.UpgradesTo, d.UpgradeBuilding, d.Movement, d.Source ?? AttackSource.Weapon, d.Immunities, d.Wards, d.Effect ?? AttackEffect.None, d.Guardian);
 
     private T Read<T>(string relativePath)
     {
@@ -52,7 +52,7 @@ public sealed class ContentLoader(string contentRoot)
         string Id, string Name, int Hp, int Armor, int Initiative, int Power, int Accuracy,
         AttackType Attack, UnitSize Size, int Cost, int Leadership, int Movement,
         int? ExperienceToLevel, int ExperienceValue, int? LevelGrowthPercent, string? UpgradesTo, string? UpgradeBuilding,
-        AttackSource? Source, List<AttackSource>? Immunities, List<AttackSource>? Wards, AttackEffect? Effect);
+        AttackSource? Source, List<AttackSource>? Immunities, List<AttackSource>? Wards, AttackEffect? Effect, bool Guardian);
 
     private sealed record ItemData(string Id, string Name, ItemKind Kind, int Cost, int Heal, int Armor, int PowerPercent, int Initiative, int Accuracy);
 

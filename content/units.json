@@ -26,5 +26,7 @@
   { "id": "ogre", "name": "Ogre", "hp": 300, "armor": 0, "initiative": 20, "power": 65, "accuracy": 80, "attack": "melee", "size": "large", "cost": 200, "experienceValue": 120 },
   { "id": "ghost", "name": "Ghost", "hp": 60, "armor": 0, "initiative": 50, "power": 15, "accuracy": 70, "attack": "melee", "size": "small", "cost": 0, "experienceValue": 40, "source": "mind", "effect": "paralysis", "immunities": ["mind"] },
   { "id": "wight", "name": "Wight", "hp": 110, "armor": 0, "initiative": 40, "power": 30, "accuracy": 80, "attack": "melee", "size": "small", "cost": 0, "experienceValue": 60, "source": "death", "effect": "drain", "immunities": ["death"] },
-  { "id": "gorgon", "name": "Gorgon", "hp": 90, "armor": 0, "initiative": 45, "power": 20, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 0, "experienceValue": 60, "source": "earth", "effect": "petrification" }
+  { "id": "gorgon", "name": "Gorgon", "hp": 90, "armor": 0, "initiative": 45, "power": 20, "accuracy": 75, "attack": "ranged", "size": "small", "cost": 0, "experienceValue": 60, "source": "earth", "effect": "petrification" },
+  { "id": "myzrael", "name": "Myzrael", "hp": 600, "armor": 40, "initiative": 70, "power": 90, "accuracy": 95, "attack": "allEnemies", "size": "small", "cost": 0, "experienceValue": 400, "source": "life", "guardian": true },
+  { "id": "orc-king", "name": "Orc King", "hp": 500, "armor": 20, "initiative": 45, "power": 80, "accuracy": 85, "attack": "melee", "size": "small", "cost": 0, "experienceValue": 300, "guardian": true }
 ]
