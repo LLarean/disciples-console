@@ -40,11 +40,14 @@ public sealed class MapScreen : Screen
     private IEnumerable<(string, string)> MapHints =>
     [
         ("←↑→↓", "/ numpad — move"), ("T", "travel"), .. _destination != null ? [("G", "go on")] : Array.Empty<(string, string)>(),
-        ("Enter", "city"), ("C", "capital"), ("S", "squad"), ("I", "items"), ("M", "spells"), .. RodHint, .. NextLeaderHint, .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")
+        ("Enter", "city"), ("C", "capital"), ("S", "squad"), ("I", "items"), ("M", "spells"), .. RodHint, .. ThiefHint, .. NextLeaderHint, .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")
     ];
 
     private IEnumerable<(string, string)> RodHint =>
         _session.CanPlantRods ? [("R", "plant rod")] : [];
+
+    private IEnumerable<(string, string)> ThiefHint =>
+        _session.IsThief ? [("K", "thief")] : [];
 
     private IEnumerable<(string, string)> NextLeaderHint =>
         _session.Parties.Count > 1 ? [("Tab", "next leader")] : [];
@@ -91,6 +94,8 @@ public sealed class MapScreen : Screen
             Shell.Push(new ItemsScreen(_session));
         else if (key == Key.M)
             Shell.Push(new SpellsScreen(_flow, _session));
+        else if (key == Key.K && _session.IsThief)
+            Shell.Push(new ThiefScreen(_flow, _session));
         else if (key == Key.R && _session.CanPlantRods)
             PlantRod();
         else if (key == Key.L && _session.Party.UnspentPerks > 0)

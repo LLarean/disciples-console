@@ -11,10 +11,14 @@ public sealed class LeaderScreen(GameSession session, City capital) : MenuScreen
 
     protected override IReadOnlyList<MenuItem> Items =>
         session.Content.LeaderClasses
-            .Select(c => new MenuItem($"{c.Name} {c.Cost}g", () => Hire(c), Detail: ClassScreen.Describe(c)))
+            .Select(c => new MenuItem($"{c.Name} {c.Cost}g", () => Hire(c), IsOffered(c), IsOffered(c) ? ClassScreen.Describe(c) : $"needs {GuildName}"))
             .ToList();
 
     protected override void Back() => Shell.Pop();
+
+    private string GuildName => session.Content.Buildings.FirstOrDefault(b => b.AllowsThieves)?.Name ?? "a thieves guild";
+
+    private bool IsOffered(UnitDefinition leader) => !leader.IsThief || session.CanHireThieves;
 
     private void Hire(UnitDefinition leader)
     {

@@ -213,12 +213,12 @@ namespace Disciples.Core.Session
         }
 
         /// <summary>
-        /// Hires a leader of one of the leader classes in the capital. The new party appears there and becomes active,
-        /// so the capital must have no visiting party.
+        /// Hires a leader of one of the leader classes in the capital; a thief needs the thieves guild built there.
+        /// The new party appears in the capital and becomes active, so the capital must have no visiting party.
         /// </summary>
         public HireResult HireLeader(City city, UnitDefinition leader)
         {
-            if (!city.IsCapital || !city.IsPlayerOwned || !Rules.LeaderClasses.Contains(leader.Id))
+            if (!city.IsCapital || !city.IsPlayerOwned || !Rules.LeaderClasses.Contains(leader.Id) || leader.IsThief && !CanHireThieves)
                 return HireResult.Unavailable;
 
             if (PartyAt(city.Position) != null)

@@ -29,7 +29,8 @@ namespace Disciples.Core.Units
             IEnumerable<AttackSource>? wards = null,
             AttackEffect effect = AttackEffect.None,
             bool guardian = false,
-            bool plantsRods = false)
+            bool plantsRods = false,
+            bool thief = false)
         {
             Id = id;
             Name = name;
@@ -54,6 +55,7 @@ namespace Disciples.Core.Units
             Effect = effect;
             IsGuardian = guardian;
             PlantsRods = plantsRods;
+            IsThief = thief;
         }
 
         public string Id { get; }
@@ -112,6 +114,9 @@ namespace Disciples.Core.Units
 
         /// <summary>A leader that can plant rods to claim land.</summary>
         public bool PlantsRods { get; }
+
+        /// <summary>A leader hired through the thieves guild that acts against adjacent hostile squads.</summary>
+        public bool IsThief { get; }
 
         public int SlotCount => Size == UnitSize.Large ? 2 : 1;
     }

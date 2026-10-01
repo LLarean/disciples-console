@@ -76,7 +76,19 @@ namespace Disciples.Core.Content
         /// <summary>Percent of dealt damage a drainer restores to itself.</summary>
         public int DrainPercent { get; set; } = 50;
 
-        /// <summary>Leader unit ids offered when starting a new game.</summary>
+        /// <summary>Chance in percent that a thief's action succeeds.</summary>
+        public int ThiefSuccessPercent { get; set; } = 70;
+
+        /// <summary>Damage a caught thief takes.</summary>
+        public int ThiefFailureDamage { get; set; } = 40;
+
+        /// <summary>Damage the thief's poison deals to every unit of a squad; it never kills.</summary>
+        public int ThiefPoisonDamage { get; set; } = 25;
+
+        /// <summary>Most gold a thief takes from the enemy treasury at once.</summary>
+        public int ThiefStealGold { get; set; } = 100;
+
+        /// <summary>Leader unit ids offered when starting a new game and for hire in the capital.</summary>
         public List<string> LeaderClasses { get; set; } = new List<string>();
 
         /// <summary>Leader unit ids the enemy hires in its capital; none means it never hires leaders.</summary>

@@ -77,6 +77,16 @@ namespace Disciples.Core.Session
         NotEnoughGold
     }
 
+    public enum ThiefResult
+    {
+        Done,
+        Caught,
+        NotAThief,
+        Exhausted,
+        NoTarget,
+        Pointless
+    }
+
     public enum BuildResult
     {
         Built,

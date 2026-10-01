@@ -22,7 +22,11 @@
   "effectTurns": 2,
   "poisonPercent": 50,
   "drainPercent": 50,
-  "leaderClasses": ["paladin", "ranger", "archmage", "archangel"],
+  "thiefSuccessPercent": 70,
+  "thiefFailureDamage": 40,
+  "thiefPoisonDamage": 25,
+  "thiefStealGold": 100,
+  "leaderClasses": ["paladin", "ranger", "archmage", "archangel", "thief"],
   "enemyLeaderClasses": ["orc-warlord"],
   "enemyLeaderLimit": 3
 }

@@ -26,6 +26,10 @@ public static class GameEventText
         GameEventKind.RodPlanted => $"{e.Subject} plants a rod for {e.Amount} gold; the land around is yours.",
         GameEventKind.RodDestroyed => $"{e.Subject} breaks an enemy rod.",
         GameEventKind.RodLost => $"{e.Subject} breaks your rod.",
+        GameEventKind.ThiefPoisoned => $"{e.Subject} poisons {e.Detail}: {e.Amount} damage.",
+        GameEventKind.ThiefAssassinated => $"{e.Subject} kills {e.Detail}.",
+        GameEventKind.ThiefStole => $"{e.Subject} steals {e.Amount} gold from {e.Detail}.",
+        GameEventKind.ThiefCaught => $"{e.Subject} is caught by {e.Detail} and loses {e.Amount} HP.",
         GameEventKind.SpellCast => e.Spell?.Kind == SpellKind.Heal
             ? $"{e.Subject} heals {e.Detail} by {e.Amount}."
             : $"{e.Subject} hits {e.Detail} for {e.Amount}.",

@@ -2,7 +2,7 @@ namespace Disciples.Core.Cities
 {
     public sealed class Building
     {
-        public Building(string id, string name, string branch, int cost, string description, string? requires, int healBonusPercent = 0, bool allowsResearch = false)
+        public Building(string id, string name, string branch, int cost, string description, string? requires, int healBonusPercent = 0, bool allowsResearch = false, bool allowsThieves = false)
         {
             Id = id;
             Name = name;
@@ -12,6 +12,7 @@ namespace Disciples.Core.Cities
             Requires = requires;
             HealBonusPercent = healBonusPercent;
             AllowsResearch = allowsResearch;
+            AllowsThieves = allowsThieves;
         }
 
         public string Id { get; }
@@ -28,5 +29,8 @@ namespace Disciples.Core.Cities
 
         /// <summary>Spells can be researched once it is built in the capital.</summary>
         public bool AllowsResearch { get; }
+
+        /// <summary>Thief leaders can be hired once it is built in the capital.</summary>
+        public bool AllowsThieves { get; }
     }
 }

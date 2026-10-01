@@ -28,8 +28,13 @@ namespace Disciples.Core.Session
         RodDestroyed,
         /// <summary>An enemy leader broke a rod of the player.</summary>
         RodLost,
+        ThiefPoisoned,
+        /// <summary>A thief killed <see cref="GameEvent.Unit"/>.</summary>
+        ThiefAssassinated,
+        ThiefStole,
+        ThiefCaught,
         SpellCast,
-        /// <summary>A hostile squad was wiped out by a spell.</summary>
+        /// <summary>A hostile squad was wiped out by a spell or a thief.</summary>
         SquadDestroyed,
         UnitLeveledUp,
         UnitUpgraded,

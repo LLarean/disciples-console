@@ -27,7 +27,7 @@ public sealed class ContentLoader(string contentRoot)
         var terrains = Read<List<TerrainData>>("terrains.json").Select(t => new Terrain(t.Id, t.Name, t.MoveCost, t.Symbol));
         var units = Read<List<UnitData>>("units.json").Select(u => ToDefinition(u, rules));
         var buildings = Read<List<BuildingData>>("buildings.json")
-            .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent, b.Research));
+            .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent, b.Research, b.Thieves));
         var items = Read<List<ItemData>>("items.json")
             .Select(i => new ItemDefinition(i.Id, i.Name, i.Kind, i.Cost, i.Heal, new StatBonus(i.Armor, i.PowerPercent, i.Initiative, i.Accuracy)));
         var spells = Read<List<SpellData>>("spells.json")
@@ -40,7 +40,7 @@ public sealed class ContentLoader(string contentRoot)
     private static UnitDefinition ToDefinition(UnitData d, GameRules rules) =>
         new(d.Id, d.Name, d.Hp, d.Armor, d.Initiative, d.Power, d.Accuracy, d.Attack, d.Size, d.Cost, d.Leadership,
             d.ExperienceToLevel ?? 100, d.ExperienceValue, d.LevelGrowthPercent ?? rules.LevelGrowthPercent,
-            d.UpgradesTo, d.UpgradeBuilding, d.Movement, d.Source ?? AttackSource.Weapon, d.Immunities, d.Wards, d.Effect ?? AttackEffect.None, d.Guardian, d.Rods);
+            d.UpgradesTo, d.UpgradeBuilding, d.Movement, d.Source ?? AttackSource.Weapon, d.Immunities, d.Wards, d.Effect ?? AttackEffect.None, d.Guardian, d.Rods, d.Thief);
 
     private T Read<T>(string relativePath)
     {
@@ -55,11 +55,11 @@ public sealed class ContentLoader(string contentRoot)
         string Id, string Name, int Hp, int Armor, int Initiative, int Power, int Accuracy,
         AttackType Attack, UnitSize Size, int Cost, int Leadership, int Movement,
         int? ExperienceToLevel, int ExperienceValue, int? LevelGrowthPercent, string? UpgradesTo, string? UpgradeBuilding,
-        AttackSource? Source, List<AttackSource>? Immunities, List<AttackSource>? Wards, AttackEffect? Effect, bool Guardian, bool Rods);
+        AttackSource? Source, List<AttackSource>? Immunities, List<AttackSource>? Wards, AttackEffect? Effect, bool Guardian, bool Rods, bool Thief);
 
     private sealed record ItemData(string Id, string Name, ItemKind Kind, int Cost, int Heal, int Armor, int PowerPercent, int Initiative, int Accuracy);
 
-    private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires, int HealBonusPercent, bool Research);
+    private sealed record BuildingData(string Id, string Name, string Branch, int Cost, string Description, string? Requires, int HealBonusPercent, bool Research, bool Thieves);
 
     private sealed record SpellData(string Id, string Name, SpellKind Kind, int Amount, AttackSource? Source, Mana? ResearchCost, Mana? CastCost);
 }
