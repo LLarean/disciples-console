@@ -4,6 +4,7 @@ namespace Disciples.Core.Session
     {
         Moved,
         OutOfBounds,
+        Occupied,
         Impassable,
         NotEnoughMovement,
         EnemyEncountered,

@@ -68,7 +68,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Territory (1.8): cities claim land around them, nearest city wins; mines on owned land pass to its owner at turn end
 
 ## M10 — Several leaders
-- [ ] Session holds several player parties, one of them active; commands act on the active party (4.8)
+- [x] Session holds several player parties, one of them active; commands act on the active party (4.8) — parties block each other's tiles; saves moved to snapshot version 2
 - [ ] Hire leaders in the capital (5.11); switch between parties on the map
 - [ ] Leader death disbands only that party; the game is lost when no leader is left (4.9)
 

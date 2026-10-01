@@ -58,7 +58,7 @@ Markers:
 | 4.5 | Leader classes: warrior, scout, mage, thief — differ in stats and movement | M8 — Paladin, Ranger, Archmage chosen on new game; thief in Backlog |
 | 4.6 | Leader progression: level-up picks (leadership, movement, abilities) | M8 — simplified: one pick per level, +1 leadership (up to 6) or +`movementPerk` movement; abilities in Backlog **(verify: starting leadership and pick list)** |
 | 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | M11 |
-| 4.8 | Several leaders per player | M10 |
+| 4.8 | Several leaders per player | M10 — one party is active; parties cannot share a tile; an attacked party becomes active |
 | 4.9 | Squad loses leader → squad is disbanded | M4 — simplified: player has a single party, so the game is lost; M8 — enemy squads are disbanded |
 
 ## 5. Capital and cities

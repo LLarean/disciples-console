@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "map": {
     "name": "Test Valley",
     "legend": {
@@ -37,17 +37,19 @@
   },
   "turn": 1,
   "gold": 300,
-  "party": {
-    "x": 4,
-    "y": 10,
-    "units": [
-      {
-        "id": "paladin",
-        "line": "front",
-        "column": 1
-      }
-    ]
-  },
+  "parties": [
+    {
+      "x": 4,
+      "y": 10,
+      "units": [
+        {
+          "id": "paladin",
+          "line": "front",
+          "column": 1
+        }
+      ]
+    }
+  ],
   "cities": [
     {
       "name": "Imperial Capital",

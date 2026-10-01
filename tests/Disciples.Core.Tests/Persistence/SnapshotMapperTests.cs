@@ -20,16 +20,19 @@ public class SnapshotMapperTests
             Rows = ["..=", ".~=", "..="]
         },
         Gold = 200,
-        Party = new PartySnapshot
-        {
-            X = 0,
-            Y = 0,
-            Units =
-            [
-                new UnitSnapshot { Id = "knight", Line = SquadLine.Front, Column = 1 },
-                new UnitSnapshot { Id = "recruit", Line = SquadLine.Back, Column = 0, Level = 2, Experience = 5, Hp = 10 }
-            ]
-        },
+        Parties =
+        [
+            new PartySnapshot
+            {
+                X = 0,
+                Y = 0,
+                Units =
+                [
+                    new UnitSnapshot { Id = "knight", Line = SquadLine.Front, Column = 1 },
+                    new UnitSnapshot { Id = "recruit", Line = SquadLine.Back, Column = 0, Level = 2, Experience = 5, Hp = 10 }
+                ]
+            }
+        ],
         Cities =
         [
             new CitySnapshot { Name = "Home", X = 2, Y = 0, Capital = true, Owner = Owner.Player, Income = 50, Recruits = ["squire"] },
@@ -110,6 +113,47 @@ public class SnapshotMapperTests
         var enemy = restored.Map.Enemies.Single();
         Assert.Equal((new Position(0, 2), 3, 14), (enemy.Position, enemy.MovementPoints, enemy.MaxMovementPoints));
         Assert.Same(Knight, enemy.Leader.Definition);
+    }
+
+    [Fact]
+    public void CaptureThenRestore_KeepsEveryPartyAndTheActiveOne()
+    {
+        var snapshot = Scenario();
+        snapshot.Parties.Add(new PartySnapshot
+        {
+            X = 0, Y = 1, MovementPoints = 4,
+            Units = [new UnitSnapshot { Id = "knight", Line = SquadLine.Front, Column = 0 }]
+        });
+        snapshot.Active = 1;
+
+        var restored = Restore(SnapshotMapper.Capture(Restore(snapshot)));
+
+        Assert.Equal([new Position(0, 0), new Position(0, 1)], restored.Parties.Select(p => p.Position));
+        Assert.Same(restored.Parties[1], restored.Party);
+        Assert.Equal(4, restored.Party.MovementPoints);
+    }
+
+    [Fact]
+    public void Restore_VersionOneSave_TurnsTheSinglePartyIntoTheList()
+    {
+        var snapshot = Scenario();
+        snapshot.Version = 1;
+        snapshot.Party = snapshot.Parties[0];
+        snapshot.Parties.Clear();
+
+        var session = Restore(snapshot);
+
+        Assert.Same(Knight, session.Parties.Single().Leader.Definition);
+        Assert.Equal(SnapshotMigrator.Default.CurrentVersion, snapshot.Version);
+    }
+
+    [Fact]
+    public void Restore_NoParty_Throws()
+    {
+        var snapshot = Scenario();
+        snapshot.Parties.Clear();
+
+        Assert.Throws<ContentException>(() => Restore(snapshot));
     }
 
     [Fact]

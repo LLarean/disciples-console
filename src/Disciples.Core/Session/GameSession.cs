@@ -15,11 +15,23 @@ namespace Disciples.Core.Session
     {
         private readonly List<GameEvent> _events = new List<GameEvent>();
 
+        private readonly List<Party> _parties;
+
         public GameSession(GameContent content, WorldMap map, Party party, int gold, IRandom random, int turn = 1, FogOfWar? fog = null)
+            : this(content, map, new[] { party }, gold, random, turn, fog)
         {
+        }
+
+        public GameSession(
+            GameContent content, WorldMap map, IEnumerable<Party> parties, int gold, IRandom random, int turn = 1, FogOfWar? fog = null, int active = 0)
+        {
+            _parties = parties.ToList();
+            if (active < 0 || active >= _parties.Count)
+                throw new ArgumentException("The active party is not among the player's parties.", nameof(active));
+
             Content = content;
             Map = map;
-            Party = party;
+            Party = _parties[active];
             Gold = gold;
             Random = random;
             Turn = turn;
@@ -27,7 +39,8 @@ namespace Disciples.Core.Session
             Territory = new Territory(map, Rules.CapitalTerritoryRadius, Rules.CityTerritoryRadius);
             foreach (var city in map.Cities.Where(c => c.IsPlayerOwned))
                 Fog.Reveal(city.Position, Rules.SightRadius);
-            RevealAroundParty();
+            foreach (var party in _parties)
+                RevealAround(party);
         }
 
         public GameContent Content { get; }
@@ -35,7 +48,11 @@ namespace Disciples.Core.Session
         public WorldMap Map { get; }
         public FogOfWar Fog { get; }
         public Territory Territory { get; }
-        public Party Party { get; }
+        public IReadOnlyList<Party> Parties => _parties;
+
+        /// <summary>The active party: movement, battles, perks and camp hiring act on it.</summary>
+        public Party Party { get; private set; }
+
         public IRandom Random { get; }
         public int Gold { get; private set; }
         public int Turn { get; private set; }
@@ -44,7 +61,7 @@ namespace Disciples.Core.Session
         public Site? CurrentSite => Map.SiteAt(Party.Position);
         public City? Capital => Map.Cities.FirstOrDefault(c => c.IsCapital && c.IsPlayerOwned);
 
-        /// <summary>An enemy leader attacked the party during the enemy turn; the front-end must fight it.</summary>
+        /// <summary>An enemy leader attacked a party during the enemy turn; that party becomes active and the front-end must fight it.</summary>
         public Encounter? IncomingAttack { get; private set; }
 
         public IReadOnlyList<GameEvent> TakeEvents()
@@ -52,6 +69,17 @@ namespace Disciples.Core.Session
             var events = _events.ToList();
             _events.Clear();
             return events;
+        }
+
+        public Party? PartyAt(Position position) => _parties.FirstOrDefault(p => p.Position == position);
+
+        public bool Select(Party party)
+        {
+            if (!_parties.Contains(party))
+                return false;
+
+            Party = party;
+            return true;
         }
 
         /// <summary>The hostile squad guarding the tile, if any.</summary>
@@ -76,6 +104,9 @@ namespace Disciples.Core.Session
             if (!Map.Contains(target))
                 return MoveResult.OutOfBounds;
 
+            if (PartyAt(target) != null)
+                return MoveResult.Occupied;
+
             if (EncounterAt(target) != null)
                 return MoveResult.EnemyEncountered;
 
@@ -86,7 +117,7 @@ namespace Disciples.Core.Session
                 return MoveResult.NotEnoughMovement;
 
             Party.MoveTo(target, cost);
-            RevealAroundParty();
+            RevealAround(Party);
 
             if (Map.SiteAt(target) is { } site)
             {
@@ -104,13 +135,14 @@ namespace Disciples.Core.Session
 
         /// <summary>
         /// Cheapest route for the party to the target. Hostile tiles are only allowed as the target, where the walk ends in a battle.
+        /// Tiles held by other parties are never entered.
         /// </summary>
         public Route PlanRoute(Position target)
         {
-            if (target == Party.Position || !Map.Contains(target))
+            if (PartyAt(target) != null || !Map.Contains(target))
                 return Route.None;
 
-            var path = Pathfinder.FindPath(Map, Party.Position, p => p == target, p => EncounterAt(p) != null);
+            var path = Pathfinder.FindPath(Map, Party.Position, p => p == target, p => EncounterAt(p) != null || PartyAt(p) != null);
             return Route.Along(Map, path);
         }
 
@@ -120,7 +152,8 @@ namespace Disciples.Core.Session
             MoveEnemies();
 
             Turn++;
-            Party.RestoreMovement();
+            foreach (var party in _parties)
+                party.RestoreMovement();
             ClaimMines();
             Gold += Map.Cities.Where(c => c.IsPlayerOwned).Sum(c => c.Income)
                     + Map.Sites.Where(s => s.Kind == SiteKind.Mine && s.Owner == Owner.Player).Sum(s => s.Gold);
@@ -128,12 +161,13 @@ namespace Disciples.Core.Session
             foreach (var city in Map.Cities.Where(c => c.IsPlayerOwned))
                 HealSquad(city.Garrison);
 
-            if (CurrentCity?.IsPlayerOwned == true)
-                HealSquad(Party.Squad);
+            foreach (var party in _parties.Where(p => Map.CityAt(p.Position)?.IsPlayerOwned == true))
+                HealSquad(party.Squad);
 
             _events.Add(new GameEvent(GameEventKind.TurnStarted, amount: Turn));
         }
 
+        /// <summary>Hires into the party visiting the city, or into the garrison when there is no party or no room in it.</summary>
         public HireResult Hire(City city, UnitDefinition definition)
         {
             if (Gold < definition.Cost)
@@ -141,7 +175,7 @@ namespace Disciples.Core.Session
 
             var unit = new Unit(definition);
             HireResult result;
-            if (Party.Position == city.Position && Party.Squad.TryAdd(unit))
+            if (PartyAt(city.Position)?.Squad.TryAdd(unit) == true)
                 result = HireResult.HiredToParty;
             else if (city.Garrison.TryAdd(unit))
                 result = HireResult.HiredToGarrison;
@@ -251,7 +285,7 @@ namespace Disciples.Core.Session
             {
                 captured = encounter.City;
                 Party.MoveTo(captured.Position, 0);
-                RevealAroundParty();
+                RevealAround(Party);
                 Capture(captured);
             }
             else
@@ -292,7 +326,7 @@ namespace Disciples.Core.Session
             }
         }
 
-        private void RevealAroundParty() => Fog.Reveal(Party.Position, Rules.SightRadius);
+        private void RevealAround(Party party) => Fog.Reveal(party.Position, Rules.SightRadius);
 
         private void Capture(City city)
         {
@@ -319,7 +353,7 @@ namespace Disciples.Core.Session
             }
         }
 
-        /// <summary>Walks towards the nearest target: the party or a city it can capture. The capital is never a target.</summary>
+        /// <summary>Walks towards the nearest target: a player party or a city it can capture. The capital is never a target.</summary>
         private void MoveEnemy(Party enemy)
         {
             var path = Pathfinder.FindPath(Map, enemy.Position, IsEnemyTarget, IsBlockedForEnemy);
@@ -342,22 +376,23 @@ namespace Disciples.Core.Session
 
         private bool IsEnemyTarget(Position position)
         {
-            if (position == Party.Position)
+            if (PartyAt(position) != null)
                 return IncomingAttack == null;
 
             return Map.CityAt(position) is { IsCapital: false } city && city.Owner != Owner.Enemy;
         }
 
         private bool IsBlockedForEnemy(Position position) =>
-            position == Party.Position
+            PartyAt(position) != null
             || Map.NeutralAt(position) != null
             || Map.EnemyAt(position) != null
             || Map.CityAt(position) is { } city && city.Owner != Owner.Enemy;
 
         private void Strike(Party enemy, Position target)
         {
-            if (target == Party.Position)
+            if (PartyAt(target) is { } attacked)
             {
+                Party = attacked;
                 IncomingAttack = Encounter.With(enemy);
                 _events.Add(new GameEvent(GameEventKind.EnemyAttacks, enemy.Name));
                 return;

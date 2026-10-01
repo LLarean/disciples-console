@@ -21,7 +21,8 @@ namespace Disciples.Core.Persistence
                 Map = CaptureMap(session.Map),
                 Turn = session.Turn,
                 Gold = session.Gold,
-                Party = CaptureParty(session.Party),
+                Parties = session.Parties.Select(CaptureParty).ToList(),
+                Active = session.Parties.ToList().IndexOf(session.Party),
                 Cities = session.Map.Cities.Select(CaptureCity).ToList(),
                 Neutrals = session.Map.Neutrals.Select(n => new NeutralSnapshot
                 {
@@ -57,11 +58,13 @@ namespace Disciples.Core.Persistence
             var sites = snapshot.Sites.Select(s => new Site(
                 s.Name, s.Kind, new Position(s.X, s.Y), s.Gold, s.Mercenaries.Select(content.Unit), s.Owner));
             var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals, enemies, sites);
-            var party = RestoreParty(snapshot.Party, content, "Party");
+            if (snapshot.Active < 0 || snapshot.Active >= snapshot.Parties.Count)
+                throw new ContentException("The game has no active player party.");
 
+            var parties = snapshot.Parties.Select(p => RestoreParty(p, content, "Party"));
             var fog = FogOfWar.FromRows(map.Width, map.Height, snapshot.Explored);
 
-            return new GameSession(content, map, party, snapshot.Gold, random, snapshot.Turn, fog);
+            return new GameSession(content, map, parties, snapshot.Gold, random, snapshot.Turn, fog, snapshot.Active);
         }
 
         private static PartySnapshot CaptureParty(Party party) => new PartySnapshot
@@ -82,10 +85,12 @@ namespace Disciples.Core.Persistence
             return new Party(squad, new Position(data.X, data.Y), data.MovementPoints, data.Perks, content.Rules);
         }
 
-        /// <summary>Replaces the party leader of a new game with the chosen leader class.</summary>
+        /// <summary>Replaces the leader of the starting party of a new game with the chosen leader class.</summary>
         public static void ChooseLeader(GameSnapshot snapshot, UnitDefinition leader, GameContent content)
         {
-            var current = snapshot.Party.Units.FirstOrDefault(u => content.Unit(u.Id).IsLeader)
+            SnapshotMigrator.Default.Upgrade(snapshot);
+
+            var current = snapshot.Parties.FirstOrDefault()?.Units.FirstOrDefault(u => content.Unit(u.Id).IsLeader)
                           ?? throw new ContentException("The party has no leader.");
             current.Id = leader.Id;
         }

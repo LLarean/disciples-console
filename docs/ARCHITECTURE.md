@@ -45,7 +45,7 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Squ
 
 ### Content and state (ADR 0004)
 - `GameContent` — immutable catalog: unit, terrain and building definitions plus `GameRules`. Validated on construction.
-- `GameSession` — mutable game state (map, party, cities, gold, turn, status) and commands.
+- `GameSession` — mutable game state (map, parties, cities, gold, turn, status) and commands. `Parties` holds every player party; `Party` is the active one (`Select`), which movement, battles, perks and camps act on. City hiring goes to the party standing in the city (`PartyAt`).
 - `GameSnapshot` — plain DTO of the state; scenarios and saves use the same format. `SnapshotMapper` captures/restores it against a `GameContent`.
 - `SnapshotMigrator` — upgrades an older snapshot to the current `Version` one step at a time before it is restored. A format change adds a step; a renamed content id adds an entry to `ContentAliases` (`content/aliases.json`) instead, which `GameContent` resolves on lookup.
 - `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
@@ -54,7 +54,7 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Squ
 - `Party` — leader, squad and movement. Movement and squad capacity derive from the leader definition plus taken `LeaderPerk`s; one perk per leader level above the first.
 
 ### Enemy turn
-`GameSession.EndTurn` moves every enemy `Party` (`WorldMap.Enemies`) before the new turn starts. `Pathfinder` (Dijkstra by terrain cost) leads it to the nearest target: the player's party or a non-capital city it does not own. Garrison fights are auto-resolved with `SimpleBattleAi`; an attack on the party is exposed as `GameSession.IncomingAttack` for the front-end to fight.
+`GameSession.EndTurn` moves every enemy `Party` (`WorldMap.Enemies`) before the new turn starts. `Pathfinder` (Dijkstra by terrain cost) leads it to the nearest target: a player party or a non-capital city it does not own. Garrison fights are auto-resolved with `SimpleBattleAi`; an attack on a party makes that party active and is exposed as `GameSession.IncomingAttack` for the front-end to fight.
 
 ## Console front-end
 Terminal.Gui v2, see ADR 0003.

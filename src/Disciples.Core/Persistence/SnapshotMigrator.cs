@@ -10,7 +10,7 @@ namespace Disciples.Core.Persistence
     /// </summary>
     public sealed class SnapshotMigrator
     {
-        public static readonly SnapshotMigrator Default = new SnapshotMigrator();
+        public static readonly SnapshotMigrator Default = new SnapshotMigrator(SinglePartyToParties);
 
         private readonly IReadOnlyList<Action<GameSnapshot>> _steps;
 
@@ -31,6 +31,15 @@ namespace Disciples.Core.Persistence
                 _steps[snapshot.Version - 1](snapshot);
                 snapshot.Version++;
             }
+        }
+
+        private static void SinglePartyToParties(GameSnapshot snapshot)
+        {
+            if (snapshot.Party == null)
+                return;
+
+            snapshot.Parties.Insert(0, snapshot.Party);
+            snapshot.Party = null;
         }
     }
 }

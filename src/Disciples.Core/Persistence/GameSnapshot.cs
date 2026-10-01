@@ -15,7 +15,16 @@ namespace Disciples.Core.Persistence
         public MapSnapshot Map { get; set; } = new MapSnapshot();
         public int Turn { get; set; } = 1;
         public int Gold { get; set; }
-        public PartySnapshot Party { get; set; } = new PartySnapshot();
+
+        /// <summary>The player's parties.</summary>
+        public List<PartySnapshot> Parties { get; set; } = new List<PartySnapshot>();
+
+        /// <summary>Index of the active party in <see cref="Parties"/>.</summary>
+        public int Active { get; set; }
+
+        /// <summary>Version 1 only: the single player party, moved into <see cref="Parties"/> by <see cref="SnapshotMigrator"/>.</summary>
+        public PartySnapshot? Party { get; set; }
+
         public List<CitySnapshot> Cities { get; set; } = new List<CitySnapshot>();
         public List<NeutralSnapshot> Neutrals { get; set; } = new List<NeutralSnapshot>();
 

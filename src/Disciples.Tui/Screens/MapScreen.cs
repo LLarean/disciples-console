@@ -156,6 +156,9 @@ public sealed class MapScreen : Screen
             case MoveResult.OutOfBounds:
                 Log("The edge of the world.");
                 break;
+            case MoveResult.Occupied:
+                Log($"{_session.PartyAt(target)!.Name} holds the way.");
+                break;
             case MoveResult.Impassable:
                 Log($"{_session.Map.TerrainAt(target).Name} is impassable.");
                 break;
