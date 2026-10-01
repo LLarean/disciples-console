@@ -25,7 +25,7 @@ Terminal of at least 110×30 is recommended.
 | Items | arrows — select, Enter — drink a potion / wear or take off an artifact or banner, Esc — back |
 | Menus | arrows — select, Enter — confirm, Esc — back |
 
-Walking into a city or a mercenary camp (`▲`) opens it, treasure (`$`) is picked up, a mine (`¤`) starts paying gold each turn; walking into an enemy (`†`) or a guarded hostile city starts a battle. Win by beating all neutral squads and owning every city; lose if the leader dies.
+Walking into a city or a mercenary camp (`▲`) opens it, treasure (`$`) is picked up, a mine (`¤`) starts paying gold and a mana source (`*`) mana each turn; walking into an enemy (`†`) or a guarded hostile city starts a battle. Win by beating all neutral squads and owning every city; lose if the leader dies.
 
 ## Tests
 ```

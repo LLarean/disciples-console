@@ -109,12 +109,18 @@ public sealed class MapView : Canvas
     {
         SiteKind.Treasure => "$",
         SiteKind.Mine => "¤",
+        SiteKind.ManaSource => "*",
         SiteKind.Merchant => "§",
         _ => "▲"
     };
 
-    public static Color SiteColor(Site site) =>
-        site.Kind == SiteKind.Mine && site.Owner == Owner.Player ? Palette.Ally : Palette.Accent;
+    public static Color SiteColor(Site site)
+    {
+        if (site.IsResource && site.Owner == Owner.Player)
+            return Palette.Ally;
+
+        return site.Kind == SiteKind.ManaSource ? ManaText.ColorOf(ManaText.Dominant(site.Mana)) : Palette.Accent;
+    }
 
     private static (Color Foreground, Color Background) ColorsOf(City? city)
     {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Disciples.Core.Content;
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
@@ -33,7 +34,8 @@ namespace Disciples.Core.Cities
             IEnumerable<string>? built = null,
             int tier = 1,
             GameRules? rules = null,
-            Squad? garrison = null)
+            Squad? garrison = null,
+            Mana? mana = null)
         {
             Name = name;
             Position = position;
@@ -47,6 +49,7 @@ namespace Disciples.Core.Cities
             Tier = isCapital ? _rules.MaxCityTier : Math.Max(1, Math.Min(tier, _rules.MaxCityTier));
             Garrison = garrison ?? new Squad();
             Garrison.SetCapacity(_rules.GarrisonSlots(Tier));
+            Mana = mana ?? Mana.None;
         }
 
         public string Name { get; }
@@ -57,6 +60,9 @@ namespace Disciples.Core.Cities
 
         /// <summary>Gold per turn while owned by the player.</summary>
         public int Income { get; }
+
+        /// <summary>Mana per turn while owned by the player; a capital yields the mana of its race.</summary>
+        public Mana Mana { get; }
 
         /// <summary>Sets the garrison size and the healing rate; a capital is always at the top tier.</summary>
         public int Tier { get; private set; }

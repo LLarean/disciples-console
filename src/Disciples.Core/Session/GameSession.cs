@@ -5,6 +5,7 @@ using Disciples.Core.Battles;
 using Disciples.Core.Cities;
 using Disciples.Core.Content;
 using Disciples.Core.Items;
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
@@ -25,7 +26,7 @@ namespace Disciples.Core.Session
 
         public GameSession(
             GameContent content, WorldMap map, IEnumerable<Party> parties, int gold, IRandom random, int turn = 1, FogOfWar? fog = null, int active = 0,
-            int enemyGold = 0)
+            int enemyGold = 0, Mana? mana = null)
         {
             _parties = parties.ToList();
             if (active < 0 || active >= _parties.Count)
@@ -36,6 +37,7 @@ namespace Disciples.Core.Session
             Party = _parties[active];
             Gold = gold;
             EnemyGold = enemyGold;
+            Mana = mana ?? Mana.None;
             Random = random;
             Turn = turn;
             Fog = fog ?? new FogOfWar(map.Width, map.Height);
@@ -59,6 +61,14 @@ namespace Disciples.Core.Session
         public IRandom Random { get; }
         public int Gold { get; private set; }
         public int EnemyGold { get; private set; }
+        public Mana Mana { get; private set; }
+
+        /// <summary>Mana per turn from the player's cities and mana sources.</summary>
+        public Mana ManaIncome =>
+            Map.Cities.Where(c => c.IsPlayerOwned).Select(c => c.Mana)
+                .Concat(Map.Sites.Where(s => s.Owner == Owner.Player).Select(s => s.Mana))
+                .Aggregate(Mana.None, (sum, mana) => sum.Plus(mana));
+
         public int Turn { get; private set; }
         public GameStatus Status { get; private set; }
         public City? CurrentCity => Map.CityAt(Party.Position);
@@ -162,6 +172,7 @@ namespace Disciples.Core.Session
                 party.RestoreMovement();
             ClaimMines();
             Gold += IncomeOf(Owner.Player);
+            Mana = Mana.Plus(ManaIncome);
 
             foreach (var city in Map.Cities.Where(c => c.IsPlayerOwned))
             {
@@ -397,10 +408,10 @@ namespace Disciples.Core.Session
             _events.Add(new GameEvent(GameEventKind.GameLost, party.Name) { Party = party });
         }
 
-        /// <summary>Mines on owned land pass to the land's owner.</summary>
+        /// <summary>Mines and mana sources on owned land pass to the land's owner.</summary>
         private void ClaimMines()
         {
-            foreach (var mine in Map.Sites.Where(s => s.Kind == SiteKind.Mine))
+            foreach (var mine in Map.Sites.Where(s => s.IsResource))
             {
                 var owner = Territory.OwnerAt(mine.Position);
                 if (owner == Owner.Neutral || owner == mine.Owner)
@@ -426,7 +437,7 @@ namespace Disciples.Core.Session
                         _events.Add(new GameEvent(GameEventKind.ItemFound, item.Name, site.Name) { Item = item, Site = site, Party = Party, At = site.Position });
                     }
                     break;
-                case SiteKind.Mine when site.Owner != Owner.Player:
+                case SiteKind.Mine or SiteKind.ManaSource when site.Owner != Owner.Player:
                     site.Capture(Owner.Player);
                     _events.Add(new GameEvent(GameEventKind.MineCaptured, site.Name, amount: site.Gold) { Site = site, Party = Party, At = site.Position });
                     break;
@@ -543,14 +554,14 @@ namespace Disciples.Core.Session
         /// <summary>A mine on the player's land is not worth taking: the land claims it back.</summary>
         private bool IsLoot(Site site) =>
             site.Kind == SiteKind.Treasure
-            || site.Kind == SiteKind.Mine && site.Owner != Owner.Enemy && Territory.OwnerAt(site.Position) != Owner.Player;
+            || site.IsResource && site.Owner != Owner.Enemy && Territory.OwnerAt(site.Position) != Owner.Player;
 
         private void Plunder(Party enemy, Site site)
         {
             if (!IsLoot(site))
                 return;
 
-            if (site.Kind == SiteKind.Mine)
+            if (site.IsResource)
             {
                 site.Capture(Owner.Enemy);
                 _events.Add(new GameEvent(GameEventKind.MineLost, site.Name, enemy.Name, site.Gold) { Site = site, Party = enemy, At = site.Position });

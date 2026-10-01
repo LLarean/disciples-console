@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Disciples.Core.Cities;
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Squads;
 
@@ -18,6 +19,8 @@ namespace Disciples.Core.Persistence
 
         /// <summary>The enemy's treasury: it pays for recruits and new leaders.</summary>
         public int EnemyGold { get; set; }
+
+        public Mana? Mana { get; set; }
 
         /// <summary>The player's parties.</summary>
         public List<PartySnapshot> Parties { get; set; } = new List<PartySnapshot>();
@@ -79,6 +82,9 @@ namespace Disciples.Core.Persistence
         public Owner Owner { get; set; }
         public int Income { get; set; }
         public int Tier { get; set; } = 1;
+
+        /// <summary>Mana per turn; set on capitals.</summary>
+        public Mana? Mana { get; set; }
         public List<string> Recruits { get; set; } = new List<string>();
 
         /// <summary>Whether the city offers the building tree.</summary>
@@ -95,6 +101,10 @@ namespace Disciples.Core.Persistence
         public int X { get; set; }
         public int Y { get; set; }
         public int Gold { get; set; }
+
+        /// <summary>Mana a source yields per turn.</summary>
+        public Mana? Mana { get; set; }
+
         public Owner Owner { get; set; }
         public List<string> Mercenaries { get; set; } = new List<string>();
         public List<string> Items { get; set; } = new List<string>();

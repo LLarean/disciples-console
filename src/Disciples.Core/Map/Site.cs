@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Disciples.Core.Cities;
 using Disciples.Core.Items;
+using Disciples.Core.Magic;
 using Disciples.Core.Units;
 
 namespace Disciples.Core.Map
@@ -11,17 +12,18 @@ namespace Disciples.Core.Map
         Treasure,
         Mine,
         Camp,
-        Merchant
+        Merchant,
+        ManaSource
     }
 
-    /// <summary>A passable map object visited by stepping on it: treasure, gold mine, mercenary camp or merchant.</summary>
+    /// <summary>A passable map object visited by stepping on it: treasure, gold mine, mana source, mercenary camp or merchant.</summary>
     public sealed class Site
     {
         private readonly List<ItemDefinition> _items;
 
         public Site(
             string name, SiteKind kind, Position position, int gold = 0, IEnumerable<UnitDefinition>? mercenaries = null,
-            Owner owner = Owner.Neutral, IEnumerable<ItemDefinition>? items = null)
+            Owner owner = Owner.Neutral, IEnumerable<ItemDefinition>? items = null, Mana? mana = null)
         {
             Name = name;
             Kind = kind;
@@ -30,6 +32,7 @@ namespace Disciples.Core.Map
             Mercenaries = mercenaries?.ToList() ?? new List<UnitDefinition>();
             Owner = owner;
             _items = items?.ToList() ?? new List<ItemDefinition>();
+            Mana = mana ?? Mana.None;
         }
 
         public string Name { get; }
@@ -43,6 +46,12 @@ namespace Disciples.Core.Map
 
         /// <summary>Items lying in a treasure, or a merchant's stock.</summary>
         public IReadOnlyList<ItemDefinition> Items => _items;
+
+        /// <summary>Mana a source yields per turn.</summary>
+        public Mana Mana { get; }
+
+        /// <summary>Mines and mana sources pay their owner every turn and change hands.</summary>
+        public bool IsResource => Kind == SiteKind.Mine || Kind == SiteKind.ManaSource;
 
         public Owner Owner { get; private set; }
 

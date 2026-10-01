@@ -33,6 +33,11 @@ public sealed class PartyView : Canvas
         this.Text(x + 2, y, $"{_session.Gold}g", Palette.Accent);
 
         y++;
+        x = this.Text(0, y, "Mana ", Palette.Dim);
+        foreach (var type in ManaText.Types)
+            x = this.Text(x, y, $"{type.ToString()[0]}{_session.Mana[type]}", ManaText.ColorOf(type)) + 1;
+
+        y++;
         x = this.Text(0, y, "Lvl  ", Palette.Dim);
         x = this.Text(x, y, party.Leader.Level.ToString(), Palette.Text, style: TextStyle.Bold);
         if (party.UnspentPerks > 0)
@@ -92,6 +97,7 @@ public sealed class PartyView : Canvas
             .Append(("·", new Attribute(Palette.Enemy, Palette.Background), "Its trail"))
             .Append(("$", new Attribute(Palette.Accent, Palette.Background), "Treasure"))
             .Append(("¤", new Attribute(Palette.Accent, Palette.Background), "Mine"))
+            .Append(("*", new Attribute(ManaText.ColorOf(default), Palette.Background), "Mana source"))
             .Append(("▲", new Attribute(Palette.Accent, Palette.Background), "Camp"))
             .Append(("§", new Attribute(Palette.Accent, Palette.Background), "Merchant"))
             .Append(("@", new Attribute(MapView.LeaderColor, Palette.Background), "You"))

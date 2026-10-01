@@ -1,4 +1,6 @@
+using Disciples.Core.Map;
 using Disciples.Core.Session;
+using Disciples.Tui.Widgets;
 
 namespace Disciples.Tui.Screens;
 
@@ -17,7 +19,7 @@ public static class GameEventText
         GameEventKind.CityHeld => $"{e.Subject} holds against {e.Detail}.",
         GameEventKind.TreasureFound => e.Amount > 0 ? $"Found {e.Subject}: +{e.Amount} gold." : $"Found {e.Subject}.",
         GameEventKind.ItemFound => $"{e.Subject} goes into the bag.",
-        GameEventKind.MineCaptured => $"{e.Subject} is yours: +{e.Amount} gold per turn.",
+        GameEventKind.MineCaptured => $"{e.Subject} is yours: +{Yield(e)} per turn.",
         GameEventKind.TreasureLost => $"{e.Detail} carries off {e.Subject}.",
         GameEventKind.MineLost => e.Detail.Length > 0 ? $"{e.Detail} seizes {e.Subject}." : $"{e.Subject} fell to enemy land.",
         GameEventKind.UnitLeveledUp => $"{e.Subject} reached level {e.Amount}.",
@@ -28,4 +30,7 @@ public static class GameEventText
         GameEventKind.GameLost => "No leader is left. Defeat.",
         _ => e.Kind.ToString()
     };
+
+    private static string Yield(GameEvent e) =>
+        e.Site is { Kind: SiteKind.ManaSource } source ? $"{ManaText.Describe(source.Mana)} mana" : $"{e.Amount} gold";
 }

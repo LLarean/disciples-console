@@ -19,7 +19,7 @@ Markers:
 | 1.6 | Path preview (planned route with cost) | M8 — cheapest route by terrain cost; steps beyond this turn's movement are marked, the destination is kept between turns |
 | 1.7 | Fog of war / exploration | M9 (simplified: explored tiles stay fully visible, enemies included; no separate "currently seen" state **(verify)**) |
 | 1.8 | Territory ownership and spreading land (rods, capital aura) | M9 (simplified: fixed radius per capital/city from `rules.json`, no spreading over turns, no rods **(verify)**; mines on owned land change hands at turn end) |
-| 1.9 | Resource sources: gold mines, mana sources | M8 — gold mines captured by stepping on them, income per turn; mana Out |
+| 1.9 | Resource sources: gold mines, mana sources | M8 — gold mines captured by stepping on them, income per turn; M13 — mana sources work like mines: captured by stepping on them or by owning the land, yield their mana every turn |
 | 1.10 | Treasure chests, merchants, mercenary camps, trainers | M8 — treasure (one-time gold) and mercenary camps (hire into the party at unit cost); M11 — treasure also holds items, merchants sell a limited stock at item cost to the party standing there, no selling **(verify)**; trainers in M14 |
 
 ## 2. Turn structure and economy
@@ -29,7 +29,7 @@ Markers:
 | 2.1 | Turn counter, end-turn action | M1 |
 | 2.2 | Gold as the only resource | M2 |
 | 2.3 | Income per turn from capital and owned cities | M3 |
-| 2.4 | Four mana types (life, death, infernal, runic) | M13 |
+| 2.4 | Four mana types (life, death, infernal, runic) | M13 — a stock per type; the capital yields the mana of its race, sources yield theirs; the enemy has no mana and only denies sources **(verify)** |
 | 2.5 | Multiple players / AI turns | M8 — simplified: enemy leaders walk to the nearest non-capital city or the party; M12 — enemy treasury: income from its cities and mines, healing in its cities, recruits for a leader standing in a city, new leaders in its capital up to a limit; leaders take treasure (wearing found equipment) and mines outside the player's land |
 
 ## 3. Units

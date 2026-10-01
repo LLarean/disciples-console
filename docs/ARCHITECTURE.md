@@ -52,7 +52,8 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Ite
 - `SnapshotMigrator` — upgrades an older snapshot to the current `Version` one step at a time before it is restored. A format change adds a step; a renamed content id adds an entry to `ContentAliases` (`content/aliases.json`) instead, which `GameContent` resolves on lookup.
 - `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
 - `Route` — planned party path with running cost (`GameSession.PlanRoute`); the front-end walks it with `TryMove`.
-- `Site` — passable map object handled on step: treasure, gold mine, mercenary camp, merchant (`WorldMap.Sites`). A treasure's items go to the visiting party; a merchant's items are its stock.
+- `Site` — passable map object handled on step: treasure, gold mine, mana source, mercenary camp, merchant (`WorldMap.Sites`). Mines and mana sources (`IsResource`) have an owner and pay it every turn.
+- `Mana` — immutable amount of each of the four mana types, used as stock (`GameSession.Mana`), income per turn (`City.Mana`, `Site.Mana`) and price. A treasure's items go to the visiting party; a merchant's items are its stock.
 - `City` — owner, garrison, recruits, buildings and tier. The tier sets the garrison capacity and the healing rate from `GameRules`; a snapshot without a tier restores as tier 1, and a garrison larger than its tier allows is kept as is.
 - `Party` — leader, squad and movement. Movement and squad capacity derive from the leader definition plus taken `LeaderPerk`s; one perk per leader level above the first.
 

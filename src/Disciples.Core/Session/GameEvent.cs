@@ -19,6 +19,7 @@ namespace Disciples.Core.Session
         TreasureFound,
         ItemFound,
         TreasureLost,
+        /// <summary>A mine or a mana source became the player's; see <see cref="GameEvent.Site"/>.</summary>
         MineCaptured,
         MineLost,
         UnitLeveledUp,

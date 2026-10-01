@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Disciples.Core.Cities;
 using Disciples.Core.Content;
+using Disciples.Core.Magic;
 using Disciples.Core.Map;
 using Disciples.Core.Session;
 using Disciples.Core.Squads;
@@ -22,6 +23,7 @@ namespace Disciples.Core.Persistence
                 Turn = session.Turn,
                 Gold = session.Gold,
                 EnemyGold = session.EnemyGold,
+                Mana = Pack(session.Mana),
                 Parties = session.Parties.Select(CaptureParty).ToList(),
                 Active = session.Parties.ToList().IndexOf(session.Party),
                 Cities = session.Map.Cities.Select(CaptureCity).ToList(),
@@ -41,6 +43,7 @@ namespace Disciples.Core.Persistence
                     X = s.Position.X,
                     Y = s.Position.Y,
                     Gold = s.Gold,
+                    Mana = Pack(s.Mana),
                     Owner = s.Owner,
                     Mercenaries = s.Mercenaries.Select(m => m.Id).ToList(),
                     Items = s.Items.Select(i => i.Id).ToList()
@@ -58,7 +61,7 @@ namespace Disciples.Core.Persistence
                 n.Name, new Position(n.X, n.Y), RestoreSquad(n.Units, new Squad(), content, n.Name), n.Reward));
             var enemies = snapshot.Enemies.Select(e => RestoreParty(e, content, "Enemy"));
             var sites = snapshot.Sites.Select(s => new Site(
-                s.Name, s.Kind, new Position(s.X, s.Y), s.Gold, s.Mercenaries.Select(content.Unit), s.Owner, s.Items.Select(content.Item)));
+                s.Name, s.Kind, new Position(s.X, s.Y), s.Gold, s.Mercenaries.Select(content.Unit), s.Owner, s.Items.Select(content.Item), s.Mana));
             var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals, enemies, sites);
             if (snapshot.Active < 0 || snapshot.Active >= snapshot.Parties.Count)
                 throw new ContentException("The game has no active player party.");
@@ -66,7 +69,7 @@ namespace Disciples.Core.Persistence
             var parties = snapshot.Parties.Select(p => RestoreParty(p, content, "Party"));
             var fog = FogOfWar.FromRows(map.Width, map.Height, snapshot.Explored);
 
-            return new GameSession(content, map, parties, snapshot.Gold, random, snapshot.Turn, fog, snapshot.Active, snapshot.EnemyGold);
+            return new GameSession(content, map, parties, snapshot.Gold, random, snapshot.Turn, fog, snapshot.Active, snapshot.EnemyGold, snapshot.Mana);
         }
 
         private static PartySnapshot CaptureParty(Party party) => new PartySnapshot
@@ -170,6 +173,7 @@ namespace Disciples.Core.Persistence
             Owner = city.Owner,
             Income = city.Income,
             Tier = city.Tier,
+            Mana = Pack(city.Mana),
             Recruits = city.Recruits.Select(r => r.Id).ToList(),
             Buildings = city.Buildings.Count > 0,
             Built = city.BuiltIds.ToList(),
@@ -188,7 +192,10 @@ namespace Disciples.Core.Persistence
                 data.Built.Select(content.BuildingId),
                 data.Tier,
                 content.Rules,
-                RestoreSquad(data.Garrison, new Squad(), content, data.Name));
+                RestoreSquad(data.Garrison, new Squad(), content, data.Name),
+                data.Mana);
+
+        private static Mana? Pack(Mana mana) => mana.Equals(Mana.None) ? null : mana;
 
         private static List<UnitSnapshot> CaptureSquad(Squad squad) =>
             squad.Units.Select(u =>

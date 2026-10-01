@@ -84,7 +84,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Front-end events: enemy movement step by step, events carry objects and positions instead of names — `EnemyMoved` per step; the TUI draws the trail of the last enemy turn
 
 ## M13 — Magic
-- [ ] Mana types and mana sources (2.4, 1.9)
+- [x] Mana types and mana sources (2.4, 1.9) — `Mana` stock in the session, `mana` per turn on the capital and on `manaSource` sites
 - [ ] Spell research in the magic tower, casting on the map (8.1)
 - [ ] Rods spread territory (1.8)
 
