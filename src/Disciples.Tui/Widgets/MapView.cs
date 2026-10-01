@@ -83,8 +83,8 @@ public sealed class MapView : Canvas
         var city = _session.Map.CityAt(position);
         var cityColors = ColorsOf(city);
 
-        if (position == _session.Party.Position)
-            this.Text(x, y, "@ ", LeaderColor, city == null ? LandBackground(position) : cityColors.Background, TextStyle.Bold);
+        if (_session.PartyAt(position) is { } party)
+            this.Text(x, y, "@ ", party == _session.Party ? LeaderColor : Palette.Ally, city == null ? LandBackground(position) : cityColors.Background, TextStyle.Bold);
         else if (_session.Map.EnemyAt(position) != null)
             this.Text(x, y, "& ", Palette.Enemy, city == null ? LandBackground(position) : cityColors.Background, TextStyle.Bold);
         else if (city != null)

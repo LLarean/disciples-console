@@ -46,8 +46,8 @@ public sealed class CityScreen : Screen
         Add(header, _recruits, _partyView, _garrisonView, message, hints);
     }
 
-    private bool IsPartyHere => _session.Party.Position == _city.Position;
-    private Squad FocusedSquad => _focus == Focus.Party ? _session.Party.Squad : _city.Garrison;
+    private Party? Visitor => _session.PartyAt(_city.Position);
+    private Squad FocusedSquad => _focus == Focus.Party && Visitor is { } visitor ? visitor.Squad : _city.Garrison;
     private SquadSlot CurrentCursor => _focus == Focus.Party ? _partyCursor : _garrisonCursor;
 
     public override bool HandleKey(Key key)
@@ -58,6 +58,8 @@ public sealed class CityScreen : Screen
             Back();
         else if (key == Key.B && _city.IsCapital)
             Shell.Push(new BuildingsScreen(_session, _city));
+        else if (key == Key.L && _city.IsCapital)
+            Shell.Push(new LeaderScreen(_session, _city));
         else if (key == Key.Tab)
             CycleFocus();
         else if (key == Key.CursorUp || key == Key.CursorDown)
@@ -76,9 +78,11 @@ public sealed class CityScreen : Screen
 
     protected override void UpdateViews()
     {
-        var party = _session.Party.Squad;
-        _partyView.Squad = IsPartyHere ? party : null;
-        _partyView.Title = IsPartyHere ? $"Party {party.UsedSlots}/{party.Capacity}" : "Party";
+        var party = Visitor?.Squad;
+        if (party == null && _focus == Focus.Party)
+            _focus = Focus.Recruits;
+        _partyView.Squad = party;
+        _partyView.Title = party != null ? $"{Visitor!.Name} {party.UsedSlots}/{party.Capacity}" : "Party";
         _garrisonView.Squad = _city.Garrison;
         _garrisonView.Title = $"Garrison {_city.Garrison.UsedSlots}/{_city.Garrison.Capacity}";
 
@@ -87,12 +91,12 @@ public sealed class CityScreen : Screen
         UpdateSquadView(_garrisonView, _city.Garrison, Focus.Garrison, _garrisonCursor);
     }
 
-    private void UpdateSquadView(SquadView view, Squad squad, Focus focus, SquadSlot cursor)
+    private void UpdateSquadView(SquadView view, Squad? squad, Focus focus, SquadSlot cursor)
     {
         var isFocused = _focus == focus;
         view.IsFocused = isFocused;
         view.Selection = isFocused ? cursor : null;
-        view.Picked = _picked is { } picked && picked.Squad == squad ? squad.UnitAt(picked.Slot) : null;
+        view.Picked = squad != null && _picked is { } picked && picked.Squad == squad ? squad.UnitAt(picked.Slot) : null;
     }
 
     private void Back()
@@ -107,7 +111,7 @@ public sealed class CityScreen : Screen
     {
         do
             _focus = (Focus)(((int)_focus + 1) % 3);
-        while (_focus == Focus.Party && !IsPartyHere);
+        while (_focus == Focus.Party && Visitor == null);
     }
 
     private void SetCursor(SquadSlot slot)
@@ -239,7 +243,10 @@ public sealed class CityScreen : Screen
         yield return ("Enter", _focus == Focus.Recruits ? "hire" : _picked == null ? "pick unit" : "place unit");
         yield return ("D", "dismiss");
         if (_city.IsCapital)
+        {
             yield return ("B", "buildings");
+            yield return ("L", "hire leader");
+        }
         yield return ("Esc", _picked == null ? "leave" : "cancel");
     }
 }

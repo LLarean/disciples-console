@@ -186,6 +186,27 @@ namespace Disciples.Core.Session
             return result;
         }
 
+        /// <summary>
+        /// Hires a leader of one of the leader classes in the capital. The new party appears there and becomes active,
+        /// so the capital must have no visiting party.
+        /// </summary>
+        public HireResult HireLeader(City city, UnitDefinition leader)
+        {
+            if (!city.IsCapital || !city.IsPlayerOwned || !Rules.LeaderClasses.Contains(leader.Id))
+                return HireResult.Unavailable;
+
+            if (PartyAt(city.Position) != null)
+                return HireResult.NoRoom;
+
+            if (Gold < leader.Cost)
+                return HireResult.NotEnoughGold;
+
+            Gold -= leader.Cost;
+            Party = new Party(new Unit(leader), city.Position, rules: Rules);
+            _parties.Add(Party);
+            return HireResult.LeaderHired;
+        }
+
         /// <summary>Hires a mercenary straight into the party standing at the camp.</summary>
         public HireResult HireMercenary(Site camp, UnitDefinition definition)
         {

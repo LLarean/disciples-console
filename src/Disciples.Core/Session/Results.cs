@@ -23,6 +23,7 @@ namespace Disciples.Core.Session
     {
         HiredToParty,
         HiredToGarrison,
+        LeaderHired,
         NotEnoughGold,
         NoRoom,
         Unavailable

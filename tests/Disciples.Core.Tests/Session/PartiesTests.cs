@@ -1,4 +1,5 @@
 using Disciples.Core.Cities;
+using Disciples.Core.Content;
 using Disciples.Core.Map;
 using Disciples.Core.Session;
 using Disciples.Core.Squads;
@@ -113,6 +114,49 @@ public class PartiesTests
         Assert.Equal(HireResult.HiredToParty, session.Hire(capital, Squire));
         Assert.Equal(2, session.Parties[1].Squad.Units.Count);
         Assert.Single(session.Parties[0].Squad.Units);
+    }
+
+    private static readonly UnitDefinition Captain =
+        new("captain", "Captain", 150, 0, 50, 50, 80, AttackType.Melee, UnitSize.Small, 100, leadership: 3, movement: 10);
+
+    private static GameSession CreateHiringSession(int gold, Position? partyAt = null)
+    {
+        var content = new GameContent([Knight, Captain, Squire], [Plains], [], new GameRules { LeaderClasses = { "captain" } });
+        var tiles = new[,] { { Plains, Plains }, { Plains, Plains } };
+        var capital = new City("Capital", CapitalPosition, true, 10);
+        var village = new City("Village", new Position(1, 1), false, 10);
+        var map = new WorldMap("Test", tiles, [capital, village]);
+        return new GameSession(content, map, new Party(new Unit(Knight), partyAt ?? FirstStart), gold, new FixedRandom());
+    }
+
+    [Fact]
+    public void HireLeader_InTheCapital_AddsAnActivePartyThere()
+    {
+        var session = CreateHiringSession(gold: 150);
+
+        Assert.Equal(HireResult.LeaderHired, session.HireLeader(session.Map.Cities[0], Captain));
+
+        Assert.Equal(2, session.Parties.Count);
+        Assert.Same(session.Parties[1], session.Party);
+        Assert.Same(Captain, session.Party.Leader.Definition);
+        Assert.Equal(CapitalPosition, session.Party.Position);
+        Assert.Equal((50, 3), (session.Gold, session.Party.Squad.Capacity));
+    }
+
+    [Fact]
+    public void HireLeader_Refused_ChangesNothing()
+    {
+        var poor = CreateHiringSession(gold: 99);
+        var visited = CreateHiringSession(gold: 150, partyAt: CapitalPosition);
+        var rich = CreateHiringSession(gold: 150);
+
+        Assert.Equal(HireResult.NotEnoughGold, poor.HireLeader(poor.Map.Cities[0], Captain));
+        Assert.Equal(HireResult.NoRoom, visited.HireLeader(visited.Map.Cities[0], Captain));
+        Assert.Equal(HireResult.Unavailable, rich.HireLeader(rich.Map.Cities[1], Captain));
+        Assert.Equal(HireResult.Unavailable, rich.HireLeader(rich.Map.Cities[0], Knight));
+
+        Assert.All(new[] { poor, visited, rich }, s => Assert.Single(s.Parties));
+        Assert.Equal(150, rich.Gold);
     }
 
     [Fact]

@@ -36,8 +36,11 @@ public sealed class MapScreen : Screen
     private IEnumerable<(string, string)> MapHints =>
     [
         ("←↑→↓", "/ numpad — move"), ("T", "travel"), .. _destination != null ? [("G", "go on")] : Array.Empty<(string, string)>(),
-        ("Enter", "city"), ("S", "squad"), .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")
+        ("Enter", "city"), ("C", "capital"), ("S", "squad"), .. NextLeaderHint, .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")
     ];
+
+    private IEnumerable<(string, string)> NextLeaderHint =>
+        _session.Parties.Count > 1 ? [("Tab", "next leader")] : [];
 
     private IEnumerable<(string, string)> TargetHints
     {
@@ -83,6 +86,10 @@ public sealed class MapScreen : Screen
             EnterCity(city);
         else if (key == Key.Enter && _session.CurrentSite is { Kind: SiteKind.Camp } camp)
             Shell.Push(new CampScreen(_session, camp));
+        else if (key == Key.C && _session.Capital is { } capital)
+            EnterCity(capital);
+        else if (key == Key.Tab && _session.Parties.Count > 1)
+            SelectNextParty();
         else if (key == Key.T)
             _cursor = _destination ?? _session.Party.Position;
         else if (key == Key.G && _destination != null)
@@ -169,6 +176,15 @@ public sealed class MapScreen : Screen
         }
 
         return false;
+    }
+
+    private void SelectNextParty()
+    {
+        var parties = _session.Parties.ToList();
+        var next = parties[(parties.IndexOf(_session.Party) + 1) % parties.Count];
+        _session.Select(next);
+        _destination = null;
+        Log($"{next.Name} takes the lead.");
     }
 
     private void EnterCity(City city)

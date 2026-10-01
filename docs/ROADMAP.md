@@ -69,7 +69,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## M10 — Several leaders
 - [x] Session holds several player parties, one of them active; commands act on the active party (4.8) — parties block each other's tiles; saves moved to snapshot version 2
-- [ ] Hire leaders in the capital (5.11); switch between parties on the map
+- [x] Hire leaders in the capital (5.11); switch between parties on the map — `L` in the capital, `Tab` and `C` (capital) on the map; placeholder cost, no cap on the number of leaders
 - [ ] Leader death disbands only that party; the game is lost when no leader is left (4.9)
 
 ## M11 — Items
