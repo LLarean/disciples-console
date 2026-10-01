@@ -1,6 +1,7 @@
 using Disciples.Core.Cities;
 using Disciples.Core.Map;
 using Disciples.Core.Session;
+using Disciples.Core.Squads;
 using Disciples.Tui.Widgets;
 using Terminal.Gui.Input;
 using Terminal.Gui.ViewBase;
@@ -18,11 +19,13 @@ public sealed class MapScreen : Screen
 
     private Position? _cursor;
     private Position? _destination;
+    private Party _leading;
 
     public MapScreen(GameFlow flow, GameSession session)
     {
         _flow = flow;
         _session = session;
+        _leading = session.Party;
         _log.Add($"Welcome, {session.Party.Name}. Arrows or numpad to move.");
 
         var map = new MapView(session, () => _cursor, () => Route) { X = 0, Y = 0, Width = Dim.Fill(SideWidth), Height = Dim.Fill(1) };
@@ -183,7 +186,6 @@ public sealed class MapScreen : Screen
         var parties = _session.Parties.ToList();
         var next = parties[(parties.IndexOf(_session.Party) + 1) % parties.Count];
         _session.Select(next);
-        _destination = null;
         Log($"{next.Name} takes the lead.");
     }
 
@@ -209,7 +211,15 @@ public sealed class MapScreen : Screen
             Engage(attack);
     }
 
-    protected override void UpdateViews() => DrainEvents();
+    protected override void UpdateViews()
+    {
+        DrainEvents();
+        if (_leading == _session.Party)
+            return;
+
+        _leading = _session.Party;
+        _destination = null;
+    }
 
     private void DrainEvents()
     {

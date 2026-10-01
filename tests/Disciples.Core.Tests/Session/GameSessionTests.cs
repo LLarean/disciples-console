@@ -243,7 +243,7 @@ public class GameSessionTests
     }
 
     [Fact]
-    public void LeaderDeath_LosesTheGame()
+    public void LastLeaderDeath_LosesTheGame()
     {
         var session = CreateSession(Plains, bandit: Ogre);
         session.Party.Leader.TakeDamage(Knight.MaxHp - 1);

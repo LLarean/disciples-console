@@ -70,7 +70,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 ## M10 — Several leaders
 - [x] Session holds several player parties, one of them active; commands act on the active party (4.8) — parties block each other's tiles; saves moved to snapshot version 2
 - [x] Hire leaders in the capital (5.11); switch between parties on the map — `L` in the capital, `Tab` and `C` (capital) on the map; placeholder cost, no cap on the number of leaders
-- [ ] Leader death disbands only that party; the game is lost when no leader is left (4.9)
+- [x] Leader death disbands only that party; the game is lost when no leader is left (4.9)
 
 ## M11 — Items
 - [ ] Item definitions in `content/items.json`, leader inventory (4.7)
@@ -105,7 +105,9 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Enemy leaders ignore map sites: they neither take treasure nor capture mines
 - [x] Save regenerates the map legend characters — terrains carry a `symbol` in `terrains.json`
 - [x] Retreat has no penalty (the party just leaves the battle) — done in M9 (6.10)
-- [ ] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9)
+- [x] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9) — done in M10
+- [ ] Leaders of one class share a name, so the log cannot tell two Paladins apart; no cap on the number of leaders **(verify)**
+- [ ] Losing the last leader loses the game even with gold to hire a new one **(verify: the original loses on the capital)**
 - [ ] Experience is split evenly among survivors, rounded up **(verify original rule)**
 - [ ] Level growth is a flat % of base HP and power; armor, accuracy, initiative don't grow **(verify)**
 - [ ] `thieves-guild` and `magic-tower` buildings have no effect

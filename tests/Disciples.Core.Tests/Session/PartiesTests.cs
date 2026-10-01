@@ -1,3 +1,4 @@
+using Disciples.Core.Battles;
 using Disciples.Core.Cities;
 using Disciples.Core.Content;
 using Disciples.Core.Map;
@@ -168,6 +169,49 @@ public class PartiesTests
 
         Assert.NotNull(session.IncomingAttack);
         Assert.Same(session.Parties[1], session.Party);
+    }
+
+    private static void LoseToOgre(GameSession session)
+    {
+        session.Party.Leader.TakeDamage(Knight.MaxHp - 1);
+        var ogres = new Squad();
+        ogres.TryAdd(new Unit(Ogre));
+        var encounter = Encounter.With(new NeutralSquad("Ogre", new Position(5, 0), ogres, 0));
+
+        var battle = session.StartBattle(encounter);
+        var ai = new SimpleBattleAi(session.Random);
+        while (!battle.IsOver)
+            ai.Act(battle);
+        session.FinishBattle(battle, encounter);
+    }
+
+    [Fact]
+    public void LeaderDeath_DisbandsOnlyThatParty_AndTheNextOneTakesOver()
+    {
+        var session = CreateSession();
+        var second = session.Parties[1];
+
+        LoseToOgre(session);
+        var events = session.TakeEvents();
+
+        Assert.Equal(GameStatus.Playing, session.Status);
+        Assert.Same(second, session.Parties.Single());
+        Assert.Same(second, session.Party);
+        Assert.Contains(events, e => e.Kind == GameEventKind.PartyLost);
+        Assert.DoesNotContain(events, e => e.Kind == GameEventKind.GameLost);
+    }
+
+    [Fact]
+    public void LeaderDeath_OfEveryParty_LosesTheGame()
+    {
+        var session = CreateSession();
+
+        LoseToOgre(session);
+        LoseToOgre(session);
+
+        Assert.Equal(GameStatus.Lost, session.Status);
+        Assert.Empty(session.Parties);
+        Assert.Contains(session.TakeEvents(), e => e.Kind == GameEventKind.GameLost);
     }
 
     [Fact]

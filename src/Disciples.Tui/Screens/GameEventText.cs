@@ -19,7 +19,8 @@ public static class GameEventText
         GameEventKind.UnitUpgraded => $"{e.Subject} became {e.Detail}.",
         GameEventKind.UnitAwaitsBuilding => $"{e.Subject} needs {e.Detail} in the capital to grow.",
         GameEventKind.GameWon => "All enemies are defeated. Victory!",
-        GameEventKind.GameLost => $"{e.Subject} has fallen.",
+        GameEventKind.PartyLost => $"{e.Subject} has fallen; the party is no more.",
+        GameEventKind.GameLost => "No leader is left. Defeat.",
         _ => e.Kind.ToString()
     };
 }

@@ -14,6 +14,7 @@ namespace Disciples.Core.Session
         UnitLeveledUp,
         UnitUpgraded,
         UnitAwaitsBuilding,
+        PartyLost,
         GameWon,
         GameLost
     }

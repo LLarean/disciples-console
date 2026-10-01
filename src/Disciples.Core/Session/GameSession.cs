@@ -50,7 +50,7 @@ namespace Disciples.Core.Session
         public Territory Territory { get; }
         public IReadOnlyList<Party> Parties => _parties;
 
-        /// <summary>The active party: movement, battles, perks and camp hiring act on it.</summary>
+        /// <summary>The active party: movement, battles, perks and camp hiring act on it. Once the game is lost it is the last fallen party.</summary>
         public Party Party { get; private set; }
 
         public IRandom Random { get; }
@@ -260,7 +260,8 @@ namespace Disciples.Core.Session
         public Battle StartBattle(Encounter encounter) => new Battle(Party.Squad, encounter.Defenders, Random, Rules);
 
         /// <summary>
-        /// Applies battle results: reward, shared experience and capture on victory. Losing the battle or the leader ends the game.
+        /// Applies battle results: reward, shared experience and capture on victory. Losing the battle or the leader disbands the party;
+        /// the game is lost when it was the last one.
         /// Retreating costs the party the rest of its movement.
         /// </summary>
         public BattleReport FinishBattle(Battle battle, Encounter encounter)
@@ -299,8 +300,7 @@ namespace Disciples.Core.Session
 
             if (outcome == BattleOutcome.Defeat || !Party.Leader.IsAlive)
             {
-                Status = GameStatus.Lost;
-                _events.Add(new GameEvent(GameEventKind.GameLost, Party.Name));
+                Disband(Party);
             }
             else if (outcome == BattleOutcome.Victory && encounter.City != null)
             {
@@ -315,6 +315,22 @@ namespace Disciples.Core.Session
             }
 
             return new BattleReport(outcome, gold, experience, progress, captured);
+        }
+
+        /// <summary>A party that lost its leader is gone with its survivors; the next party takes over, or the game is lost.</summary>
+        private void Disband(Party party)
+        {
+            _parties.Remove(party);
+            _events.Add(new GameEvent(GameEventKind.PartyLost, party.Name));
+
+            if (_parties.Count > 0)
+            {
+                Party = _parties[0];
+                return;
+            }
+
+            Status = GameStatus.Lost;
+            _events.Add(new GameEvent(GameEventKind.GameLost, party.Name));
         }
 
         /// <summary>Mines on owned land pass to the land's owner.</summary>
