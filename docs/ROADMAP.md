@@ -94,6 +94,11 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Trainers (1.10) — a trainer site sells a unit of the visiting party the experience it lacks to the next level or upgrade
 - [x] Second race with its unit tree and capital buildings (7.3, 7.4) — `content/races.json`; a new game starts with a race choice, the Legions of the Damned get their leaders, four unit branches, capital buildings, guardian, infernal mana and spells
 
+## Next
+Every milestone above is implemented; the screens of M10–M14 were checked by build and tests only.
+- [ ] Play M10–M14 through in the terminal: leaders, items, city tiers, magic, rods, thief, battle `Q`, trainer, race choice
+- [ ] Settle the **(verify)** rules in MECHANICS and the open items below, then tune the numbers in `content/*.json`
+
 ## Tech debt
 - [x] Tests on `net8.0` need the .NET 8 runtime next to the .NET 10 SDK; consider moving them to `net10.0` (Core stays netstandard2.1)
 - [x] Splash screen — replaced by the main menu
@@ -101,10 +106,14 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] No confirmation before overwriting a save slot
 - [x] Main menu / Quit from the pause menu drop unsaved progress without asking — always asks, saved or not
 - [x] Snapshot `Version` is written but there is no migration path; content id changes break saves (M8 renamed `lord` and dropped `maxMovementPoints`) — `SnapshotMigrator` steps and `content/aliases.json`
-- [ ] Thief leader class and leader abilities as level-up picks
+- [x] Thief leader class and leader abilities as level-up picks — done in M14
 - [x] Enemy leaders ignore map sites: they neither take treasure nor capture mines — done in M12
 - [ ] Rods claim their land at once instead of spreading it over turns, any party breaks a hostile rod, the enemy breaks rods but plants none **(verify)**
 - [ ] Fear and polymorph are simplified: a defender that fled a lost battle is gone, an attacker that fled survives and gets no experience, guardians never flee, polymorph only cuts power and armor instead of changing the unit **(verify)**
+- [ ] Races: the enemy is not a race (orcs from `enemyLeaderClasses`, no buildings, mana or spells); cities other than the capital sell the scenario's local recruits whatever the player's race; the Legions have no support branch and mirror the Empire's numbers **(verify)**
+- [ ] Trainers: unlimited lessons at a flat price per experience point; a leader can be trained to a perk level **(verify)**
+- [ ] Leader abilities: the list and the numbers are placeholders; Natural Healing is the only healing outside cities, potions and spells **(verify)**
+- [ ] Battle `Q` plays the player's side with the same simple AI as the enemy's
 - [ ] Thief actions are three (poison, assassinate, steal gold) with one success chance; no spying, duels or item theft, the enemy has no thieves **(verify)**
 - [ ] Magic is minimal: only damage and healing spells, no spell levels, no summons, buffs or curses; the enemy neither researches nor casts **(verify)**
 - [ ] Enemy economy is minimal: garrisons are never reinforced, cities are not upgraded, nothing is built, leaders leave the capital without waiting for a full squad, found potions are not used and the items die with the leader **(verify)**
@@ -118,8 +127,9 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [ ] Losing the last leader loses the game even with gold to hire a new one **(verify: the original loses on the capital)**
 - [ ] Experience is split evenly among survivors, rounded up **(verify original rule)**
 - [ ] Level growth is a flat % of base HP and power; armor, accuracy, initiative don't grow **(verify)**
-- [ ] `thieves-guild` and `magic-tower` buildings have no effect
+- [x] `thieves-guild` and `magic-tower` buildings have no effect — done in M13 (spell research) and M14 (thief leaders)
 - [ ] Enter on the map opens only owned cities; hostile cities are entered by walking in
-- [ ] Enemy leaders have no economy: no income, hiring or healing; the capital is never their target
+- [x] Enemy leaders have no economy: no income, hiring or healing — done in M12
+- [ ] The player's capital is never a target of enemy leaders
 - [ ] Battles between an enemy leader and a garrison are auto-resolved; only one enemy attacks the party per turn
 - [x] Squad screen has no dismiss; unit details don't show immunities or attack source (3.5, 3.7)

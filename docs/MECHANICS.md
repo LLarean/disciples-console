@@ -18,7 +18,7 @@ Markers:
 | 1.5 | Camera/viewport scrolling when map is larger than the screen | M1 |
 | 1.6 | Path preview (planned route with cost) | M8 — cheapest route by terrain cost; steps beyond this turn's movement are marked, the destination is kept between turns |
 | 1.7 | Fog of war / exploration | M9 (simplified: explored tiles stay fully visible, enemies included; no separate "currently seen" state **(verify)**) |
-| 1.8 | Territory ownership and spreading land (rods, capital aura) | M9 (simplified: fixed radius per capital/city from `rules.json`, no spreading over turns **(verify)**; mines on owned land change hands at turn end). M13 — rods: a leader with the `rods` flag (Archangel) plants a rod on its tile for `rodCost` gold, not on a city, a site or another rod; the rod claims `rodTerritoryRadius` around it at once and competes with cities by distance; any party stepping on a hostile rod breaks it; enemy leaders seek the player's rods and plant none **(verify: cost, radius, who may break a rod)** |
+| 1.8 | Territory ownership and spreading land (rods, capital aura) | M9 (simplified: fixed radius per capital/city from `rules.json`, no spreading over turns **(verify)**; mines on owned land change hands at turn end). M13 — rods: a leader with the `rods` flag (Archangel) plants a rod on its tile for `rodCost` gold, not on a city, a site or another rod; the rod claims `rodTerritoryRadius` around it at once and competes with cities by distance; any party stepping on a hostile rod breaks it; enemy leaders seek the player's rods and plant none **(verify: cost, radius, who may break a rod)**. M14 — the Baroness is the Legions' rod bearer |
 | 1.9 | Resource sources: gold mines, mana sources | M8 — gold mines captured by stepping on them, income per turn; M13 — mana sources work like mines: captured by stepping on them or by owning the land, yield their mana every turn |
 | 1.10 | Treasure chests, merchants, mercenary camps, trainers | M8 — treasure (one-time gold) and mercenary camps (hire into the party at unit cost); M11 — treasure also holds items, merchants sell a limited stock at item cost to the party standing there, no selling **(verify)**; M14 — trainers sell a unit the experience missing to its next level or upgrade at `trainerGoldPerExperience` gold per point, unlimited lessons, nothing for a unit waiting for its upgrade building **(verify: price and limits)** |
 
@@ -55,7 +55,7 @@ Markers:
 | 4.2 | Leader is a unit placed in the squad grid | M2 |
 | 4.3 | Leadership limits the number of units under the leader **(verify: whether the leader itself counts; large unit counts as 2)** | M2 |
 | 4.4 | Swap / move units between slots, respecting large units | M2 |
-| 4.5 | Leader classes: warrior, scout, mage, thief — differ in stats and movement | M8 — Paladin, Ranger, Archmage chosen on new game; M13 — Archangel, the rod bearer; M14 — Thief (`thief` flag): hired in the capital once the Thieves Guild is built, never the starting leader, leads only itself at first. Next to a hostile squad it poisons (damage to every unit, never lethal), assassinates (the weakest unit that is neither a leader nor a guardian) or steals gold from the enemy treasury; an attempt takes the rest of the movement, succeeds with `thiefSuccessPercent` and wounds the thief otherwise **(verify: action list, chances, penalties)** |
+| 4.5 | Leader classes: warrior, scout, mage, thief — differ in stats and movement | M8 — Paladin, Ranger, Archmage chosen on new game; M13 — Archangel, the rod bearer; M14 — Thief (`thief` flag): hired in the capital once the Thieves Guild is built, never the starting leader, leads only itself at first. Next to a hostile squad it poisons (damage to every unit, never lethal), assassinates (the weakest unit that is neither a leader nor a guardian) or steals gold from the enemy treasury; an attempt takes the rest of the movement, succeeds with `thiefSuccessPercent` and wounds the thief otherwise **(verify: action list, chances, penalties)**. The Legions' classes are Duke, Counselor, Arch-Devil, Baroness and the same Thief |
 | 4.6 | Leader progression: level-up picks (leadership, movement, abilities) | M8 — simplified: one pick per level, +1 leadership (up to 6) or +`movementPerk` movement; M14 — abilities taken once: Might, Natural Armor, First Strike, Accuracy (leader stats), Natural Healing (leader regains HP every turn anywhere), Weapon Master (more battle experience for the squad); numbers in `rules.json` **(verify: starting leadership, pick list and numbers; item abilities such as Banner Bearer are not required to wear items)** |
 | 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | M11 — simplified: unlimited bag; healing potions drunk on the map; one worn artifact (bonus to the leader) and one banner (bonus to the squad) add armor, power %, initiative, accuracy in battle; no ability requirements **(verify)**; travel items and scrolls in Backlog |
 | 4.8 | Several leaders per player | M10 — one party is active; parties cannot share a tile; an attacked party becomes active |
@@ -67,7 +67,7 @@ Markers:
 |---|----------|-----------|
 | 5.1 | Enter capital / own city by stepping on its tile | M3 |
 | 5.2 | City screen: garrison grid (2×3) + visiting squad grid | M3 |
-| 5.3 | Hire tier-1 units for gold (capital: race units; city: none or local list) | M3 |
+| 5.3 | Hire tier-1 units for gold (capital: race units; city: none or local list) | M3; M14 — the capital's list comes from the player's race |
 | 5.4 | Dismiss a unit (no refund) | M3 |
 | 5.5 | Transfer units between garrison and visiting squad | M3 |
 | 5.6 | Heal units in own city (per turn) | M3 |
@@ -106,7 +106,7 @@ Markers:
 
 | # | Mechanic | Milestone |
 |---|----------|-----------|
-| 8.1 | Spell research in capital, casting on the map | M13 — research needs the Magic Tower in the capital and costs mana, one spell per turn; a known spell is cast for mana once per turn at an explored tile: damage hits every unit of a hostile squad ignoring armor (immune and warded units are spared), healing restores the player's squad; a squad wiped by a spell gives no gold or experience **(verify)** |
+| 8.1 | Spell research in capital, casting on the map | M13 — research needs the Magic Tower in the capital and costs mana, one spell per turn; a known spell is cast for mana once per turn at an explored tile: damage hits every unit of a hostile squad ignoring armor (immune and warded units are spared), healing restores the player's squad; a squad wiped by a spell gives no gold or experience **(verify)**. M14 — a race researches only its own spells; the Legions' list mirrors the Empire's on infernal mana |
 | 8.2 | Summons | Out |
 
 ## 9. Meta
