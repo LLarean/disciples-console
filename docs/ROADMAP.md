@@ -73,7 +73,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Picked unit (city, squad screen) is shown with the cursor frame, not the pick color, while the cursor stays on it
 - [x] No confirmation before overwriting a save slot
 - [x] Main menu / Quit from the pause menu drop unsaved progress without asking — always asks, saved or not
-- [ ] Snapshot `Version` is written but there is no migration path; content id changes break saves (M8 renamed `lord` and dropped `maxMovementPoints`)
+- [x] Snapshot `Version` is written but there is no migration path; content id changes break saves (M8 renamed `lord` and dropped `maxMovementPoints`) — `SnapshotMigrator` steps and `content/aliases.json`
 - [ ] Thief leader class and leader abilities as level-up picks
 - [ ] Enemy leaders ignore map sites: they neither take treasure nor capture mines
 - [x] Save regenerates the map legend characters — terrains carry a `symbol` in `terrains.json`

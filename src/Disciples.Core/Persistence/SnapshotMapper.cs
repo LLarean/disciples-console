@@ -48,8 +48,7 @@ namespace Disciples.Core.Persistence
 
         public static GameSession Restore(GameSnapshot snapshot, GameContent content, IRandom random)
         {
-            if (snapshot.Version != GameSnapshot.CurrentVersion)
-                throw new ContentException($"Unsupported save version {snapshot.Version}.");
+            SnapshotMigrator.Default.Upgrade(snapshot);
 
             var cities = snapshot.Cities.Select(c => RestoreCity(c, content));
             var neutrals = snapshot.Neutrals.Select(n => new NeutralSquad(
@@ -175,7 +174,7 @@ namespace Disciples.Core.Persistence
                 data.Recruits.Select(content.Unit),
                 data.Buildings ? content.Buildings : null,
                 data.Owner,
-                data.Built);
+                data.Built.Select(content.BuildingId));
             RestoreSquad(data.Garrison, city.Garrison, content, data.Name);
             return city;
         }

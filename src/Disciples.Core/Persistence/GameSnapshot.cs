@@ -11,9 +11,7 @@ namespace Disciples.Core.Persistence
     /// </summary>
     public sealed class GameSnapshot
     {
-        public const int CurrentVersion = 1;
-
-        public int Version { get; set; } = CurrentVersion;
+        public int Version { get; set; } = SnapshotMigrator.Default.CurrentVersion;
         public MapSnapshot Map { get; set; } = new MapSnapshot();
         public int Turn { get; set; } = 1;
         public int Gold { get; set; }

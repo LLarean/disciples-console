@@ -15,6 +15,6 @@ We need a structure that keeps Core engine-agnostic (ADR 0001) and lets Unity re
 - **Saves.** `SaveStore` keeps 3 JSON slots in `%LOCALAPPDATA%/DisciplesConsole/saves`, written via temp file + move. It belongs to the front-end: Unity will use its own storage with the same snapshot.
 
 ## Consequences
-- Saves break when content ids change; there is no migration yet (see ROADMAP tech debt).
-- Map legend characters are regenerated on save, so a saved map may differ textually from its scenario.
+- Saves break when content ids change; there is no migration yet (see ROADMAP tech debt). *Resolved later: renamed ids go to `content/aliases.json`, format changes become `SnapshotMigrator` steps. Steps see only the fields the snapshot DTO still has.*
+- Map legend characters are regenerated on save, so a saved map may differ textually from its scenario. *Resolved later: terrains carry their `symbol`.*
 - Unity integration needs: a content loader (JSON or ScriptableObjects → `GameContent`), a save store, and views that react to `GameEvent`s.

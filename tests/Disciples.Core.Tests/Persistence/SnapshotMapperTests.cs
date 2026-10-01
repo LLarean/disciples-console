@@ -1,4 +1,5 @@
 using Disciples.Core.Cities;
+using Disciples.Core.Content;
 using Disciples.Core.Map;
 using Disciples.Core.Persistence;
 using Disciples.Core.Session;
@@ -109,6 +110,41 @@ public class SnapshotMapperTests
         var enemy = restored.Map.Enemies.Single();
         Assert.Equal((new Position(0, 2), 3, 14), (enemy.Position, enemy.MovementPoints, enemy.MaxMovementPoints));
         Assert.Same(Knight, enemy.Leader.Definition);
+    }
+
+    [Fact]
+    public void Restore_ResolvesRetiredIds_AndCaptureWritesCurrentOnes()
+    {
+        var barracks = new Building("barracks", "Barracks", "", 50, "", null);
+        var aliases = new ContentAliases
+        {
+            Units = { ["footman"] = "squire" },
+            Terrains = { ["sea"] = "water" },
+            Buildings = { ["camp"] = "barracks" }
+        };
+        var content = new GameContent([Knight, Squire, Recruit, Veteran, Ogre], [Plains, Road, Water], [barracks], new GameRules(), aliases);
+        var snapshot = Scenario();
+        snapshot.Map.Legend["~"] = "sea";
+        snapshot.Neutrals[0].Units[0].Id = "footman";
+        snapshot.Cities[0].Recruits = ["footman"];
+        snapshot.Cities[0].Built = ["camp"];
+
+        var session = SnapshotMapper.Restore(snapshot, content, new FixedRandom());
+        var saved = SnapshotMapper.Capture(session);
+
+        Assert.True(session.Map.Cities[0].HasBuilt("barracks"));
+        Assert.Same(Water, session.Map.TerrainAt(new Position(1, 1)));
+        Assert.Equal("squire", saved.Neutrals[0].Units[0].Id);
+        Assert.Equal(["squire"], saved.Cities[0].Recruits);
+        Assert.Equal(["barracks"], saved.Cities[0].Built);
+    }
+
+    [Fact]
+    public void Content_AliasToUnknownId_Throws()
+    {
+        var aliases = new ContentAliases { Units = { ["footman"] = "dragon" } };
+
+        Assert.Throws<ContentException>(() => new GameContent([Knight], [Plains], [], new GameRules(), aliases));
     }
 
     [Fact]

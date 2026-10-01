@@ -26,7 +26,7 @@ public sealed class ContentLoader(string contentRoot)
         var units = Read<List<UnitData>>("units.json").Select(u => ToDefinition(u, rules));
         var buildings = Read<List<BuildingData>>("buildings.json")
             .Select(b => new Building(b.Id, b.Name, b.Branch, b.Cost, b.Description, b.Requires, b.HealBonusPercent));
-        return new GameContent(units, terrains, buildings, rules);
+        return new GameContent(units, terrains, buildings, rules, Read<ContentAliases>("aliases.json"));
     }
 
     public GameSnapshot LoadScenario(string id) => Read<GameSnapshot>(Path.Combine("maps", id + ".json"));

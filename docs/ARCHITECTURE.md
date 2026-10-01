@@ -47,6 +47,7 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Squ
 - `GameContent` — immutable catalog: unit, terrain and building definitions plus `GameRules`. Validated on construction.
 - `GameSession` — mutable game state (map, party, cities, gold, turn, status) and commands.
 - `GameSnapshot` — plain DTO of the state; scenarios and saves use the same format. `SnapshotMapper` captures/restores it against a `GameContent`.
+- `SnapshotMigrator` — upgrades an older snapshot to the current `Version` one step at a time before it is restored. A format change adds a step; a renamed content id adds an entry to `ContentAliases` (`content/aliases.json`) instead, which `GameContent` resolves on lookup.
 - `Progression` — experience, level-up and tier upgrade rules; building checks are passed in as a delegate.
 - `Route` — planned party path with running cost (`GameSession.PlanRoute`); the front-end walks it with `TryMove`.
 - `Site` — passable map object handled on step: treasure, gold mine, mercenary camp (`WorldMap.Sites`).
