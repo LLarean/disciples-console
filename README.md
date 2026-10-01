@@ -19,7 +19,7 @@ Terminal of at least 110×30 is recommended.
 |---|---|
 | Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city / camp, T — pick a travel target (Enter — go), G — continue the route, S — squad, L — level-up perk, E — end turn, Esc — menu |
 | City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, B — capital buildings, Esc — cancel / leave |
-| Squad | arrows — select, Enter — pick / place unit, S / Esc — back |
+| Squad | arrows — select, Enter — pick / place unit, D — dismiss, S / Esc — back |
 | Buildings | arrows — select, Enter — build, B / Esc — back |
 | Battle | arrows — target, Enter — act, D — defend, W — wait, A — auto, X — retreat |
 | Menus | arrows — select, Enter — confirm, Esc — back |
