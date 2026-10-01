@@ -20,6 +20,7 @@ namespace Disciples.Core.Battles
     {
         private readonly IRandom _random;
         private readonly GameRules _rules;
+        private readonly Func<Unit, StatBonus> _bonuses;
         private readonly List<Unit> _queue = new List<Unit>();
         private readonly HashSet<Unit> _defending = new HashSet<Unit>();
         private readonly HashSet<Unit> _waited = new HashSet<Unit>();
@@ -28,12 +29,13 @@ namespace Disciples.Core.Battles
         private readonly Dictionary<Unit, Affliction> _afflictions = new Dictionary<Unit, Affliction>();
         private readonly List<BattleEvent> _log = new List<BattleEvent>();
 
-        public Battle(Squad attackers, Squad defenders, IRandom random, GameRules? rules = null)
+        public Battle(Squad attackers, Squad defenders, IRandom random, GameRules? rules = null, Func<Unit, StatBonus>? bonuses = null)
         {
             Attackers = attackers;
             Defenders = defenders;
             _random = random;
             _rules = rules ?? new GameRules();
+            _bonuses = bonuses ?? (_ => StatBonus.None);
             AdvanceTurn();
         }
 
@@ -51,6 +53,9 @@ namespace Disciples.Core.Battles
         public bool CanWait => Current != null && _queue.Count > 1 && !_waited.Contains(Current);
 
         public bool IsDefending(Unit unit) => _defending.Contains(unit);
+
+        /// <summary>The unit's power with item bonuses.</summary>
+        public int PowerOf(Unit unit) => _bonuses(unit).PowerOf(unit);
 
         public AttackEffect EffectOn(Unit unit) => _afflictions.TryGetValue(unit, out var affliction) ? affliction.Effect : AttackEffect.None;
 
@@ -75,7 +80,7 @@ namespace Disciples.Core.Battles
             switch (actor.Definition.AttackType)
             {
                 case AttackType.Heal:
-                    var healed = target.Heal(actor.Power);
+                    var healed = target.Heal(PowerOf(actor));
                     _log.Add(new BattleEvent(BattleEventKind.Healed, Round, actor, target, healed));
                     break;
                 case AttackType.AllEnemies:
@@ -140,7 +145,7 @@ namespace Disciples.Core.Battles
                 return;
             }
 
-            if (_random.Next(0, 100) >= actor.Accuracy)
+            if (_random.Next(0, 100) >= _bonuses(actor).AccuracyOf(actor))
             {
                 _log.Add(new BattleEvent(BattleEventKind.Miss, Round, actor, target));
                 return;
@@ -165,17 +170,17 @@ namespace Disciples.Core.Battles
             }
             else if (effect != AttackEffect.None && target.IsAlive)
             {
-                _afflictions[target] = new Affliction(effect, _rules.EffectTurns, actor.Power * _rules.PoisonPercent / 100);
+                _afflictions[target] = new Affliction(effect, _rules.EffectTurns, PowerOf(actor) * _rules.PoisonPercent / 100);
                 _log.Add(new BattleEvent(BattleEventKind.Afflicted, Round, actor, target, effect: effect));
             }
         }
 
         private int Damage(Unit actor, Unit target)
         {
-            var power = actor.Power;
+            var power = PowerOf(actor);
             var spread = power * _rules.DamageSpreadPercent / 100;
             var damage = power + _random.Next(-spread, spread + 1);
-            damage = damage * (100 - target.Armor) / 100;
+            damage = damage * (100 - _bonuses(target).ArmorOf(target)) / 100;
 
             if (IsDefending(target))
                 damage = damage * _rules.DefendDamagePercent / 100;
@@ -254,7 +259,7 @@ namespace Disciples.Core.Battles
             _log.Add(new BattleEvent(BattleEventKind.RoundStarted, Round));
 
             var order = Attackers.AliveUnits.Concat(Defenders.AliveUnits)
-                .Select(u => (unit: u, roll: u.Initiative + _random.Next(0, _rules.InitiativeSpread)))
+                .Select(u => (unit: u, roll: _bonuses(u).InitiativeOf(u) + _random.Next(0, _rules.InitiativeSpread)))
                 .OrderByDescending(x => x.roll)
                 .Select(x => x.unit);
             _queue.AddRange(order);

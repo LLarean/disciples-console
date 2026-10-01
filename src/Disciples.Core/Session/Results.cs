@@ -29,6 +29,13 @@ namespace Disciples.Core.Session
         Unavailable
     }
 
+    public enum ItemResult
+    {
+        Used,
+        NoEffect,
+        Unavailable
+    }
+
     public enum BuildResult
     {
         Built,

@@ -39,7 +39,7 @@ public sealed class MapScreen : Screen
     private IEnumerable<(string, string)> MapHints =>
     [
         ("←↑→↓", "/ numpad — move"), ("T", "travel"), .. _destination != null ? [("G", "go on")] : Array.Empty<(string, string)>(),
-        ("Enter", "city"), ("C", "capital"), ("S", "squad"), .. NextLeaderHint, .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")
+        ("Enter", "city"), ("C", "capital"), ("S", "squad"), ("I", "items"), .. NextLeaderHint, .. LevelUpHint, ("E", "end turn"), ("Esc", "menu")
     ];
 
     private IEnumerable<(string, string)> NextLeaderHint =>
@@ -83,6 +83,8 @@ public sealed class MapScreen : Screen
             EndTurn();
         else if (key == Key.S)
             Shell.Push(new SquadScreen(_session));
+        else if (key == Key.I)
+            Shell.Push(new ItemsScreen(_session));
         else if (key == Key.L && _session.Party.UnspentPerks > 0)
             Shell.Push(new PerkScreen(_session));
         else if (key == Key.Enter && _session.CurrentCity is { IsPlayerOwned: true } city)

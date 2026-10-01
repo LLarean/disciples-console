@@ -36,7 +36,7 @@ Pragmatic OOP: small mutable objects that own their state and behaviour. No dogm
 
 Planned patterns:
 - **Type Object** — `UnitDefinition` (static data) vs `Unit` (instance with HP, XP).
-- **Command facade** — `GameSession` methods (`TryMove`, `EndTurn`, `Hire`, `Dismiss`, `Build`, `StartBattle`, `FinishBattle`) validate and execute player intents. The same calls will be issued by Unity UI.
+- **Command facade** — `GameSession` methods (`TryMove`, `EndTurn`, `Hire`, `Dismiss`, `Build`, `UseItem`, `Equip`, `StartBattle`, `FinishBattle`) validate and execute player intents. The same calls will be issued by Unity UI.
 - **Events** — the session queues `GameEvent`s (turn started, city captured, level-up, upgrade, victory...) drained by `TakeEvents()`; battles emit `BattleEvent`s. A front-end can animate instead of diffing state.
 - **Strategy** — attack reach/targeting (`melee`, `ranged`, `all`) and damage formulas.
 - **State** — console screens (`MapScreen`, `CityScreen`, `BattleScreen`) as a screen stack.
@@ -45,7 +45,8 @@ Namespaces inside Core are organised by feature: `Content`, `Map`, `Units`, `Ite
 
 ### Content and state (ADR 0004)
 - `GameContent` — immutable catalog: unit, terrain, building and item definitions plus `GameRules`. Validated on construction.
-- `ItemDefinition` — item type object (potion, artifact, banner). Items have no instances: a party's bag is a list of definitions, saved as ids.
+- `ItemDefinition` — item type object (potion, artifact, banner). Items have no instances: a party's bag and worn items are lists of definitions, saved as ids.
+- `StatBonus` — additions to battle stats. `Unit` stats stay item-free; `Party.BonusFor(unit)` sums the worn items and `Battle` takes the lookup as a delegate, so future battle-wide effects (spells) plug in the same way.
 - `GameSession` — mutable game state (map, parties, cities, gold, turn, status) and commands. `Parties` holds every player party; `Party` is the active one (`Select`), which movement, battles, perks and camps act on. City hiring goes to the party standing in the city (`PartyAt`).
 - `GameSnapshot` — plain DTO of the state; scenarios and saves use the same format. `SnapshotMapper` captures/restores it against a `GameContent`.
 - `SnapshotMigrator` — upgrades an older snapshot to the current `Version` one step at a time before it is restored. A format change adds a step; a renamed content id adds an entry to `ContentAliases` (`content/aliases.json`) instead, which `GameContent` resolves on lookup.
@@ -62,7 +63,7 @@ Terminal.Gui v2, see ADR 0003.
 - `Shell` (root window) holds a stack of `Screen` views; only the top screen is attached and gets keys via `HandleKey`.
 - Flow: key → `Shell.OnKeyDown` → `Screen.HandleKey` → Core command → `Screen.Refresh` pushes state into child views and marks them dirty; Terminal.Gui redraws only changed cells.
 - `GameFlow` owns content, `SaveStore` and top-level transitions: main menu → map → game end.
-- Screens: `MainMenuScreen`, `ClassScreen`, `PauseScreen`, `SlotsScreen`, `PerkScreen`, `CampScreen`, `LeaderScreen`, `ConfirmScreen` (on `MenuScreen` base), `MapScreen`, `SquadScreen`, `CityScreen`, `BuildingsScreen`, `BattleScreen`, `GameEndScreen`.
+- Screens: `MainMenuScreen`, `ClassScreen`, `PauseScreen`, `SlotsScreen`, `PerkScreen`, `CampScreen`, `LeaderScreen`, `ItemsScreen`, `PotionScreen`, `ConfirmScreen` (on `MenuScreen` base), `MapScreen`, `SquadScreen`, `CityScreen`, `BuildingsScreen`, `BattleScreen`, `GameEndScreen`.
 - Widgets (`Widgets/`): `Canvas` (custom-drawn panel), `SquadView`, `MapView`, `PartyView`, `HintBar`; colors and terrain glyphs in `Palette`.
 - Only the console layer maps domain data to glyphs and colors.
 

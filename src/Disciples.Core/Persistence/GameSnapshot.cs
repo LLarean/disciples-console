@@ -60,8 +60,11 @@ namespace Disciples.Core.Persistence
 
         public List<LeaderPerk> Perks { get; set; } = new List<LeaderPerk>();
 
-        /// <summary>Ids of carried items.</summary>
+        /// <summary>Ids of items in the bag.</summary>
         public List<string> Items { get; set; } = new List<string>();
+
+        /// <summary>Ids of the worn artifact and banner.</summary>
+        public List<string> Equipped { get; set; } = new List<string>();
     }
 
     public sealed class CitySnapshot

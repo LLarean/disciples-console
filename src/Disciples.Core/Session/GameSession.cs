@@ -4,6 +4,7 @@ using System.Linq;
 using Disciples.Core.Battles;
 using Disciples.Core.Cities;
 using Disciples.Core.Content;
+using Disciples.Core.Items;
 using Disciples.Core.Map;
 using Disciples.Core.Squads;
 using Disciples.Core.Units;
@@ -257,7 +258,26 @@ namespace Disciples.Core.Session
             return BuildResult.Built;
         }
 
-        public Battle StartBattle(Encounter encounter) => new Battle(Party.Squad, encounter.Defenders, Random, Rules);
+        /// <summary>The active party's leader uses a potion from the bag on a unit of its squad.</summary>
+        public ItemResult UseItem(ItemDefinition item, Unit target)
+        {
+            if (item.Kind != ItemKind.Potion || !Party.Items.Contains(item) || !Party.Squad.Contains(target))
+                return ItemResult.Unavailable;
+
+            if (target.Heal(item.Heal) == 0)
+                return ItemResult.NoEffect;
+
+            Party.Take(item);
+            return ItemResult.Used;
+        }
+
+        /// <summary>The active party's leader puts on an artifact or banner from the bag, replacing the worn one of that kind.</summary>
+        public bool Equip(ItemDefinition item) => Party.Equip(item);
+
+        public bool Unequip(ItemDefinition item) => Party.Unequip(item);
+
+        public Battle StartBattle(Encounter encounter) =>
+            new Battle(Party.Squad, encounter.Defenders, Random, Rules, BonusesOf(Party, encounter.Enemy));
 
         /// <summary>
         /// Applies battle results: reward, shared experience and capture on victory. Losing the battle or the leader disbands the party;
@@ -442,7 +462,7 @@ namespace Disciples.Core.Session
                 if (enemy.CanAfford(cost))
                     Occupy(enemy, city, cost);
             }
-            else if (AutoBattle(enemy.Squad, city.Garrison) == BattleOutcome.Victory && enemy.Leader.IsAlive)
+            else if (AutoBattle(enemy, city.Garrison) == BattleOutcome.Victory && enemy.Leader.IsAlive)
             {
                 Occupy(enemy, city, 0);
             }
@@ -458,9 +478,13 @@ namespace Disciples.Core.Session
             }
         }
 
-        private BattleOutcome AutoBattle(Squad attackers, Squad defenders)
+        private static Func<Unit, StatBonus> BonusesOf(Party attacker, Party? defender = null) =>
+            unit => attacker.BonusFor(unit).Plus(defender?.BonusFor(unit) ?? StatBonus.None);
+
+        private BattleOutcome AutoBattle(Party attacker, Squad defenders)
         {
-            var battle = new Battle(attackers, defenders, Random, Rules);
+            var attackers = attacker.Squad;
+            var battle = new Battle(attackers, defenders, Random, Rules, BonusesOf(attacker));
             var ai = new SimpleBattleAi(Random);
             while (!battle.IsOver)
                 ai.Act(battle);

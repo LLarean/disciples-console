@@ -19,6 +19,7 @@ namespace Disciples.Core.Squads
     {
         private readonly List<LeaderPerk> _perks;
         private readonly List<ItemDefinition> _items;
+        private readonly List<ItemDefinition> _equipped = new List<ItemDefinition>();
 
         public Party(Unit leader, Position position, int? movementPoints = null, GameRules? rules = null)
             : this(SquadFor(leader), position, movementPoints, rules: rules)
@@ -27,7 +28,7 @@ namespace Disciples.Core.Squads
 
         /// <summary>Restores a party from a squad that already contains its leader; squad capacity follows the leadership.</summary>
         public Party(Squad squad, Position position, int? movementPoints = null, IEnumerable<LeaderPerk>? perks = null, GameRules? rules = null,
-            IEnumerable<ItemDefinition>? items = null)
+            IEnumerable<ItemDefinition>? items = null, IEnumerable<ItemDefinition>? equipped = null)
         {
             Leader = squad.Leader ?? throw new ArgumentException("A party squad needs a leader.", nameof(squad));
             Squad = squad;
@@ -37,6 +38,12 @@ namespace Disciples.Core.Squads
             MovementPerk = (rules ?? new GameRules()).MovementPerk;
             Squad.SetCapacity(Leader.Definition.Leadership + Count(LeaderPerk.Leadership));
             MovementPoints = movementPoints ?? MaxMovementPoints;
+
+            foreach (var item in equipped ?? Enumerable.Empty<ItemDefinition>())
+            {
+                _items.Add(item);
+                Equip(item);
+            }
         }
 
         public Unit Leader { get; }
@@ -50,6 +57,18 @@ namespace Disciples.Core.Squads
 
         /// <summary>Items the leader carries; the bag has no size limit.</summary>
         public IReadOnlyList<ItemDefinition> Items => _items;
+
+        /// <summary>Worn items, at most one of each kind; they are not in the bag.</summary>
+        public IReadOnlyList<ItemDefinition> Equipped => _equipped;
+
+        /// <summary>The banner strengthens every unit of the squad, the artifact only the leader.</summary>
+        public StatBonus BonusFor(Unit unit)
+        {
+            if (!Squad.Contains(unit))
+                return StatBonus.None;
+
+            return _equipped.Where(i => i.Kind == ItemKind.Banner || unit == Leader).Aggregate(StatBonus.None, (sum, i) => sum.Plus(i.Bonus));
+        }
 
         /// <summary>Each leader level above the first grants one perk.</summary>
         public int UnspentPerks => Math.Max(0, Leader.Level - 1 - _perks.Count);
@@ -72,6 +91,29 @@ namespace Disciples.Core.Squads
 
         /// <summary>Removes one such item from the bag.</summary>
         internal bool Take(ItemDefinition item) => _items.Remove(item);
+
+        /// <summary>Moves an artifact or banner from the bag to its slot; the item worn there returns to the bag.</summary>
+        internal bool Equip(ItemDefinition item)
+        {
+            if (!item.IsEquipment || !_items.Remove(item))
+                return false;
+
+            var worn = _equipped.FirstOrDefault(e => e.Kind == item.Kind);
+            if (worn != null)
+                Unequip(worn);
+
+            _equipped.Add(item);
+            return true;
+        }
+
+        internal bool Unequip(ItemDefinition item)
+        {
+            if (!_equipped.Remove(item))
+                return false;
+
+            _items.Add(item);
+            return true;
+        }
 
         internal void MoveTo(Position position, int cost)
         {

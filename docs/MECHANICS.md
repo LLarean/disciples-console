@@ -57,7 +57,7 @@ Markers:
 | 4.4 | Swap / move units between slots, respecting large units | M2 |
 | 4.5 | Leader classes: warrior, scout, mage, thief — differ in stats and movement | M8 — Paladin, Ranger, Archmage chosen on new game; thief in Backlog |
 | 4.6 | Leader progression: level-up picks (leadership, movement, abilities) | M8 — simplified: one pick per level, +1 leadership (up to 6) or +`movementPerk` movement; abilities in Backlog **(verify: starting leadership and pick list)** |
-| 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | M11 |
+| 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | M11 — simplified: unlimited bag; healing potions drunk on the map; one worn artifact (bonus to the leader) and one banner (bonus to the squad) add armor, power %, initiative, accuracy in battle; no ability requirements **(verify)**; travel items and scrolls in Backlog |
 | 4.8 | Several leaders per player | M10 — one party is active; parties cannot share a tile; an attacked party becomes active |
 | 4.9 | Squad loses leader → squad is disbanded | M4, M10 — the party is removed with its survivors; the game is lost with the last leader; M8 — enemy squads are disbanded |
 

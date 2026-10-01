@@ -110,16 +110,17 @@ public sealed class SquadScreen : Screen
         }
 
         var definition = unit.Definition;
+        var bonus = _session.Party.BonusFor(unit);
         var y = 0;
         canvas.Text(1, y++, unit.Name, unit.IsLeader ? Palette.Accent : Palette.Text, style: TextStyle.Bold);
         y++;
         Stat(canvas, y++, "Level", unit.Level.ToString());
         Stat(canvas, y++, "Experience", $"{unit.Experience}/{definition.ExperienceToLevel}");
         Stat(canvas, y++, "HP", $"{unit.Hp}/{unit.MaxHp}");
-        Stat(canvas, y++, "Attack", $"{ViewDrawing.AttackLabel(definition)} {unit.Power}");
-        Stat(canvas, y++, "Accuracy", $"{unit.Accuracy}%");
-        Stat(canvas, y++, "Armor", unit.Armor.ToString());
-        Stat(canvas, y++, "Initiative", unit.Initiative.ToString());
+        Stat(canvas, y++, "Attack", $"{ViewDrawing.AttackLabel(definition)} {bonus.PowerOf(unit)}");
+        Stat(canvas, y++, "Accuracy", $"{bonus.AccuracyOf(unit)}%");
+        Stat(canvas, y++, "Armor", bonus.ArmorOf(unit).ToString());
+        Stat(canvas, y++, "Initiative", bonus.InitiativeOf(unit).ToString());
         Stat(canvas, y++, "Source", definition.Source.ToString());
         if (definition.Effect != AttackEffect.None)
             Stat(canvas, y++, "Effect", definition.Effect.ToString());
@@ -129,6 +130,8 @@ public sealed class SquadScreen : Screen
             Stat(canvas, y++, "Ward", string.Join(", ", definition.Wards));
         if (unit.IsLeader)
             Stat(canvas, y++, "Leadership", Squad.Capacity.ToString());
+        if (!bonus.IsEmpty)
+            Stat(canvas, y++, "Items", "bonuses included");
 
         y++;
         canvas.Section(y++, "Upgrade");

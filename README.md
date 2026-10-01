@@ -17,11 +17,12 @@ Terminal of at least 110×30 is recommended.
 ## Controls
 | Screen | Keys |
 |---|---|
-| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city / camp, C — capital, Tab — next leader, T — pick a travel target (Enter — go), G — continue the route, S — squad, L — level-up perk, E — end turn, Esc — menu |
+| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city / camp, C — capital, Tab — next leader, T — pick a travel target (Enter — go), G — continue the route, S — squad, I — items, L — level-up perk, E — end turn, Esc — menu |
 | City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, B — capital buildings, L — hire a leader (capital), Esc — cancel / leave |
 | Squad | arrows — select, Enter — pick / place unit, D — dismiss, S / Esc — back |
 | Buildings | arrows — select, Enter — build, B / Esc — back |
 | Battle | arrows — target, Enter — act, D — defend, W — wait, A — auto, X — retreat |
+| Items | arrows — select, Enter — drink a potion / wear or take off an artifact or banner, Esc — back |
 | Menus | arrows — select, Enter — confirm, Esc — back |
 
 Walking into a city or a mercenary camp (`▲`) opens it, treasure (`$`) is picked up, a mine (`¤`) starts paying gold each turn; walking into an enemy (`†`) or a guarded hostile city starts a battle. Win by beating all neutral squads and owning every city; lose if the leader dies.

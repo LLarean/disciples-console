@@ -74,7 +74,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## M11 — Items
 - [x] Item definitions in `content/items.json`, leader inventory (4.7) — an unlimited bag saved with the party
-- [ ] Potions used on units; artifacts and banners with passive bonuses
+- [x] Potions used on units; artifacts and banners with passive bonuses — `I` on the map; one worn artifact (leader) and banner (squad), applied in battle
 - [ ] Treasure holds items; merchants sell them (1.10)
 
 ## M12 — Cities and opponents
@@ -107,6 +107,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Retreat has no penalty (the party just leaves the battle) — done in M9 (6.10)
 - [x] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9) — done in M10
 - [ ] Leaders of one class share a name, so the log cannot tell two Paladins apart; no cap on the number of leaders **(verify)**
+- [ ] Items: no leader abilities gate artifacts and banners, potions only heal and work only on the map, the bag is unlimited and is lost with the party **(verify)**; battle cards show power without item bonuses
 - [ ] Losing the last leader loses the game even with gold to hire a new one **(verify: the original loses on the capital)**
 - [ ] Experience is split evenly among survivors, rounded up **(verify original rule)**
 - [ ] Level growth is a flat % of base HP and power; armor, accuracy, initiative don't grow **(verify)**
