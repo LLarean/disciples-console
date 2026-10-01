@@ -98,6 +98,7 @@ public sealed class PartyView : Canvas
             .Append(("$", new Attribute(Palette.Accent, Palette.Background), "Treasure"))
             .Append(("¤", new Attribute(Palette.Accent, Palette.Background), "Mine"))
             .Append(("*", new Attribute(ManaText.ColorOf(default), Palette.Background), "Mana source"))
+            .Append((MapView.RodGlyph, new Attribute(Palette.Ally, Palette.Background), "Rod"))
             .Append(("▲", new Attribute(Palette.Accent, Palette.Background), "Camp"))
             .Append(("§", new Attribute(Palette.Accent, Palette.Background), "Merchant"))
             .Append(("@", new Attribute(MapView.LeaderColor, Palette.Background), "You"))

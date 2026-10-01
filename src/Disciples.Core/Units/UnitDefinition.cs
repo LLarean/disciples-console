@@ -28,7 +28,8 @@ namespace Disciples.Core.Units
             IEnumerable<AttackSource>? immunities = null,
             IEnumerable<AttackSource>? wards = null,
             AttackEffect effect = AttackEffect.None,
-            bool guardian = false)
+            bool guardian = false,
+            bool plantsRods = false)
         {
             Id = id;
             Name = name;
@@ -52,6 +53,7 @@ namespace Disciples.Core.Units
             Wards = wards?.ToList() ?? new List<AttackSource>();
             Effect = effect;
             IsGuardian = guardian;
+            PlantsRods = plantsRods;
         }
 
         public string Id { get; }
@@ -107,6 +109,10 @@ namespace Disciples.Core.Units
 
         /// <summary>Bound to its city: never leaves the garrison, cannot be dismissed and is fully restored every turn.</summary>
         public bool IsGuardian { get; }
+
+        /// <summary>A leader that can plant rods to claim land.</summary>
+        public bool PlantsRods { get; }
+
         public int SlotCount => Size == UnitSize.Large ? 2 : 1;
     }
 }

@@ -13,8 +13,11 @@ namespace Disciples.Core.Map
         private readonly List<NeutralSquad> _neutrals;
         private readonly List<Party> _enemies;
         private readonly List<Site> _sites;
+        private readonly List<Rod> _rods;
 
-        public WorldMap(string name, Terrain[,] tiles, IEnumerable<City> cities, IEnumerable<NeutralSquad>? neutrals = null, IEnumerable<Party>? enemies = null, IEnumerable<Site>? sites = null)
+        public WorldMap(
+            string name, Terrain[,] tiles, IEnumerable<City> cities, IEnumerable<NeutralSquad>? neutrals = null, IEnumerable<Party>? enemies = null,
+            IEnumerable<Site>? sites = null, IEnumerable<Rod>? rods = null)
         {
             Name = name;
             _tiles = tiles;
@@ -22,11 +25,13 @@ namespace Disciples.Core.Map
             _neutrals = neutrals?.ToList() ?? new List<NeutralSquad>();
             _enemies = enemies?.ToList() ?? new List<Party>();
             _sites = sites?.ToList() ?? new List<Site>();
+            _rods = rods?.ToList() ?? new List<Rod>();
 
             var outside = _cities.Select(c => (c.Name, c.Position))
                 .Concat(_neutrals.Select(n => (n.Name, n.Position)))
                 .Concat(_enemies.Select(e => (e.Name, e.Position)))
                 .Concat(_sites.Select(s => (s.Name, s.Position)))
+                .Concat(_rods.Select(r => (Name: "Rod", r.Position)))
                 .FirstOrDefault(o => !Contains(o.Position));
             if (outside.Name != null)
                 throw new ArgumentException($"'{outside.Name}' is outside the map.");
@@ -42,6 +47,7 @@ namespace Disciples.Core.Map
         public IReadOnlyList<Party> Enemies => _enemies;
 
         public IReadOnlyList<Site> Sites => _sites;
+        public IReadOnlyList<Rod> Rods => _rods;
 
         public bool Contains(Position position)
         {
@@ -58,6 +64,8 @@ namespace Disciples.Core.Map
 
         public Site? SiteAt(Position position) => _sites.FirstOrDefault(s => s.Position == position);
 
+        public Rod? RodAt(Position position) => _rods.FirstOrDefault(r => r.Position == position);
+
         internal void RemoveNeutral(NeutralSquad neutral) => _neutrals.Remove(neutral);
 
         internal void AddEnemy(Party enemy) => _enemies.Add(enemy);
@@ -65,5 +73,9 @@ namespace Disciples.Core.Map
         internal void RemoveEnemy(Party enemy) => _enemies.Remove(enemy);
 
         internal void RemoveSite(Site site) => _sites.Remove(site);
+
+        internal void AddRod(Rod rod) => _rods.Add(rod);
+
+        internal void RemoveRod(Rod rod) => _rods.Remove(rod);
     }
 }

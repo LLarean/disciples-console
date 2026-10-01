@@ -46,6 +46,7 @@ namespace Disciples.Core.Persistence
         public List<PartySnapshot> Enemies { get; set; } = new List<PartySnapshot>();
 
         public List<SiteSnapshot> Sites { get; set; } = new List<SiteSnapshot>();
+        public List<RodSnapshot> Rods { get; set; } = new List<RodSnapshot>();
 
         /// <summary>Fog of war rows, '#' for explored tiles. Empty in scenarios: the start is revealed around the party and cities.</summary>
         public List<string> Explored { get; set; } = new List<string>();
@@ -117,6 +118,13 @@ namespace Disciples.Core.Persistence
         public Owner Owner { get; set; }
         public List<string> Mercenaries { get; set; } = new List<string>();
         public List<string> Items { get; set; } = new List<string>();
+    }
+
+    public sealed class RodSnapshot
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public Owner Owner { get; set; } = Owner.Player;
     }
 
     public sealed class NeutralSnapshot

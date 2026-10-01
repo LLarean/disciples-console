@@ -27,6 +27,13 @@ namespace Disciples.Core.Content
 
         /// <summary>Radius of land any other city claims for its owner.</summary>
         public int CityTerritoryRadius { get; set; } = 3;
+
+        /// <summary>Radius of land a rod claims for its owner.</summary>
+        public int RodTerritoryRadius { get; set; } = 2;
+
+        /// <summary>Gold a leader pays to plant a rod.</summary>
+        public int RodCost { get; set; } = 150;
+
         public int InitiativeSpread { get; set; } = 10;
         public int DamageSpreadPercent { get; set; } = 10;
 

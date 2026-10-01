@@ -17,7 +17,7 @@ Terminal of at least 110×30 is recommended.
 ## Controls
 | Screen | Keys |
 |---|---|
-| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city / camp / merchant, C — capital, Tab — next leader, T — pick a travel target (Enter — go), G — continue the route, S — squad, I — items, M — spells, L — level-up perk, E — end turn, Esc — menu |
+| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city / camp / merchant, C — capital, Tab — next leader, T — pick a travel target (Enter — go), G — continue the route, S — squad, I — items, M — spells, R — plant a rod (Archangel), L — level-up perk, E — end turn, Esc — menu |
 | City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, U — upgrade the city tier, B — capital buildings, L — hire a leader (capital), Esc — cancel / leave |
 | Squad | arrows — select, Enter — pick / place unit, D — dismiss, S / Esc — back |
 | Buildings | arrows — select, Enter — build, B / Esc — back |
@@ -26,7 +26,7 @@ Terminal of at least 110×30 is recommended.
 | Spells | arrows — select, Enter — research a spell (needs the Magic Tower in the capital) / cast a known one and pick its target, Esc — back |
 | Menus | arrows — select, Enter — confirm, Esc — back |
 
-Walking into a city or a mercenary camp (`▲`) opens it, treasure (`$`) is picked up, a mine (`¤`) starts paying gold and a mana source (`*`) mana each turn; walking into an enemy (`†`) or a guarded hostile city starts a battle. Win by beating all neutral squads and owning every city; lose if the leader dies.
+Walking into a city or a mercenary camp (`▲`) opens it, treasure (`$`) is picked up, a mine (`¤`) starts paying gold and a mana source (`*`) mana each turn; walking into an enemy (`†`) or a guarded hostile city starts a battle. An Archangel plants rods (`┃`) that claim the land around them, with its mines and mana sources; stepping on a hostile rod breaks it. Win by beating all neutral squads and owning every city; lose if the leader dies.
 
 ## Tests
 ```

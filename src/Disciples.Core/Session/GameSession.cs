@@ -42,7 +42,7 @@ namespace Disciples.Core.Session
             Random = random;
             Turn = turn;
             Fog = fog ?? new FogOfWar(map.Width, map.Height);
-            Territory = new Territory(map, Rules.CapitalTerritoryRadius, Rules.CityTerritoryRadius);
+            Territory = new Territory(map, Rules.CapitalTerritoryRadius, Rules.CityTerritoryRadius, Rules.RodTerritoryRadius);
             foreach (var city in map.Cities.Where(c => c.IsPlayerOwned))
                 Fog.Reveal(city.Position, Rules.SightRadius);
             foreach (var party in _parties)
@@ -133,6 +133,7 @@ namespace Disciples.Core.Session
 
             Party.MoveTo(target, cost);
             RevealAround(Party);
+            BreakRod(Party, Owner.Player);
 
             if (Map.SiteAt(target) is { } site)
             {
@@ -519,8 +520,8 @@ namespace Disciples.Core.Session
         }
 
         /// <summary>
-        /// Walks towards the nearest target: a player party, a city it can capture, a treasure or a mine.
-        /// The capital is never a target. Sites on the way are plundered too.
+        /// Walks towards the nearest target: a player party, a city it can capture, a rod of the player, a treasure or a mine.
+        /// The capital is never a target. Sites on the way are plundered and rods broken too.
         /// </summary>
         private void MoveEnemy(Party enemy)
         {
@@ -537,6 +538,7 @@ namespace Disciples.Core.Session
                     return;
 
                 Step(enemy, step, cost);
+                BreakRod(enemy, Owner.Enemy);
                 if (Map.SiteAt(step) is { } site)
                     Plunder(enemy, site);
             }
@@ -550,7 +552,10 @@ namespace Disciples.Core.Session
             if (Map.CityAt(position) is { } city)
                 return !city.IsCapital && city.Owner != Owner.Enemy;
 
-            return Map.SiteAt(position) is { } site && IsLoot(site) && Map.NeutralAt(position) == null && Map.EnemyAt(position) == null;
+            if (Map.NeutralAt(position) != null || Map.EnemyAt(position) != null)
+                return false;
+
+            return Map.RodAt(position) is { Owner: Owner.Player } || Map.SiteAt(position) is { } site && IsLoot(site);
         }
 
         /// <summary>A mine on the player's land is not worth taking: the land claims it back.</summary>

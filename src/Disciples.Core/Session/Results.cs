@@ -69,6 +69,14 @@ namespace Disciples.Core.Session
         NoTarget
     }
 
+    public enum RodResult
+    {
+        Planted,
+        NotARodBearer,
+        Occupied,
+        NotEnoughGold
+    }
+
     public enum BuildResult
     {
         Built,

@@ -13,5 +13,6 @@ public sealed class ClassScreen(GameFlow flow) : MenuScreen
     protected override void Back() => Shell.Pop();
 
     public static string Describe(UnitDefinition c) =>
-        $"HP {c.MaxHp}  {ViewDrawing.AttackLabel(c)} {c.Power}  armor {c.Armor}  init {c.Initiative}  move {c.Movement}  lead {c.Leadership}";
+        $"HP {c.MaxHp}  {ViewDrawing.AttackLabel(c)} {c.Power}  armor {c.Armor}  init {c.Initiative}  move {c.Movement}  lead {c.Leadership}"
+        + (c.PlantsRods ? "  plants rods" : "");
 }

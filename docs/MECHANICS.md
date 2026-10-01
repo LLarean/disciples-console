@@ -18,7 +18,7 @@ Markers:
 | 1.5 | Camera/viewport scrolling when map is larger than the screen | M1 |
 | 1.6 | Path preview (planned route with cost) | M8 — cheapest route by terrain cost; steps beyond this turn's movement are marked, the destination is kept between turns |
 | 1.7 | Fog of war / exploration | M9 (simplified: explored tiles stay fully visible, enemies included; no separate "currently seen" state **(verify)**) |
-| 1.8 | Territory ownership and spreading land (rods, capital aura) | M9 (simplified: fixed radius per capital/city from `rules.json`, no spreading over turns, no rods **(verify)**; mines on owned land change hands at turn end) |
+| 1.8 | Territory ownership and spreading land (rods, capital aura) | M9 (simplified: fixed radius per capital/city from `rules.json`, no spreading over turns **(verify)**; mines on owned land change hands at turn end). M13 — rods: a leader with the `rods` flag (Archangel) plants a rod on its tile for `rodCost` gold, not on a city, a site or another rod; the rod claims `rodTerritoryRadius` around it at once and competes with cities by distance; any party stepping on a hostile rod breaks it; enemy leaders seek the player's rods and plant none **(verify: cost, radius, who may break a rod)** |
 | 1.9 | Resource sources: gold mines, mana sources | M8 — gold mines captured by stepping on them, income per turn; M13 — mana sources work like mines: captured by stepping on them or by owning the land, yield their mana every turn |
 | 1.10 | Treasure chests, merchants, mercenary camps, trainers | M8 — treasure (one-time gold) and mercenary camps (hire into the party at unit cost); M11 — treasure also holds items, merchants sell a limited stock at item cost to the party standing there, no selling **(verify)**; trainers in M14 |
 
@@ -55,7 +55,7 @@ Markers:
 | 4.2 | Leader is a unit placed in the squad grid | M2 |
 | 4.3 | Leadership limits the number of units under the leader **(verify: whether the leader itself counts; large unit counts as 2)** | M2 |
 | 4.4 | Swap / move units between slots, respecting large units | M2 |
-| 4.5 | Leader classes: warrior, scout, mage, thief — differ in stats and movement | M8 — Paladin, Ranger, Archmage chosen on new game; thief in Backlog |
+| 4.5 | Leader classes: warrior, scout, mage, thief — differ in stats and movement | M8 — Paladin, Ranger, Archmage chosen on new game; M13 — Archangel, the rod bearer; thief in Backlog |
 | 4.6 | Leader progression: level-up picks (leadership, movement, abilities) | M8 — simplified: one pick per level, +1 leadership (up to 6) or +`movementPerk` movement; abilities in Backlog **(verify: starting leadership and pick list)** |
 | 4.7 | Leader inventory: artifacts, banners, travel items, potions, scrolls | M11 — simplified: unlimited bag; healing potions drunk on the map; one worn artifact (bonus to the leader) and one banner (bonus to the squad) add armor, power %, initiative, accuracy in battle; no ability requirements **(verify)**; travel items and scrolls in Backlog |
 | 4.8 | Several leaders per player | M10 — one party is active; parties cannot share a tile; an attacked party becomes active |

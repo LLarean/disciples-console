@@ -23,6 +23,11 @@ namespace Disciples.Core.Session
         /// <summary>A mine or a mana source became the player's; see <see cref="GameEvent.Site"/>.</summary>
         MineCaptured,
         MineLost,
+        RodPlanted,
+        /// <summary>A player's party broke an enemy rod.</summary>
+        RodDestroyed,
+        /// <summary>An enemy leader broke a rod of the player.</summary>
+        RodLost,
         SpellCast,
         /// <summary>A hostile squad was wiped out by a spell.</summary>
         SquadDestroyed,

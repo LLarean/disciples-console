@@ -86,7 +86,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 ## M13 — Magic
 - [x] Mana types and mana sources (2.4, 1.9) — `Mana` stock in the session, `mana` per turn on the capital and on `manaSource` sites
 - [x] Spell research in the magic tower, casting on the map (8.1) — `content/spells.json`; damage and healing spells, one research per turn, each spell once per turn
-- [ ] Rods spread territory (1.8)
+- [x] Rods spread territory (1.8) — the Archangel leader (`rods` flag) plants a rod for `rodCost`; it claims `rodTerritoryRadius` around it; stepping on a hostile rod breaks it
 
 ## M14 — Remaining classes, effects and races
 - [ ] Thief leader with thieves guild actions; leader abilities as level-up picks (4.5, 4.6)
@@ -103,6 +103,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 - [x] Snapshot `Version` is written but there is no migration path; content id changes break saves (M8 renamed `lord` and dropped `maxMovementPoints`) — `SnapshotMigrator` steps and `content/aliases.json`
 - [ ] Thief leader class and leader abilities as level-up picks
 - [x] Enemy leaders ignore map sites: they neither take treasure nor capture mines — done in M12
+- [ ] Rods claim their land at once instead of spreading it over turns, any party breaks a hostile rod, the enemy breaks rods but plants none **(verify)**
 - [ ] Magic is minimal: only damage and healing spells, no spell levels, no summons, buffs or curses; the enemy neither researches nor casts **(verify)**
 - [ ] Enemy economy is minimal: garrisons are never reinforced, cities are not upgraded, nothing is built, leaders leave the capital without waiting for a full squad, found potions are not used and the items die with the leader **(verify)**
 - [x] Save regenerates the map legend characters — terrains carry a `symbol` in `terrains.json`

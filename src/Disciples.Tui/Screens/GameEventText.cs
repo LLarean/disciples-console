@@ -23,6 +23,9 @@ public static class GameEventText
         GameEventKind.MineCaptured => $"{e.Subject} is yours: +{Yield(e)} per turn.",
         GameEventKind.TreasureLost => $"{e.Detail} carries off {e.Subject}.",
         GameEventKind.MineLost => e.Detail.Length > 0 ? $"{e.Detail} seizes {e.Subject}." : $"{e.Subject} fell to enemy land.",
+        GameEventKind.RodPlanted => $"{e.Subject} plants a rod for {e.Amount} gold; the land around is yours.",
+        GameEventKind.RodDestroyed => $"{e.Subject} breaks an enemy rod.",
+        GameEventKind.RodLost => $"{e.Subject} breaks your rod.",
         GameEventKind.SpellCast => e.Spell?.Kind == SpellKind.Heal
             ? $"{e.Subject} heals {e.Detail} by {e.Amount}."
             : $"{e.Subject} hits {e.Detail} for {e.Amount}.",

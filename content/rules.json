@@ -6,6 +6,8 @@
   "sightRadius": 4,
   "capitalTerritoryRadius": 5,
   "cityTerritoryRadius": 3,
+  "rodTerritoryRadius": 2,
+  "rodCost": 150,
   "initiativeSpread": 10,
   "damageSpreadPercent": 10,
   "defendDamagePercent": 50,
@@ -14,7 +16,7 @@
   "effectTurns": 2,
   "poisonPercent": 50,
   "drainPercent": 50,
-  "leaderClasses": ["paladin", "ranger", "archmage"],
+  "leaderClasses": ["paladin", "ranger", "archmage", "archangel"],
   "enemyLeaderClasses": ["orc-warlord"],
   "enemyLeaderLimit": 3
 }

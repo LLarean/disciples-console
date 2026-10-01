@@ -9,6 +9,8 @@ public sealed class MapView : Canvas
 {
     private const int TileWidth = 2;
 
+    public const string RodGlyph = "┃";
+
     public static readonly Color LeaderColor = new(255, 255, 255);
     public static readonly (Color Foreground, Color Background) CapitalColors = (new Color(255, 215, 0), new Color(128, 28, 28));
     public static readonly (Color Foreground, Color Background) CityColors = (new Color(238, 238, 238), new Color(72, 48, 96));
@@ -72,7 +74,7 @@ public sealed class MapView : Canvas
 
     private bool IsPlain(Position position) =>
         !_session.Fog.IsExplored(position) || _session.Map.CityAt(position) == null && _session.Map.NeutralAt(position) == null
-        && _session.Map.EnemyAt(position) == null && _session.Map.SiteAt(position) == null;
+        && _session.Map.EnemyAt(position) == null && _session.Map.SiteAt(position) == null && _session.Map.RodAt(position) == null;
 
     private void DrawTile(int x, int y, Position position)
     {
@@ -96,6 +98,8 @@ public sealed class MapView : Canvas
             this.Text(x, y, "† ", Palette.Enemy, LandBackground(position), TextStyle.Bold);
         else if (_session.Map.SiteAt(position) is { } site)
             this.Text(x, y, SiteGlyph(site.Kind) + " ", SiteColor(site), LandBackground(position), TextStyle.Bold);
+        else if (_session.Map.RodAt(position) is { } rod)
+            this.Text(x, y, RodGlyph + " ", rod.Owner == Owner.Player ? Palette.Ally : Palette.Enemy, LandBackground(position), TextStyle.Bold);
         else if (_enemyTrail.Contains(position))
             this.Text(x, y, "· ", Palette.Enemy, LandBackground(position));
         else
