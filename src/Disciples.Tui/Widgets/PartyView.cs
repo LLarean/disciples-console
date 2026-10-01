@@ -92,6 +92,7 @@ public sealed class PartyView : Canvas
             .Append(("$", new Attribute(Palette.Accent, Palette.Background), "Treasure"))
             .Append(("¤", new Attribute(Palette.Accent, Palette.Background), "Mine"))
             .Append(("▲", new Attribute(Palette.Accent, Palette.Background), "Camp"))
+            .Append(("§", new Attribute(Palette.Accent, Palette.Background), "Merchant"))
             .Append(("@", new Attribute(MapView.LeaderColor, Palette.Background), "You"))
             .Append(("@", new Attribute(Palette.Ally, Palette.Background), "Other leader"))
             .ToList();

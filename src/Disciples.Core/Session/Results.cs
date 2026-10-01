@@ -36,6 +36,13 @@ namespace Disciples.Core.Session
         Unavailable
     }
 
+    public enum BuyResult
+    {
+        Bought,
+        NotEnoughGold,
+        Unavailable
+    }
+
     public enum BuildResult
     {
         Built,

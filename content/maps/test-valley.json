@@ -268,14 +268,21 @@
       "kind": "treasure",
       "x": 14,
       "y": 3,
-      "gold": 150
+      "gold": 150,
+      "items": [
+        "ring-of-ages"
+      ]
     },
     {
       "name": "Dwarven Cache",
       "kind": "treasure",
       "x": 33,
       "y": 13,
-      "gold": 200
+      "gold": 200,
+      "items": [
+        "dwarven-bracer",
+        "greater-healing-potion"
+      ]
     },
     {
       "name": "Copper Mine",
@@ -300,6 +307,22 @@
         "goblin-archer",
         "orc",
         "ogre"
+      ]
+    },
+    {
+      "name": "Travelling Merchant",
+      "kind": "merchant",
+      "x": 11,
+      "y": 9,
+      "items": [
+        "healing-potion",
+        "healing-potion",
+        "healing-potion",
+        "greater-healing-potion",
+        "rune-sword",
+        "banner-of-war",
+        "banner-of-fortitude",
+        "banner-of-striking"
       ]
     }
   ]

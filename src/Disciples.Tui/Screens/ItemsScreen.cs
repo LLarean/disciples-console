@@ -45,7 +45,7 @@ public sealed class ItemsScreen(GameSession session) : MenuScreen
         return target + string.Join(", ", effects);
     }
 
-    private static string Label(ItemDefinition item, int count) => count > 1 ? $"{item.Name} ×{count}" : item.Name;
+    public static string Label(ItemDefinition item, int count) => count > 1 ? $"{item.Name} ×{count}" : item.Name;
 
     private void Use(ItemDefinition item)
     {

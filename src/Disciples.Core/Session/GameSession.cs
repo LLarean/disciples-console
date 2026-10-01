@@ -224,6 +224,21 @@ namespace Disciples.Core.Session
             return HireResult.HiredToParty;
         }
 
+        /// <summary>Buys an item from the merchant's stock into the bag of the party standing there.</summary>
+        public BuyResult BuyItem(Site merchant, ItemDefinition item)
+        {
+            if (merchant.Kind != SiteKind.Merchant || Party.Position != merchant.Position || !merchant.Items.Contains(item))
+                return BuyResult.Unavailable;
+
+            if (Gold < item.Cost)
+                return BuyResult.NotEnoughGold;
+
+            Gold -= item.Cost;
+            merchant.Take(item);
+            Party.Give(item);
+            return BuyResult.Bought;
+        }
+
         public bool Dismiss(Squad squad, Unit unit)
         {
             if (unit.IsLeader || !squad.Contains(unit))
@@ -375,6 +390,11 @@ namespace Disciples.Core.Session
                     Gold += site.Gold;
                     Map.RemoveSite(site);
                     _events.Add(new GameEvent(GameEventKind.TreasureFound, site.Name, amount: site.Gold));
+                    foreach (var item in site.Items)
+                    {
+                        Party.Give(item);
+                        _events.Add(new GameEvent(GameEventKind.ItemFound, item.Name, site.Name));
+                    }
                     break;
                 case SiteKind.Mine when site.Owner != Owner.Player:
                     site.Capture(Owner.Player);

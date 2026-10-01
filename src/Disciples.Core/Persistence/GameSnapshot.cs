@@ -93,6 +93,7 @@ namespace Disciples.Core.Persistence
         public int Gold { get; set; }
         public Owner Owner { get; set; }
         public List<string> Mercenaries { get; set; } = new List<string>();
+        public List<string> Items { get; set; } = new List<string>();
     }
 
     public sealed class NeutralSnapshot

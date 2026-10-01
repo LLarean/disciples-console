@@ -41,7 +41,8 @@ namespace Disciples.Core.Persistence
                     Y = s.Position.Y,
                     Gold = s.Gold,
                     Owner = s.Owner,
-                    Mercenaries = s.Mercenaries.Select(m => m.Id).ToList()
+                    Mercenaries = s.Mercenaries.Select(m => m.Id).ToList(),
+                    Items = s.Items.Select(i => i.Id).ToList()
                 }).ToList(),
                 Explored = session.Fog.ToRows()
             };
@@ -56,7 +57,7 @@ namespace Disciples.Core.Persistence
                 n.Name, new Position(n.X, n.Y), RestoreSquad(n.Units, new Squad(), content, n.Name), n.Reward));
             var enemies = snapshot.Enemies.Select(e => RestoreParty(e, content, "Enemy"));
             var sites = snapshot.Sites.Select(s => new Site(
-                s.Name, s.Kind, new Position(s.X, s.Y), s.Gold, s.Mercenaries.Select(content.Unit), s.Owner));
+                s.Name, s.Kind, new Position(s.X, s.Y), s.Gold, s.Mercenaries.Select(content.Unit), s.Owner, s.Items.Select(content.Item)));
             var map = new WorldMap(snapshot.Map.Name, RestoreTiles(snapshot.Map, content), cities, neutrals, enemies, sites);
             if (snapshot.Active < 0 || snapshot.Active >= snapshot.Parties.Count)
                 throw new ContentException("The game has no active player party.");

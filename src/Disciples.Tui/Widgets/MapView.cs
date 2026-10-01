@@ -104,6 +104,7 @@ public sealed class MapView : Canvas
     {
         SiteKind.Treasure => "$",
         SiteKind.Mine => "¤",
+        SiteKind.Merchant => "§",
         _ => "▲"
     };
 

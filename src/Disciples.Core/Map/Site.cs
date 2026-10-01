@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Disciples.Core.Cities;
+using Disciples.Core.Items;
 using Disciples.Core.Units;
 
 namespace Disciples.Core.Map
@@ -9,13 +10,18 @@ namespace Disciples.Core.Map
     {
         Treasure,
         Mine,
-        Camp
+        Camp,
+        Merchant
     }
 
-    /// <summary>A passable map object visited by stepping on it: treasure, gold mine or mercenary camp.</summary>
+    /// <summary>A passable map object visited by stepping on it: treasure, gold mine, mercenary camp or merchant.</summary>
     public sealed class Site
     {
-        public Site(string name, SiteKind kind, Position position, int gold = 0, IEnumerable<UnitDefinition>? mercenaries = null, Owner owner = Owner.Neutral)
+        private readonly List<ItemDefinition> _items;
+
+        public Site(
+            string name, SiteKind kind, Position position, int gold = 0, IEnumerable<UnitDefinition>? mercenaries = null,
+            Owner owner = Owner.Neutral, IEnumerable<ItemDefinition>? items = null)
         {
             Name = name;
             Kind = kind;
@@ -23,6 +29,7 @@ namespace Disciples.Core.Map
             Gold = gold;
             Mercenaries = mercenaries?.ToList() ?? new List<UnitDefinition>();
             Owner = owner;
+            _items = items?.ToList() ?? new List<ItemDefinition>();
         }
 
         public string Name { get; }
@@ -33,8 +40,14 @@ namespace Disciples.Core.Map
         public int Gold { get; }
 
         public IReadOnlyList<UnitDefinition> Mercenaries { get; }
+
+        /// <summary>Items lying in a treasure, or a merchant's stock.</summary>
+        public IReadOnlyList<ItemDefinition> Items => _items;
+
         public Owner Owner { get; private set; }
 
         internal void Capture(Owner owner) => Owner = owner;
+
+        internal bool Take(ItemDefinition item) => _items.Remove(item);
     }
 }

@@ -20,7 +20,7 @@ Markers:
 | 1.7 | Fog of war / exploration | M9 (simplified: explored tiles stay fully visible, enemies included; no separate "currently seen" state **(verify)**) |
 | 1.8 | Territory ownership and spreading land (rods, capital aura) | M9 (simplified: fixed radius per capital/city from `rules.json`, no spreading over turns, no rods **(verify)**; mines on owned land change hands at turn end) |
 | 1.9 | Resource sources: gold mines, mana sources | M8 — gold mines captured by stepping on them, income per turn; mana Out |
-| 1.10 | Treasure chests, merchants, mercenary camps, trainers | M8 — treasure (one-time gold) and mercenary camps (hire into the party at unit cost); merchants and trainers in Backlog |
+| 1.10 | Treasure chests, merchants, mercenary camps, trainers | M8 — treasure (one-time gold) and mercenary camps (hire into the party at unit cost); M11 — treasure also holds items, merchants sell a limited stock at item cost to the party standing there, no selling **(verify)**; trainers in M14 |
 
 ## 2. Turn structure and economy
 

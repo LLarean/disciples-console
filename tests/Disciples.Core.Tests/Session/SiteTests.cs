@@ -73,6 +73,72 @@ public class SiteTests
     }
 
     [Fact]
+    public void TryMove_OntoTreasure_PutsItsItemsIntoTheBag()
+    {
+        var session = CreateSession(new Site("Chest", SiteKind.Treasure, East, items: [Sword, Potion]));
+
+        session.TryMove(Direction.East);
+
+        Assert.Equal([Sword, Potion], session.Party.Items);
+        Assert.Equal(100, session.Gold);
+        Assert.Equal(2, session.TakeEvents().Count(e => e.Kind == GameEventKind.ItemFound));
+    }
+
+    [Fact]
+    public void BuyItem_AtMerchant_MovesItemFromStockToBag()
+    {
+        var merchant = new Site("Merchant", SiteKind.Merchant, East, items: [Potion, Potion]);
+        var session = CreateSession(merchant);
+        session.TryMove(Direction.East);
+
+        Assert.Equal(BuyResult.Bought, session.BuyItem(merchant, Potion));
+
+        Assert.Equal(100 - Potion.Cost, session.Gold);
+        Assert.Equal([Potion], session.Party.Items);
+        Assert.Equal([Potion], merchant.Items);
+        Assert.Single(session.Map.Sites);
+    }
+
+    [Fact]
+    public void BuyItem_WithoutGold_IsRefused()
+    {
+        var merchant = new Site("Merchant", SiteKind.Merchant, East, items: [Potion]);
+        var session = CreateSession(merchant, gold: Potion.Cost - 1);
+        session.TryMove(Direction.East);
+
+        Assert.Equal(BuyResult.NotEnoughGold, session.BuyItem(merchant, Potion));
+
+        Assert.Empty(session.Party.Items);
+        Assert.Equal([Potion], merchant.Items);
+    }
+
+    [Fact]
+    public void BuyItem_AwayFromMerchantOrOutOfStock_IsUnavailable()
+    {
+        var merchant = new Site("Merchant", SiteKind.Merchant, East, items: [Potion]);
+        var session = CreateSession(merchant);
+
+        Assert.Equal(BuyResult.Unavailable, session.BuyItem(merchant, Potion));
+
+        session.TryMove(Direction.East);
+
+        Assert.Equal(BuyResult.Unavailable, session.BuyItem(merchant, Sword));
+        Assert.Equal(100, session.Gold);
+    }
+
+    [Fact]
+    public void CaptureThenRestore_KeepsSiteItems()
+    {
+        var session = CreateSession(new Site("Merchant", SiteKind.Merchant, East, items: [Potion, Banner]));
+
+        var restored = SnapshotMapper.Restore(SnapshotMapper.Capture(session), TestContent, new FixedRandom());
+
+        var site = restored.Map.Sites.Single();
+        Assert.Equal(SiteKind.Merchant, site.Kind);
+        Assert.Equal([Potion, Banner], site.Items);
+    }
+
+    [Fact]
     public void CaptureThenRestore_KeepsSites()
     {
         var mine = new Site("Mine", SiteKind.Mine, East, gold: 40, owner: Owner.Player);

@@ -17,7 +17,7 @@ Terminal of at least 110×30 is recommended.
 ## Controls
 | Screen | Keys |
 |---|---|
-| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city / camp, C — capital, Tab — next leader, T — pick a travel target (Enter — go), G — continue the route, S — squad, I — items, L — level-up perk, E — end turn, Esc — menu |
+| Map | arrows / numpad / Home PgUp End PgDn — move, Enter — open city / camp / merchant, C — capital, Tab — next leader, T — pick a travel target (Enter — go), G — continue the route, S — squad, I — items, L — level-up perk, E — end turn, Esc — menu |
 | City | Tab — switch panel, arrows — select, Enter — hire / pick / place unit, D — dismiss, B — capital buildings, L — hire a leader (capital), Esc — cancel / leave |
 | Squad | arrows — select, Enter — pick / place unit, D — dismiss, S / Esc — back |
 | Buildings | arrows — select, Enter — build, B / Esc — back |
