@@ -24,6 +24,14 @@ public sealed class SlotsScreen(GameFlow flow, GameSession? session) : MenuScree
 
     private void Choose(SaveSlotInfo slot)
     {
+        if (IsSaving && !slot.IsEmpty)
+            Shell.Push(new ConfirmScreen($"Overwrite slot {slot.Slot}?", slot.Summary, () => Use(slot)));
+        else
+            Use(slot);
+    }
+
+    private void Use(SaveSlotInfo slot)
+    {
         try
         {
             if (session != null)

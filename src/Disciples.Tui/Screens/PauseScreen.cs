@@ -11,11 +11,14 @@ public sealed class PauseScreen(GameFlow flow, GameSession session) : MenuScreen
         new("Resume", Back),
         new("Save game", () => Shell.Push(new SlotsScreen(flow, session))),
         new("Load game", () => Shell.Push(new SlotsScreen(flow, null)), flow.Saves.HasAny()),
-        new("Main menu", flow.ShowMainMenu, Detail: "unsaved progress is lost"),
-        new("Quit", flow.Quit, Detail: "unsaved progress is lost")
+        new("Main menu", () => Confirm("Leave to the main menu?", flow.ShowMainMenu)),
+        new("Quit", () => Confirm("Quit the game?", flow.Quit))
     ];
 
     protected override string BackLabel => "resume";
 
     protected override void Back() => Shell.Pop();
+
+    private void Confirm(string question, Action leave) =>
+        Shell.Push(new ConfirmScreen(question, "unsaved progress is lost", leave));
 }
