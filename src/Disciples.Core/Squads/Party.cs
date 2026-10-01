@@ -8,10 +8,17 @@ using Disciples.Core.Units;
 
 namespace Disciples.Core.Squads
 {
+    /// <summary>Leadership and Movement can be taken repeatedly; the rest are abilities taken once.</summary>
     public enum LeaderPerk
     {
         Leadership,
-        Movement
+        Movement,
+        Might,
+        NaturalArmor,
+        FirstStrike,
+        Accuracy,
+        NaturalHealing,
+        WeaponMaster
     }
 
     /// <summary>A leader with its squad travelling on the world map.</summary>
@@ -20,6 +27,7 @@ namespace Disciples.Core.Squads
         private readonly List<LeaderPerk> _perks;
         private readonly List<ItemDefinition> _items;
         private readonly List<ItemDefinition> _equipped = new List<ItemDefinition>();
+        private readonly GameRules _rules;
 
         public Party(Unit leader, Position position, int? movementPoints = null, GameRules? rules = null)
             : this(SquadFor(leader), position, movementPoints, rules: rules)
@@ -35,7 +43,7 @@ namespace Disciples.Core.Squads
             Position = position;
             _perks = perks?.ToList() ?? new List<LeaderPerk>();
             _items = items?.ToList() ?? new List<ItemDefinition>();
-            MovementPerk = (rules ?? new GameRules()).MovementPerk;
+            _rules = rules ?? new GameRules();
             Squad.SetCapacity(Leader.Definition.Leadership + Count(LeaderPerk.Leadership));
             MovementPoints = movementPoints ?? MaxMovementPoints;
 
@@ -52,7 +60,7 @@ namespace Disciples.Core.Squads
         public Position Position { get; private set; }
         public int MovementPoints { get; private set; }
         public int MaxMovementPoints => Leader.Definition.Movement + Count(LeaderPerk.Movement) * MovementPerk;
-        public int MovementPerk { get; }
+        public int MovementPerk => _rules.MovementPerk;
         public IReadOnlyList<LeaderPerk> Perks => _perks;
 
         /// <summary>Items the leader carries; the bag has no size limit.</summary>
@@ -61,29 +69,48 @@ namespace Disciples.Core.Squads
         /// <summary>Worn items, at most one of each kind; they are not in the bag.</summary>
         public IReadOnlyList<ItemDefinition> Equipped => _equipped;
 
-        /// <summary>The banner strengthens every unit of the squad, the artifact only the leader.</summary>
+        /// <summary>The banner strengthens every unit of the squad; the artifact and the leader's abilities only the leader.</summary>
         public StatBonus BonusFor(Unit unit)
         {
             if (!Squad.Contains(unit))
                 return StatBonus.None;
 
-            return _equipped.Where(i => i.Kind == ItemKind.Banner || unit == Leader).Aggregate(StatBonus.None, (sum, i) => sum.Plus(i.Bonus));
+            var worn = _equipped.Where(i => i.Kind == ItemKind.Banner || unit == Leader).Aggregate(StatBonus.None, (sum, i) => sum.Plus(i.Bonus));
+            return unit == Leader ? worn.Plus(AbilityBonus) : worn;
         }
+
+        /// <summary>Percent of the battle experience the squad receives.</summary>
+        public int ExperiencePercent => 100 + (Has(LeaderPerk.WeaponMaster) ? _rules.ExperiencePerkPercent : 0);
+
+        /// <summary>Percent of max HP the leader regains every turn wherever it stands.</summary>
+        public int NaturalHealPercent => Has(LeaderPerk.NaturalHealing) ? _rules.HealingPerkPercent : 0;
+
+        public bool Has(LeaderPerk perk) => _perks.Contains(perk);
 
         /// <summary>Each leader level above the first grants one perk.</summary>
         public int UnspentPerks => Math.Max(0, Leader.Level - 1 - _perks.Count);
 
         public bool CanAfford(int cost) => MovementPoints >= cost;
 
-        public bool CanTake(LeaderPerk perk) =>
-            UnspentPerks > 0 && (perk != LeaderPerk.Leadership || Squad.Capacity < Squad.MaxSlots);
+        public bool CanTake(LeaderPerk perk)
+        {
+            if (UnspentPerks == 0)
+                return false;
+
+            return perk switch
+            {
+                LeaderPerk.Leadership => Squad.Capacity < Squad.MaxSlots,
+                LeaderPerk.Movement => true,
+                _ => !Has(perk)
+            };
+        }
 
         internal void Take(LeaderPerk perk)
         {
             _perks.Add(perk);
             if (perk == LeaderPerk.Leadership)
                 Squad.SetCapacity(Squad.Capacity + 1);
-            else
+            else if (perk == LeaderPerk.Movement)
                 MovementPoints += MovementPerk;
         }
 
@@ -124,6 +151,12 @@ namespace Disciples.Core.Squads
         internal void RestoreMovement() => MovementPoints = MaxMovementPoints;
 
         internal void Exhaust() => MovementPoints = 0;
+
+        private StatBonus AbilityBonus => new StatBonus(
+            Has(LeaderPerk.NaturalArmor) ? _rules.ArmorPerk : 0,
+            Has(LeaderPerk.Might) ? _rules.MightPerkPercent : 0,
+            Has(LeaderPerk.FirstStrike) ? _rules.InitiativePerk : 0,
+            Has(LeaderPerk.Accuracy) ? _rules.AccuracyPerk : 0);
 
         private int Count(LeaderPerk perk) => _perks.Count(p => p == perk);
 

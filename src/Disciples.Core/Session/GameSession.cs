@@ -184,6 +184,9 @@ namespace Disciples.Core.Session
                     HealSquad(visitor.Squad, HealPercentIn(city));
             }
 
+            foreach (var party in _parties)
+                party.Leader.Heal(party.Leader.MaxHp * party.NaturalHealPercent / 100);
+
             foreach (var guardian in Map.Cities.SelectMany(c => c.Garrison.AliveUnits).Where(u => u.IsGuardian))
                 guardian.Heal(guardian.MaxHp);
 
@@ -358,7 +361,7 @@ namespace Disciples.Core.Session
             {
                 gold = encounter.Reward;
                 Gold += gold;
-                experience = encounter.Defenders.Units.Sum(u => u.Definition.ExperienceValue);
+                experience = encounter.Defenders.Units.Sum(u => u.Definition.ExperienceValue) * Party.ExperiencePercent / 100;
                 progress = Progression.Share(Party.Squad.Units, experience, Content.Unit, HasCapitalBuilding);
                 _events.Add(new GameEvent(GameEventKind.BattleWon, encounter.Name, amount: gold) { Party = Party, City = encounter.City, At = Party.Position });
                 Report(progress);

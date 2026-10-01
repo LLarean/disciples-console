@@ -46,6 +46,24 @@ namespace Disciples.Core.Content
         /// <summary>Movement points added by the leader's movement perk.</summary>
         public int MovementPerk { get; set; } = 4;
 
+        /// <summary>Percent added to the leader's damage by the Might ability.</summary>
+        public int MightPerkPercent { get; set; } = 25;
+
+        /// <summary>Armor added to the leader by the Natural Armor ability.</summary>
+        public int ArmorPerk { get; set; } = 20;
+
+        /// <summary>Initiative added to the leader by the First Strike ability.</summary>
+        public int InitiativePerk { get; set; } = 20;
+
+        /// <summary>Accuracy added to the leader by the Accuracy ability.</summary>
+        public int AccuracyPerk { get; set; } = 15;
+
+        /// <summary>Percent of max HP a leader with Natural Healing regains every turn.</summary>
+        public int HealingPerkPercent { get; set; } = 15;
+
+        /// <summary>Percent of extra battle experience for the squad of a Weapon Master.</summary>
+        public int ExperiencePerkPercent { get; set; } = 25;
+
         /// <summary>After this many rounds the attackers withdraw, so battles between mutually immune squads end.</summary>
         public int MaxBattleRounds { get; set; } = 50;
 
