@@ -17,7 +17,10 @@ public sealed class CheatScreen(GameSession session) : MenuScreen
         new("Level up the squad", () => Apply(session.CheatExperience, $"{session.Party.Name}'s squad gained experience"),
             Detail: "experience to the next level or upgrade"),
         new("Heal and refresh all parties", () => Apply(session.CheatRestore, "Parties healed, movement restored")),
-        new("Reveal the map", () => Apply(session.CheatRevealMap, "Map revealed"))
+        new("Reveal the map", () => Apply(session.CheatRevealMap, "Map revealed")),
+        new("Build everything in the capital", () => Apply(session.CheatBuildings, "Capital built up"), session.Capital != null),
+        new("Learn every spell", () => Apply(session.CheatSpells, "Spells learned"), Detail: $"{session.Spellbook.Known.Count} of {session.Spells.Count()} known"),
+        new("One of each item", () => Apply(session.CheatItems, $"Items put into {session.Party.Name}'s bag"), Detail: $"{session.Party.Items.Count} in the bag")
     ];
 
     protected override void Back() => Shell.Pop();

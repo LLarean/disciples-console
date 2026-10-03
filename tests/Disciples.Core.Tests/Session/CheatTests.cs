@@ -13,7 +13,11 @@ public class CheatTests
 {
     private static readonly Position Start = new(0, 0);
     private static readonly Building Barracks = new("barracks", "Barracks", "Fighter", 0, "", null);
-    private static readonly GameContent Content = new([Knight, Recruit, Veteran], [Plains], [Barracks], new GameRules());
+    private static readonly Building Tower = new("tower", "Tower", "Magic", 100, "", "barracks", allowsResearch: true);
+    private static readonly SpellDefinition Bolt = new("bolt", "Bolt", SpellKind.Damage, 20, new Mana(life: 10), new Mana(life: 5));
+    private static readonly SpellDefinition Mend = new("mend", "Mend", SpellKind.Heal, 20, new Mana(life: 10), new Mana(life: 5));
+    private static readonly GameContent Content = new(
+        [Knight, Recruit, Veteran], [Plains], [Barracks, Tower], new GameRules(), items: [Potion, Sword], spells: [Bolt, Mend]);
 
     /// <summary>A plains strip 12×1 with the party on the west and the capital next to it.</summary>
     private static GameSession CreateSession(bool barracks = true, params Unit[] squad)
@@ -22,7 +26,7 @@ public class CheatTests
         for (var x = 0; x < 12; x++)
             tiles[x, 0] = Plains;
 
-        var capital = new City("Capital", new Position(1, 0), true, 0, buildings: [Barracks], built: barracks ? [Barracks.Id] : []);
+        var capital = new City("Capital", new Position(1, 0), true, 0, buildings: [Barracks, Tower], built: barracks ? [Barracks.Id] : []);
         var party = new Party(new Unit(Knight), Start);
         foreach (var unit in squad)
             party.Squad.TryAdd(unit);
@@ -81,6 +85,42 @@ public class CheatTests
 
         Assert.Equal(recruit.MaxHp, recruit.Hp);
         Assert.Equal(session.Party.MaxMovementPoints, session.Party.MovementPoints);
+    }
+
+    [Fact]
+    public void CheatBuildings_BuildsTheCapitalIgnoringRequirements()
+    {
+        var session = CreateSession(barracks: false);
+
+        session.CheatBuildings();
+        session.CheatBuildings();
+
+        Assert.Equal([Barracks.Id, Tower.Id], session.Capital!.BuiltIds.OrderBy(id => id));
+        Assert.True(session.CanResearch);
+        Assert.Equal(0, session.Gold);
+    }
+
+    [Fact]
+    public void CheatSpells_LearnsEverySpellOnce()
+    {
+        var session = CreateSession();
+
+        session.CheatSpells();
+        session.CheatSpells();
+
+        Assert.Equal([Bolt, Mend], session.Spellbook.Known);
+        Assert.Equal(Mana.None, session.Mana);
+    }
+
+    [Fact]
+    public void CheatItems_FillsTheBagOfTheActiveParty()
+    {
+        var session = CreateSession();
+
+        session.CheatItems();
+
+        Assert.Equal([Potion, Sword], session.Party.Items);
+        Assert.True(session.Equip(Sword));
     }
 
     [Fact]

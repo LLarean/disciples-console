@@ -117,4 +117,4 @@ Markers:
 | 9.2 | Save / load | M7 — 3 slots, JSON snapshot (ADR 0004) |
 | 9.3 | Scenario goals (victory conditions) | M7 — fixed: beat all neutrals and enemy leaders, own all cities |
 | 9.4 | Main menu | M7 — main and pause menus |
-| 9.5 | Cheats for manual testing | Pause menu: gold, mana, squad experience, heal and movement, map reveal; no prices or limits |
+| 9.5 | Cheats for manual testing | Pause menu: gold, mana, squad experience, heal and movement, map reveal, all capital buildings, all spells, one of each item; no prices, requirements or limits |

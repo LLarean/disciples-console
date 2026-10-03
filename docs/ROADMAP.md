@@ -96,8 +96,7 @@ Mechanic numbers refer to [MECHANICS.md](MECHANICS.md).
 
 ## Next
 Every milestone above is implemented; the screens of M10–M14 were checked by build and tests only.
-- [x] Cheat menu for manual testing (9.5) — `Cheats` in the pause menu: gold, mana, experience for the squad, heal and movement, reveal the map; `GameSession.Cheats.cs`
-- [ ] More cheats when the playthrough needs them: build every capital building, learn every spell, one of each item
+- [x] Cheat menu for manual testing (9.5) — `Cheats` in the pause menu: gold, mana, experience for the squad, heal and movement, reveal the map, every capital building, every spell, one of each item; `GameSession.Cheats.cs`
 - [ ] Play M10–M14 through in the terminal: leaders, items, city tiers, magic, rods, thief, battle `Q`, trainer, race choice
 - [ ] Settle the **(verify)** rules in MECHANICS and the open items below, then tune the numbers in `content/*.json`
 
