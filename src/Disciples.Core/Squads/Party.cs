@@ -49,7 +49,8 @@ namespace Disciples.Core.Squads
 
             foreach (var item in equipped ?? Enumerable.Empty<ItemDefinition>())
             {
-                _items.Add(item);
+                // Equip takes the first copy from the bag: put the worn one in front so the copies already there keep their places.
+                _items.Insert(0, item);
                 Equip(item);
             }
         }

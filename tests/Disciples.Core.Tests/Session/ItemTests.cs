@@ -57,6 +57,18 @@ public class ItemTests
     }
 
     [Fact]
+    public void CaptureThenRestore_WithASpareOfTheWornItem_KeepsTheBagOrder()
+    {
+        var session = CreateSession(Sword, Potion, Sword, Shield);
+        session.Equip(Sword);
+
+        var restored = SnapshotMapper.Restore(SnapshotMapper.Capture(session), TestContent, new FixedRandom());
+
+        Assert.Equal([Potion, Sword, Shield], restored.Party.Items);
+        Assert.Equal([Sword], restored.Party.Equipped);
+    }
+
+    [Fact]
     public void UseItem_Potion_HealsTheUnitAndIsSpent()
     {
         var session = CreateSession(Potion, Potion);
