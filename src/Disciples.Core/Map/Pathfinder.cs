@@ -19,13 +19,17 @@ namespace Disciples.Core.Map
             var previous = new Dictionary<Position, Position>();
             var done = new HashSet<Position>();
 
-            while (true)
-            {
-                var open = cost.Where(c => !done.Contains(c.Key)).ToList();
-                if (open.Count == 0)
-                    return Array.Empty<Position>();
+            // Open tiles sorted by cost; equal costs go to the tile discovered first, which keeps the routes stable.
+            var discovered = new List<Position> { start };
+            var order = new Dictionary<Position, int> { [start] = 0 };
+            var open = new SortedSet<(int Cost, int Order)> { (0, 0) };
 
-                var current = open.OrderBy(c => c.Value).First().Key;
+            while (open.Count > 0)
+            {
+                var cheapest = open.Min;
+                open.Remove(cheapest);
+
+                var current = discovered[cheapest.Order];
                 if (current != start && isGoal(current))
                     return Trace(previous, start, current);
 
@@ -38,14 +42,27 @@ namespace Disciples.Core.Map
                     if (!map.Contains(next) || done.Contains(next) || map.TerrainAt(next).MoveCost is not int step)
                         continue;
 
-                    var total = cost[current] + step;
-                    if (cost.TryGetValue(next, out var known) && known <= total)
-                        continue;
+                    var total = cheapest.Cost + step;
+                    if (cost.TryGetValue(next, out var known))
+                    {
+                        if (known <= total)
+                            continue;
+
+                        open.Remove((known, order[next]));
+                    }
+                    else
+                    {
+                        order[next] = discovered.Count;
+                        discovered.Add(next);
+                    }
 
                     cost[next] = total;
                     previous[next] = current;
+                    open.Add((total, order[next]));
                 }
             }
+
+            return Array.Empty<Position>();
         }
 
         private static IReadOnlyList<Position> Trace(Dictionary<Position, Position> previous, Position start, Position goal)
