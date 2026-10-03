@@ -30,6 +30,13 @@ namespace Disciples.Core.Map
             }
         }
 
+        internal void RevealAll()
+        {
+            for (var y = 0; y < _explored.GetLength(1); y++)
+            for (var x = 0; x < _explored.GetLength(0); x++)
+                _explored[x, y] = true;
+        }
+
         internal List<string> ToRows() =>
             Enumerable.Range(0, _explored.GetLength(1))
                 .Select(y => new string(Enumerable.Range(0, _explored.GetLength(0)).Select(x => _explored[x, y] ? ExploredMark : HiddenMark).ToArray()))

@@ -11,6 +11,7 @@ public sealed class PauseScreen(GameFlow flow, GameSession session) : MenuScreen
         new("Resume", Back),
         new("Save game", () => Shell.Push(new SlotsScreen(flow, session))),
         new("Load game", () => Shell.Push(new SlotsScreen(flow, null)), flow.Saves.HasAny()),
+        new("Cheats", () => Shell.Push(new CheatScreen(session))),
         new("Main menu", () => Confirm("Leave to the main menu?", flow.ShowMainMenu)),
         new("Quit", () => Confirm("Quit the game?", flow.Quit))
     ];
