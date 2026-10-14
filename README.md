@@ -26,7 +26,7 @@ Terminal of at least 110×30 is recommended.
 | Spells | arrows — select, Enter — research a spell (needs the Magic Tower in the capital) / cast a known one and pick its target, Esc — back |
 | Menus | arrows — select, Enter — confirm, Esc — back |
 
-Walking into a city, a mercenary camp (`▲`), a merchant (`§`) or a trainer (`♦`, sells experience) opens it, treasure (`$`) is picked up, a mine (`¤`) starts paying gold and a mana source (`*`) mana each turn; walking into an enemy (`†`) or a guarded hostile city starts a battle. A new game starts with the choice of a race (the Empire or the Legions of the Damned) and a leader class. An Archangel or a Baroness plants rods (`┃`) that claim the land around them, with its mines and mana sources; stepping on a hostile rod breaks it. A Thief, hired once the Thieves Guild stands in the capital, poisons, assassinates or robs a hostile squad next to it. Win by beating all neutral squads and owning every city; lose if the leader dies.
+Walking into a city, a mercenary camp (`▲`), a merchant (`§`) or a trainer (`♦`, sells experience) opens it, treasure (`$`) is picked up, a mine (`¤`) starts paying gold and a mana source (`*`) mana each turn; walking into an enemy (`†`) or a guarded hostile city starts a battle. A new game starts with the choice of a map (every file in `content/maps`), a race (the Empire or the Legions of the Damned) and a leader class. An Archangel or a Baroness plants rods (`┃`) that claim the land around them, with its mines and mana sources; stepping on a hostile rod breaks it. A Thief, hired once the Thieves Guild stands in the capital, poisons, assassinates or robs a hostile squad next to it. Win by beating all neutral squads and owning every city; lose if the leader dies.
 
 ## Tests
 ```

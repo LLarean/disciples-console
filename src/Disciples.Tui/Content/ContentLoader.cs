@@ -39,6 +39,10 @@ public sealed class ContentLoader(string contentRoot)
 
     public GameSnapshot LoadScenario(string id) => Read<GameSnapshot>(Path.Combine("maps", id + ".json"));
 
+    /// <summary>Scenario ids found in the maps folder, ordered by id.</summary>
+    public IReadOnlyList<string> ScenarioIds() =>
+        Directory.GetFiles(Path.Combine(contentRoot, "maps"), "*.json").Select(Path.GetFileNameWithoutExtension).OfType<string>().Order().ToList();
+
     private static UnitDefinition ToDefinition(UnitData d, GameRules rules) =>
         new(d.Id, d.Name, d.Hp, d.Armor, d.Initiative, d.Power, d.Accuracy, d.Attack, d.Size, d.Cost, d.Leadership,
             d.ExperienceToLevel ?? 100, d.ExperienceValue, d.LevelGrowthPercent ?? rules.LevelGrowthPercent,

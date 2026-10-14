@@ -2,12 +2,12 @@ using Disciples.Core.Content;
 
 namespace Disciples.Tui.Screens;
 
-public sealed class RaceScreen(GameFlow flow) : MenuScreen
+public sealed class RaceScreen(GameFlow flow, ScenarioInfo scenario) : MenuScreen
 {
     protected override IReadOnlyList<string> Heading => ["Choose your race", "its units, buildings and spells stay for the whole game"];
 
     protected override IReadOnlyList<MenuItem> Items =>
-        flow.Races.Select(r => new MenuItem(r.Name, () => Shell.Push(new ClassScreen(flow, r)), Detail: Describe(r))).ToList();
+        flow.Races.Select(r => new MenuItem(r.Name, () => Shell.Push(new ClassScreen(flow, scenario, r)), Detail: Describe(r))).ToList();
 
     protected override void Back() => Shell.Pop();
 

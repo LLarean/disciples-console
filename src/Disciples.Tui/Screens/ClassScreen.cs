@@ -4,12 +4,12 @@ using Disciples.Tui.Widgets;
 
 namespace Disciples.Tui.Screens;
 
-public sealed class ClassScreen(GameFlow flow, Race race) : MenuScreen
+public sealed class ClassScreen(GameFlow flow, ScenarioInfo scenario, Race race) : MenuScreen
 {
     protected override IReadOnlyList<string> Heading => ["Choose your leader", $"{race.Name} — the class stays for the whole game"];
 
     protected override IReadOnlyList<MenuItem> Items =>
-        flow.LeadersOf(race).Where(c => !c.IsThief).Select(c => new MenuItem(c.Name, () => flow.StartNewGame(race, c), Detail: Describe(c))).ToList();
+        flow.LeadersOf(race).Where(c => !c.IsThief).Select(c => new MenuItem(c.Name, () => flow.StartNewGame(scenario, race, c), Detail: Describe(c))).ToList();
 
     protected override void Back() => Shell.Pop();
 

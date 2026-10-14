@@ -1,0 +1,1008 @@
+{
+  "version": 2,
+  "map": {
+    "name": "Sacred Lands",
+    "legend": {
+      ".": "plains",
+      "=": "road",
+      "f": "forest",
+      "h": "hills",
+      "M": "mountains",
+      "~": "water"
+    },
+    "rows": [
+      "..MMffMMM.MMMMM...MMM.MMMMM~~.MMM.MMfMMffMMMMMM.MMMMM.M.M.MMfMMMMMhMM.ff",
+      "M..hhhhh..h...h..hh........~~..h......hhfhh..........hhh..fffhMMMhh.h..M",
+      "Mh...fff..................~~...............................ffhMMMhh....M",
+      "......ff...........fffffff~~..............M.................hhMMMMh.....",
+      "M......f.........ffffffff~~...............M....fffff........hhMMMMh....M",
+      "hh..............fffffffff~~.........=.....MM..fffffff.......hMMMMMhh...M",
+      "MMhhh.f.........hhhhhhfff~~........=......M..ffffffff......hhMMMMMhh...M",
+      "MhMMhff........hh=hhhhff~~f.......=.......M.fffffffff...=.hhMMMMMMhh...M",
+      "MhMMhhf.......hh=MMMhhhff~~......=.......MM.fffffffff..=.hhhMMMMMMhhh.h.",
+      "MMMMhh........h=MMMMMhh.f~~.......=......M...ffffffff..==hhhMMMMMMhhh.hM",
+      "MMMMhh........=hMMMMMhh...~~.......=.....MM...fffffff.=.h=hhMMMMMMhhh..M",
+      "MMMMh........=.hhMMMMhh....~~.......=...MM..=.ffffff.=hhhh=hhMMMMMhhh.fM",
+      "MMMhh.......=..hhMMMhhh....~~........=..MM.=.=.fffff=hhhhhh=hhhhhhhh..ff",
+      "MhMh.......=...hhMMMhhh....~~.......=.=.MM=...=fffff=hhhhhhh=hhhhhhh..fM",
+      "Mhh.......=.....hhMMhhh....~~......=...=M=.....=====hhhhhhhhh=........hM",
+      "Mhh......=......hhhhhhh.f..~~...=.=.....=...........hMMMhhhhf.=.....fffM",
+      "hh......=..fffffhhhhhhhfff.~~..=.=..................~MMMMhhfff.=..ffffhM",
+      "hh.....=..ffffffhhhhhhhffff~~.=....fff.....f.....~~~~~~~Mhhfffff=fffffhM",
+      "M.....==...fffffhhhhhhhhfff~~=.....ffffffMM......~~~~~~~Mhhffff=f=fff.hh",
+      "hh.....=...ffff.hhhhhhhffff~==.....ffffffMM......~~~~~~~~hhfff=fffff..hM",
+      "M.......=..fff...hhhhhh=====~~=.....fffffMM.....~~~~~~~~Mhh..=ffffff...M",
+      "Mh.......=.fff...=hhh==....~~=......ffffffMM......~~~~~MMhh.=.ffffff...M",
+      "Mh........=fff..=.===....hh~~=....ffffffffM.......h~~~MMMh.=...fffff..hM",
+      "Mhhh.......=ff.==.=.....hhh~~h=.ffffffffffMM.....hhMMMMMMh=.......fff..M",
+      "Mhhhhhhhhh=h=f=..=......hhh~~h=fffffffffffMMhhhhhhMMMMMMMh=.......fff..M",
+      "MhhhhhMMM=Mhh=....=.....hhh~~hh=ffffffffffMhMMMMMMMMMMMMMh=.......fffffM",
+      "MhhhMMMM=MMMhh.....=....hh~~Mhh.==.fff...hMMMMMMMMMMMMMMMh=.......fffffM",
+      "MhhhMMMM=MMMM~~.....=...h~~MMhh...=......MMMMMMMMMMMMMMMM=..f.....fffffM",
+      "MhhhMMMMM~~~~~~~~~f..=ff~~hMhhh....=...=.MMMMMMMMMMMMMMM=hfffff...ffffff",
+      "MhhhMMM~~~~~~~~~~~~.fffff~~hhhh.....=.=.=MMMMMMMMMMMMMM=hffffff....fffhM",
+      "hhMMMMMM~~~~~~~~~~~ffffff~~hh........=..M=hhMMMMhhhhh==hhfffff.......ffM",
+      "MMMMhhhh~~~~~~~~~~~ffffff~~f............M.=hhhhhhhhh=hfffffff.........fM",
+      "MMMMhhhh.~~~~~~~~~fffffff.~.............MM.=========fffffffff.........hM",
+      "MhMMhh.............ffffff~~.........f...............ffffffffff........fM",
+      "MMMMhh.hh....h..hh.h....~~.h..h..hfhfh..h.h.....hhfffhhhhffhhhhff.h.h.fM",
+      "MMMMMhMffM.MM.MMMMMMM..M~~M.MMMMMMMMffMMM.MM.MMMMfffMfMMMfMMMffMMffMMMMM"
+    ]
+  },
+  "turn": 1,
+  "gold": 400,
+  "enemyGold": 300,
+  "parties": [
+    {
+      "x": 7,
+      "y": 18,
+      "units": [
+        {
+          "id": "paladin",
+          "line": "front",
+          "column": 1
+        }
+      ],
+      "items": [
+        "healing-potion",
+        "healing-potion"
+      ]
+    }
+  ],
+  "cities": [
+    {
+      "name": "Imperial Capital",
+      "x": 6,
+      "y": 18,
+      "capital": true,
+      "owner": "player",
+      "income": 100,
+      "mana": {
+        "life": 10
+      },
+      "recruits": [
+        "squire",
+        "archer",
+        "apprentice",
+        "acolyte"
+      ],
+      "buildings": true,
+      "garrison": [
+        {
+          "id": "myzrael",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Wolfsdale",
+      "x": 17,
+      "y": 7,
+      "capital": false,
+      "owner": "neutral",
+      "income": 50,
+      "tier": 1,
+      "recruits": [
+        "squire",
+        "archer"
+      ],
+      "garrison": [
+        {
+          "id": "archer",
+          "line": "back",
+          "column": 1
+        },
+        {
+          "id": "squire",
+          "line": "front",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Lakeshore",
+      "x": 21,
+      "y": 28,
+      "capital": false,
+      "owner": "neutral",
+      "income": 50,
+      "tier": 1,
+      "recruits": [
+        "archer",
+        "acolyte"
+      ],
+      "garrison": [
+        {
+          "id": "squire",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "acolyte",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Stonebridge",
+      "x": 33,
+      "y": 16,
+      "capital": false,
+      "owner": "neutral",
+      "income": 75,
+      "tier": 2,
+      "recruits": [
+        "squire",
+        "archer",
+        "acolyte"
+      ],
+      "garrison": [
+        {
+          "id": "knight",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "squire",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "archer",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Ashford",
+      "x": 36,
+      "y": 5,
+      "capital": false,
+      "owner": "neutral",
+      "income": 60,
+      "tier": 2,
+      "recruits": [
+        "goblin",
+        "goblin-archer",
+        "orc"
+      ],
+      "garrison": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Marshgate",
+      "x": 37,
+      "y": 30,
+      "capital": false,
+      "owner": "neutral",
+      "income": 60,
+      "tier": 2,
+      "recruits": [
+        "possessed",
+        "cultist"
+      ],
+      "garrison": [
+        {
+          "id": "possessed",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "cultist",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "cultist",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Highkeep",
+      "x": 56,
+      "y": 7,
+      "capital": false,
+      "owner": "neutral",
+      "income": 90,
+      "tier": 3,
+      "recruits": [
+        "squire",
+        "archer",
+        "apprentice"
+      ],
+      "garrison": [
+        {
+          "id": "imperial-knight",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "marksman",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "wizard",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Duskwood",
+      "x": 55,
+      "y": 29,
+      "capital": false,
+      "owner": "neutral",
+      "income": 90,
+      "tier": 3,
+      "recruits": [
+        "goblin",
+        "orc",
+        "shaman"
+      ],
+      "garrison": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "shaman",
+          "line": "back",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        }
+      ]
+    },
+    {
+      "name": "Grimhold",
+      "x": 65,
+      "y": 18,
+      "capital": true,
+      "owner": "enemy",
+      "income": 75,
+      "recruits": [
+        "goblin",
+        "goblin-archer",
+        "orc"
+      ],
+      "garrison": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "orc-king",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "shaman",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "neutrals": [
+    {
+      "name": "Goblin Scouts",
+      "x": 12,
+      "y": 15,
+      "reward": 80,
+      "units": [
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Goblin Raiders",
+      "x": 11,
+      "y": 23,
+      "reward": 100,
+      "units": [
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Deserters",
+      "x": 22,
+      "y": 12,
+      "reward": 140,
+      "units": [
+        {
+          "id": "squire",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "squire",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "archer",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Lake Witches",
+      "x": 16,
+      "y": 26,
+      "reward": 160,
+      "units": [
+        {
+          "id": "witch",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "witch",
+          "line": "back",
+          "column": 2
+        },
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Bridge Toll",
+      "x": 26,
+      "y": 16,
+      "reward": 180,
+      "units": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Orc Warband",
+      "x": 31,
+      "y": 10,
+      "reward": 220,
+      "units": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "shaman",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Cultist Circle",
+      "x": 31,
+      "y": 25,
+      "reward": 220,
+      "units": [
+        {
+          "id": "possessed",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "cultist",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "cultist",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Graveyard",
+      "x": 38,
+      "y": 21,
+      "reward": 260,
+      "units": [
+        {
+          "id": "ghost",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "wight",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "ghost",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "banshee",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Ogre Guard",
+      "x": 39,
+      "y": 12,
+      "reward": 300,
+      "units": [
+        {
+          "id": "ogre",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Stone Watchers",
+      "x": 46,
+      "y": 4,
+      "reward": 320,
+      "units": [
+        {
+          "id": "gargoyle",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "gorgon",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "gorgon",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Haunted Ruins",
+      "x": 47,
+      "y": 24,
+      "reward": 350,
+      "units": [
+        {
+          "id": "ghost",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "wight",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "banshee",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "gorgon",
+          "line": "back",
+          "column": 1
+        },
+        {
+          "id": "witch",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Pass Keepers",
+      "x": 44,
+      "y": 16,
+      "reward": 300,
+      "units": [
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "ogre",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "shaman",
+          "line": "back",
+          "column": 0
+        }
+      ]
+    },
+    {
+      "name": "Infernal Breach",
+      "x": 50,
+      "y": 13,
+      "reward": 420,
+      "units": [
+        {
+          "id": "devil",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "cultist",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "sorcerer",
+          "line": "back",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Ogre Clan",
+      "x": 61,
+      "y": 4,
+      "reward": 450,
+      "units": [
+        {
+          "id": "ogre",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "ogre",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "shaman",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "name": "Black Coven",
+      "x": 62,
+      "y": 31,
+      "reward": 450,
+      "units": [
+        {
+          "id": "witch",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "banshee",
+          "line": "back",
+          "column": 1
+        },
+        {
+          "id": "witch",
+          "line": "back",
+          "column": 2
+        },
+        {
+          "id": "wight",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "wight",
+          "line": "front",
+          "column": 2
+        }
+      ]
+    },
+    {
+      "name": "Fiend Lair",
+      "x": 68,
+      "y": 10,
+      "reward": 600,
+      "units": [
+        {
+          "id": "fiend",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "demonologist",
+          "line": "back",
+          "column": 0
+        },
+        {
+          "id": "berserker",
+          "line": "front",
+          "column": 0
+        }
+      ]
+    }
+  ],
+  "enemies": [
+    {
+      "x": 63,
+      "y": 20,
+      "units": [
+        {
+          "id": "orc-warlord",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "goblin",
+          "line": "front",
+          "column": 0
+        },
+        {
+          "id": "goblin-archer",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    },
+    {
+      "x": 63,
+      "y": 15,
+      "units": [
+        {
+          "id": "orc-warlord",
+          "line": "front",
+          "column": 1
+        },
+        {
+          "id": "orc",
+          "line": "front",
+          "column": 2
+        },
+        {
+          "id": "shaman",
+          "line": "back",
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "name": "Old Chest",
+      "kind": "treasure",
+      "x": 9,
+      "y": 13,
+      "gold": 100
+    },
+    {
+      "name": "Hermit's Hoard",
+      "kind": "treasure",
+      "x": 14,
+      "y": 4,
+      "gold": 150,
+      "items": [
+        "ring-of-ages"
+      ]
+    },
+    {
+      "name": "Sunken Cart",
+      "kind": "treasure",
+      "x": 8,
+      "y": 27,
+      "gold": 120,
+      "items": [
+        "healing-potion",
+        "healing-potion"
+      ]
+    },
+    {
+      "name": "Dwarven Cache",
+      "kind": "treasure",
+      "x": 40,
+      "y": 8,
+      "gold": 200,
+      "items": [
+        "dwarven-bracer",
+        "greater-healing-potion"
+      ]
+    },
+    {
+      "name": "Smugglers' Den",
+      "kind": "treasure",
+      "x": 33,
+      "y": 33,
+      "gold": 250,
+      "items": [
+        "banner-of-striking"
+      ]
+    },
+    {
+      "name": "Dragon Bones",
+      "kind": "treasure",
+      "x": 58,
+      "y": 22,
+      "gold": 300,
+      "items": [
+        "rune-sword"
+      ]
+    },
+    {
+      "name": "Royal Tomb",
+      "kind": "treasure",
+      "x": 50,
+      "y": 33,
+      "gold": 400,
+      "items": [
+        "banner-of-fortitude",
+        "greater-healing-potion"
+      ]
+    },
+    {
+      "name": "Copper Mine",
+      "kind": "mine",
+      "x": 4,
+      "y": 10,
+      "gold": 30
+    },
+    {
+      "name": "Silver Mine",
+      "kind": "mine",
+      "x": 24,
+      "y": 22,
+      "gold": 40
+    },
+    {
+      "name": "Iron Mine",
+      "kind": "mine",
+      "x": 35,
+      "y": 12,
+      "gold": 40
+    },
+    {
+      "name": "Gold Mine",
+      "kind": "mine",
+      "x": 48,
+      "y": 9,
+      "gold": 60
+    },
+    {
+      "name": "Deep Gold Mine",
+      "kind": "mine",
+      "x": 60,
+      "y": 26,
+      "gold": 80
+    },
+    {
+      "name": "Spring of Life",
+      "kind": "manaSource",
+      "x": 9,
+      "y": 21,
+      "mana": {
+        "life": 10
+      }
+    },
+    {
+      "name": "Holy Grove",
+      "kind": "manaSource",
+      "x": 30,
+      "y": 7,
+      "mana": {
+        "life": 10
+      }
+    },
+    {
+      "name": "Infernal Rift",
+      "kind": "manaSource",
+      "x": 25,
+      "y": 32,
+      "mana": {
+        "infernal": 10
+      }
+    },
+    {
+      "name": "Burning Chasm",
+      "kind": "manaSource",
+      "x": 46,
+      "y": 20,
+      "mana": {
+        "infernal": 10
+      }
+    },
+    {
+      "name": "Rune Stone",
+      "kind": "manaSource",
+      "x": 20,
+      "y": 2,
+      "mana": {
+        "runic": 10
+      }
+    },
+    {
+      "name": "Barrow of Death",
+      "kind": "manaSource",
+      "x": 67,
+      "y": 27,
+      "mana": {
+        "death": 10
+      }
+    },
+    {
+      "name": "Village Muster",
+      "kind": "camp",
+      "x": 14,
+      "y": 19,
+      "mercenaries": [
+        "squire",
+        "archer",
+        "acolyte"
+      ]
+    },
+    {
+      "name": "Mercenary Camp",
+      "kind": "camp",
+      "x": 35,
+      "y": 23,
+      "mercenaries": [
+        "goblin-archer",
+        "orc",
+        "ogre"
+      ]
+    },
+    {
+      "name": "Sword Master's Yard",
+      "kind": "trainer",
+      "x": 20,
+      "y": 17
+    },
+    {
+      "name": "War College",
+      "kind": "trainer",
+      "x": 50,
+      "y": 16
+    },
+    {
+      "name": "Travelling Merchant",
+      "kind": "merchant",
+      "x": 11,
+      "y": 9,
+      "items": [
+        "healing-potion",
+        "healing-potion",
+        "healing-potion",
+        "greater-healing-potion",
+        "banner-of-war",
+        "ring-of-ages"
+      ]
+    },
+    {
+      "name": "Bazaar",
+      "kind": "merchant",
+      "x": 38,
+      "y": 18,
+      "items": [
+        "healing-potion",
+        "healing-potion",
+        "greater-healing-potion",
+        "greater-healing-potion",
+        "rune-sword",
+        "dwarven-bracer",
+        "banner-of-war",
+        "banner-of-fortitude",
+        "banner-of-striking"
+      ]
+    }
+  ]
+}

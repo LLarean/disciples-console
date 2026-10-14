@@ -12,9 +12,8 @@ namespace Disciples.Tui;
 /// <summary>Application coordinator: owns content and saves, switches between menu and game screens.</summary>
 public sealed class GameFlow(Shell shell, ContentLoader loader, SaveStore saves)
 {
-    private const string Scenario = "test-valley";
-
     private GameContent? _content;
+    private IReadOnlyList<ScenarioInfo>? _scenarios;
 
     public SaveStore Saves => saves;
     private GameContent Content => _content ??= loader.LoadContent();
@@ -27,9 +26,11 @@ public sealed class GameFlow(Shell shell, ContentLoader loader, SaveStore saves)
 
     public IEnumerable<UnitDefinition> RecruitsOf(Race race) => Content.RecruitsOf(race);
 
-    public void StartNewGame(Race race, UnitDefinition leader)
+    public IReadOnlyList<ScenarioInfo> Scenarios => _scenarios ??= loader.ScenarioIds().Select(Describe).ToList();
+
+    public void StartNewGame(ScenarioInfo scenario, Race race, UnitDefinition leader)
     {
-        var snapshot = loader.LoadScenario(Scenario);
+        var snapshot = loader.LoadScenario(scenario.Id);
         SnapshotMapper.StartAs(snapshot, race, leader, Content);
         Play(snapshot);
     }
@@ -44,9 +45,18 @@ public sealed class GameFlow(Shell shell, ContentLoader loader, SaveStore saves)
 
     public void Quit() => shell.Quit();
 
+    private ScenarioInfo Describe(string id)
+    {
+        var snapshot = loader.LoadScenario(id);
+        var map = snapshot.Map;
+        return new ScenarioInfo(id, map.Name, map.Rows.FirstOrDefault()?.Length ?? 0, map.Rows.Count, snapshot.Cities.Count, snapshot.Neutrals.Count);
+    }
+
     private void Play(GameSnapshot snapshot)
     {
         var session = SnapshotMapper.Restore(snapshot, Content, new SystemRandom());
         shell.Reset(new MapScreen(this, session));
     }
 }
+
+public sealed record ScenarioInfo(string Id, string Name, int Width, int Height, int Cities, int Neutrals);
