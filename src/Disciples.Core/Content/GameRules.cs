@@ -100,6 +100,9 @@ namespace Disciples.Core.Content
         /// <summary>The enemy hires no new leader while it has this many.</summary>
         public int EnemyLeaderLimit { get; set; } = 3;
 
+        /// <summary>An enemy leader drinks its potions on units below this percent of their HP.</summary>
+        public int EnemyPotionHpPercent { get; set; } = 50;
+
         public int GarrisonSlots(int tier) => CityGarrisonSlots + tier - 1;
 
         public int CityHealPercentAt(int tier) => CityHealPercent + (tier - 1) * CityTierHealPercent;

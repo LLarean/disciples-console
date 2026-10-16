@@ -593,7 +593,19 @@ namespace Disciples.Core.Session
             foreach (var enemy in Map.Enemies.ToList())
             {
                 enemy.RestoreMovement();
+                DrinkPotions(enemy);
                 MoveEnemy(enemy);
+            }
+        }
+
+        /// <summary>The strongest potions go to the most hurt units until none is below the threshold or the potions run out.</summary>
+        private void DrinkPotions(Party enemy)
+        {
+            while (enemy.Squad.AliveUnits.Where(u => u.Hp * 100 < u.MaxHp * Rules.EnemyPotionHpPercent).OrderBy(u => (double)u.Hp / u.MaxHp).FirstOrDefault() is { } wounded
+                && enemy.Items.Where(i => i.Kind == ItemKind.Potion).OrderByDescending(i => i.Heal).FirstOrDefault() is { } potion)
+            {
+                wounded.Heal(potion.Heal);
+                enemy.Take(potion);
             }
         }
 

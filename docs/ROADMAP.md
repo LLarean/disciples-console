@@ -118,7 +118,8 @@ Every milestone above is implemented; the screens of M10–M14 were checked by b
 - [x] Battle `Q` plays the player's side with the same simple AI as the enemy's — the shared AI now picks targets: kills it can make, the weakest enemy, unaffected targets for effects; healers defend when nobody is hurt
 - [ ] Thief actions are three (poison, assassinate, steal gold) with one success chance; no spying, duels or item theft, the enemy has no thieves **(verify)**
 - [ ] Magic is minimal: only damage and healing spells, no spell levels, no summons, buffs or curses; the enemy neither researches nor casts **(verify)**
-- [ ] Enemy economy is minimal: garrisons are never reinforced, cities are not upgraded, nothing is built, leaders leave the capital without waiting for a full squad, found potions are not used and the items die with the leader **(verify)**
+- [ ] Enemy economy is minimal: garrisons are never reinforced, cities are not upgraded, nothing is built, leaders leave the capital without waiting for a full squad, the items die with the leader **(verify)**
+- [x] Enemy leaders don't use the potions they find — at the start of its move an enemy leader drinks potions on units below `enemyPotionHpPercent` of their HP
 - [x] Save regenerates the map legend characters — terrains carry a `symbol` in `terrains.json`
 - [x] Retreat has no penalty (the party just leaves the battle) — done in M9 (6.10)
 - [x] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9) — done in M10

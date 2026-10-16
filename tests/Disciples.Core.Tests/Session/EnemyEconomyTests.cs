@@ -1,5 +1,6 @@
 using Disciples.Core.Cities;
 using Disciples.Core.Content;
+using Disciples.Core.Items;
 using Disciples.Core.Map;
 using Disciples.Core.Persistence;
 using Disciples.Core.Session;
@@ -104,6 +105,34 @@ public class EnemyEconomyTests
 
         Assert.Equal(2, session.Map.Enemies.Count);
         Assert.Equal(540, session.EnemyGold);
+    }
+
+    private static Party WoundedEnemy(int hp, params ItemDefinition[] items)
+    {
+        var leader = new Unit(Warlord, hp: hp);
+        var squad = new Squad();
+        squad.TryPlace(leader, new SquadSlot(SquadLine.Front, 1));
+        return new Party(squad, new Position(8, 0), items: items);
+    }
+
+    [Fact]
+    public void EndTurn_BadlyWoundedEnemy_DrinksPotionsUntilAboveHalf()
+    {
+        var enemy = WoundedEnemy(30, Potion, Potion, Potion);
+        CreateSession(enemies: [enemy]).EndTurn();
+
+        Assert.Equal(110, enemy.Leader.Hp);
+        Assert.Single(enemy.Items);
+    }
+
+    [Fact]
+    public void EndTurn_LightlyWoundedEnemy_KeepsItsPotions()
+    {
+        var enemy = WoundedEnemy(100, Potion);
+        CreateSession(enemies: [enemy]).EndTurn();
+
+        Assert.Equal(100, enemy.Leader.Hp);
+        Assert.Single(enemy.Items);
     }
 
     [Fact]

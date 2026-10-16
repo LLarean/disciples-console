@@ -29,5 +29,6 @@
   "thiefPoisonDamage": 25,
   "thiefStealGold": 100,
   "enemyLeaderClasses": ["orc-warlord"],
-  "enemyLeaderLimit": 3
+  "enemyLeaderLimit": 3,
+  "enemyPotionHpPercent": 50
 }
