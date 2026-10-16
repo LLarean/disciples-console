@@ -15,7 +15,7 @@ public class EnemyTurnTests
     private static readonly Position CapitalPosition = new(0, 1);
 
     /// <summary>A plains strip 8×2: party and capital on the west, the enemy on the east.</summary>
-    private static GameSession CreateSession(Position enemyAt, IEnumerable<City>? cities = null, UnitDefinition? enemyLeader = null)
+    private static GameSession CreateSession(Position enemyAt, IEnumerable<City>? cities = null, UnitDefinition? enemyLeader = null, Party? secondEnemy = null)
     {
         var tiles = new Terrain[Width, 2];
         for (var x = 0; x < Width; x++)
@@ -24,7 +24,7 @@ public class EnemyTurnTests
 
         var capital = new City("Capital", CapitalPosition, true, 10);
         var enemy = new Party(new Unit(enemyLeader ?? Warlord), enemyAt);
-        var map = new WorldMap("Test", tiles, new[] { capital }.Concat(cities ?? []), enemies: [enemy]);
+        var map = new WorldMap("Test", tiles, new[] { capital }.Concat(cities ?? []), enemies: secondEnemy == null ? [enemy] : [enemy, secondEnemy]);
         return new GameSession(TestContent, map, new Party(new Unit(Knight), PartyStart), 0, new FixedRandom());
     }
 
@@ -64,6 +64,35 @@ public class EnemyTurnTests
 
         Assert.Same(session.Map.Enemies[0], session.IncomingAttack!.Enemy);
         Assert.Contains(session.TakeEvents(), e => e.Kind == GameEventKind.EnemyAttacks);
+    }
+
+    [Fact]
+    public void EndTurn_TwoEnemiesNextToParty_AttackOneAfterAnother()
+    {
+        var second = new Party(new Unit(Warlord), new Position(3, 1));
+        var session = CreateSession(new Position(3, 0), secondEnemy: second);
+
+        session.EndTurn();
+        var first = session.IncomingAttack!;
+        var battle = session.StartBattle(first);
+        battle.Retreat();
+        session.FinishBattle(battle, first);
+
+        Assert.Same(second, session.IncomingAttack!.Enemy);
+    }
+
+    [Fact]
+    public void FinishBattle_GameLostInTheFirstAttack_NoFurtherAttack()
+    {
+        var session = CreateSession(new Position(3, 0), secondEnemy: new Party(new Unit(Warlord), new Position(3, 1)));
+
+        session.EndTurn();
+        var first = session.IncomingAttack!;
+        session.Party.Leader.TakeDamage(session.Party.Leader.Hp - 1);
+        session.ResolveBattle(first);
+
+        Assert.Equal(GameStatus.Lost, session.Status);
+        Assert.Null(session.IncomingAttack);
     }
 
     [Fact]

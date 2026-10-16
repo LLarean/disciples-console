@@ -18,6 +18,7 @@ namespace Disciples.Core.Session
         private readonly List<GameEvent> _events = new List<GameEvent>();
 
         private readonly List<Party> _parties;
+        private readonly List<(Party Enemy, Party Target)> _attacks = new List<(Party, Party)>();
 
         public GameSession(GameContent content, WorldMap map, Party party, int gold, IRandom random, int turn = 1, FogOfWar? fog = null)
             : this(content, map, new[] { party }, gold, random, turn, fog)
@@ -82,7 +83,10 @@ namespace Disciples.Core.Session
         public Site? CurrentSite => Map.SiteAt(Party.Position);
         public City? Capital => Map.Cities.FirstOrDefault(c => c.IsCapital && c.IsPlayerOwned);
 
-        /// <summary>An enemy leader attacked a party during the enemy turn; that party becomes active and the front-end must fight it.</summary>
+        /// <summary>
+        /// An enemy leader attacked a party during the enemy turn; that party becomes active and the front-end must fight it.
+        /// Several attacks come one after another: finishing a battle brings up the next one.
+        /// </summary>
         public Encounter? IncomingAttack { get; private set; }
 
         public IReadOnlyList<GameEvent> TakeEvents()
@@ -197,6 +201,26 @@ namespace Disciples.Core.Session
                 guardian.Heal(guardian.MaxHp);
 
             _events.Add(new GameEvent(GameEventKind.TurnStarted, amount: Turn));
+            NextAttack();
+        }
+
+        /// <summary>Brings up the first queued attack whose enemy and target are both still around.</summary>
+        private void NextAttack()
+        {
+            IncomingAttack = null;
+            while (_attacks.Count > 0 && Status == GameStatus.Playing)
+            {
+                var (enemy, target) = _attacks[0];
+                _attacks.RemoveAt(0);
+                if (!Map.Enemies.Contains(enemy) || !_parties.Contains(target))
+                    continue;
+
+                Party = target;
+                IncomingAttack = Encounter.With(enemy);
+                return;
+            }
+
+            _attacks.Clear();
         }
 
         /// <summary>Hires into the party visiting the city, or into the garrison when there is no party or no room in it.</summary>
@@ -389,7 +413,6 @@ namespace Disciples.Core.Session
             if (!battle.IsOver)
                 throw new InvalidOperationException("The battle is still going on.");
 
-            IncomingAttack = null;
             var outcome = battle.Outcome;
             var gold = 0;
             var experience = 0;
@@ -434,6 +457,7 @@ namespace Disciples.Core.Session
                 CheckVictory();
             }
 
+            NextAttack();
             return new BattleReport(outcome, gold, experience, progress, captured);
         }
 
@@ -601,7 +625,7 @@ namespace Disciples.Core.Session
         private bool IsEnemyTarget(Position position)
         {
             if (PartyAt(position) != null)
-                return IncomingAttack == null;
+                return true;
 
             if (Map.CityAt(position) is { } city)
                 return !city.IsCapital && city.Owner != Owner.Enemy;
@@ -651,8 +675,7 @@ namespace Disciples.Core.Session
         {
             if (PartyAt(target) is { } attacked)
             {
-                Party = attacked;
-                IncomingAttack = Encounter.With(enemy);
+                _attacks.Add((enemy, attacked));
                 _events.Add(new GameEvent(GameEventKind.EnemyAttacks, enemy.Name, attacked.Name) { Party = enemy, From = enemy.Position, At = target });
                 return;
             }

@@ -134,6 +134,7 @@ Every milestone above is implemented; the screens of M10–M14 were checked by b
 - [ ] Enter on the map opens only owned cities; hostile cities are entered by walking in
 - [x] Enemy leaders have no economy: no income, hiring or healing — done in M12
 - [ ] The player's capital is never a target of enemy leaders
-- [ ] Battles between an enemy leader and a garrison are auto-resolved; only one enemy attacks the party per turn
+- [ ] Battles between an enemy leader and a garrison are auto-resolved
+- [x] Only one enemy attacks the party per turn — every enemy that reaches a party attacks; the battles come one after another, skipping enemies and parties that are gone
 - [x] Squad screen has no dismiss; unit details don't show immunities or attack source (3.5, 3.7)
 - [x] Battle cards show power without item bonuses — cards show the battle power (items, abilities, polymorph), green above the base, yellow below

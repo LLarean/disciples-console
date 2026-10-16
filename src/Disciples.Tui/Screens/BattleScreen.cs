@@ -111,10 +111,12 @@ public sealed class BattleScreen : Screen
 
     private void Leave()
     {
-        if (_session.Status == GameStatus.Playing)
-            Shell.Pop();
-        else
+        if (_session.Status != GameStatus.Playing)
             _flow.EndGame(_session);
+        else if (_session.IncomingAttack is { } next)
+            Shell.Replace(new BattleScreen(_flow, _session, next));
+        else
+            Shell.Pop();
     }
 
     private SquadSlot? CursorIn(Squad squad) =>
