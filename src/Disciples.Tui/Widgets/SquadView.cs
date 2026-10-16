@@ -27,6 +27,7 @@ public sealed class SquadView : Canvas
     public Unit? Picked { get; set; }
     public Func<Unit, Color?> Highlight { get; set; } = _ => null;
     public Func<Unit, string> Status { get; set; } = _ => "";
+    public Func<Unit, int> Power { get; set; } = unit => unit.Power;
 
     protected override void Draw()
     {
@@ -88,7 +89,9 @@ public sealed class SquadView : Canvas
         var barEnd = this.HpBar(x + 2, y + 2, unit, BarLength);
         this.Hp(barEnd + 1, y + 2, unit);
         var labelEnd = this.Text(x + 2, y + 3, ViewDrawing.AttackLabel(unit.Definition), Palette.Dim);
-        var powerEnd = this.Text(labelEnd + 1, y + 3, unit.Power.ToString(), Palette.Text);
+        var power = Power(unit);
+        var powerColor = power > unit.Power ? Palette.Good : power < unit.Power ? Palette.Warn : Palette.Text;
+        var powerEnd = this.Text(labelEnd + 1, y + 3, power.ToString(), powerColor);
         var status = Status(unit);
         if (status.Length == 0)
             this.Text(powerEnd + 1, y + 3, $"L{unit.Level}", Palette.Faint);

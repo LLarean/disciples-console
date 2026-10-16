@@ -34,9 +34,9 @@ public sealed class BattleScreen : Screen
         RunEnemyTurns();
 
         var header = new Canvas(DrawHeader) { X = 0, Y = 0, Width = Dim.Fill(), Height = 1 };
-        _playerView = new SquadView(session.Party.Name) { X = 0, Y = 1, Squad = _battle.Attackers };
+        _playerView = new SquadView(session.Party.Name) { X = 0, Y = 1, Squad = _battle.Attackers, Power = _battle.PowerOf };
         var queue = new Canvas(DrawQueue, "Turn order") { X = Pos.Right(_playerView) + 1, Y = 1, Width = QueueWidth, Height = SquadView.PanelHeight };
-        _enemyView = new SquadView(encounter.Name, facesLeft: true) { X = Pos.Right(queue) + 1, Y = 1, Squad = _battle.Defenders };
+        _enemyView = new SquadView(encounter.Name, facesLeft: true) { X = Pos.Right(queue) + 1, Y = 1, Squad = _battle.Defenders, Power = _battle.PowerOf };
         var log = new Canvas(DrawLog, "Log") { X = 0, Y = Pos.Bottom(_playerView), Width = Dim.Fill(), Height = LogSize + 2 };
         var hints = new HintBar(Hints);
         Add(header, _playerView, queue, _enemyView, log, hints);

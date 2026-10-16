@@ -25,7 +25,7 @@ public sealed class SquadScreen : Screen
         _session = session;
 
         var header = new Canvas(DrawHeader) { X = 0, Y = 0, Width = Dim.Fill(), Height = 1 };
-        _squadView = new SquadView("Party") { X = 0, Y = 1, IsFocused = true };
+        _squadView = new SquadView("Party") { X = 0, Y = 1, IsFocused = true, Power = unit => _session.Party.BonusFor(unit).PowerOf(unit) };
         var details = new Canvas(DrawDetails, "Unit") { X = Pos.Right(_squadView) + 1, Y = 1, Width = DetailsWidth, Height = SquadView.PanelHeight };
         var message = new Canvas(c => c.Text(1, 0, _message.Text, _message.Color)) { X = 0, Y = Pos.Bottom(_squadView), Width = Dim.Fill(), Height = 1 };
         var hints = new HintBar(() => [("←↑→↓", "select"), ("Enter", _picked == null ? "pick" : "place"), ("D", "dismiss"), ("S/Esc", "back")]);
