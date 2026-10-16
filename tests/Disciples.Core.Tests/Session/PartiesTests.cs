@@ -145,6 +145,19 @@ public class PartiesTests
     }
 
     [Fact]
+    public void HireLeader_SameClass_GetsTheFirstFreeNumeral()
+    {
+        var session = CreateHiringSession(gold: 300);
+        var capital = session.Map.Cities[0];
+
+        session.HireLeader(capital, Captain);
+        session.TryMove(Direction.NorthEast);
+        session.HireLeader(capital, Captain);
+
+        Assert.Equal(["Knight", "Captain", "Captain II"], session.Parties.Select(p => p.Name));
+    }
+
+    [Fact]
     public void HireLeader_Refused_ChangesNothing()
     {
         var poor = CreateHiringSession(gold: 99);

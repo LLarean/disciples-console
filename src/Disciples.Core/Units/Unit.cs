@@ -4,16 +4,20 @@ namespace Disciples.Core.Units
 {
     public sealed class Unit
     {
-        public Unit(UnitDefinition definition, int level = 1, int experience = 0, int? hp = null)
+        public Unit(UnitDefinition definition, int level = 1, int experience = 0, int? hp = null, string? title = null)
         {
             Definition = definition;
+            Title = title;
             Level = Math.Max(1, level);
             Experience = Math.Max(0, experience);
             Hp = hp.HasValue ? Math.Min(Math.Max(0, hp.Value), MaxHp) : MaxHp;
         }
 
         public UnitDefinition Definition { get; private set; }
-        public string Name => Definition.Name;
+        public string Name => Title ?? Definition.Name;
+
+        /// <summary>A personal name that replaces the definition's one, such as "Paladin II" for a second leader of a class.</summary>
+        public string? Title { get; }
         public int Level { get; private set; }
         public int Experience { get; private set; }
         public int Hp { get; private set; }

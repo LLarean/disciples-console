@@ -116,6 +116,18 @@ public class SnapshotMapperTests
     }
 
     [Fact]
+    public void CaptureThenRestore_KeepsLeaderTitles()
+    {
+        var snapshot = Scenario();
+        snapshot.Parties[0].Units[0].Title = "Knight II";
+
+        var restored = Restore(SnapshotMapper.Capture(Restore(snapshot)));
+
+        Assert.Equal("Knight II", restored.Party.Name);
+        Assert.Null(restored.Party.Squad.Units.Single(u => !u.IsLeader).Title);
+    }
+
+    [Fact]
     public void CaptureThenRestore_KeepsEveryPartyAndTheActiveOne()
     {
         var snapshot = Scenario();

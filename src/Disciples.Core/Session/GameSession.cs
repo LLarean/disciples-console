@@ -234,7 +234,7 @@ namespace Disciples.Core.Session
                 return HireResult.NotEnoughGold;
 
             Gold -= leader.Cost;
-            Party = new Party(new Unit(leader), city.Position, rules: Rules);
+            Party = new Party(NewLeader(leader, _parties), city.Position, rules: Rules);
             _parties.Add(Party);
             return HireResult.LeaderHired;
         }
@@ -547,9 +547,21 @@ namespace Disciples.Core.Session
                 return;
 
             EnemyGold -= leader.Cost;
-            var party = new Party(new Unit(leader), capital.Position, rules: Rules);
+            var party = new Party(NewLeader(leader, Map.Enemies), capital.Position, rules: Rules);
             Map.AddEnemy(party);
             _events.Add(new GameEvent(GameEventKind.EnemyAppeared, party.Name, capital.Name) { Party = party, City = capital, At = capital.Position });
+        }
+
+        private static readonly string[] Numerals = { "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X" };
+
+        /// <summary>A leader whose class is already on the side gets the first free numeral after its name: Paladin, Paladin II, Paladin III.</summary>
+        private static Unit NewLeader(UnitDefinition leader, IEnumerable<Party> side)
+        {
+            var taken = new HashSet<string>(side.Select(p => p.Leader.Name));
+            var title = taken.Contains(leader.Name)
+                ? Numerals.Select(n => $"{leader.Name} {n}").FirstOrDefault(name => !taken.Contains(name))
+                : null;
+            return new Unit(leader, title: title);
         }
 
         private void MoveEnemies()

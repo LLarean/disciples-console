@@ -150,5 +150,8 @@ namespace Disciples.Core.Persistence
 
         /// <summary>Current HP; null means full.</summary>
         public int? Hp { get; set; }
+
+        /// <summary>Personal name; null means the definition's name.</summary>
+        public string? Title { get; set; }
     }
 }

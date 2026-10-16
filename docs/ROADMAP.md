@@ -122,7 +122,8 @@ Every milestone above is implemented; the screens of M10–M14 were checked by b
 - [x] Save regenerates the map legend characters — terrains carry a `symbol` in `terrains.json`
 - [x] Retreat has no penalty (the party just leaves the battle) — done in M9 (6.10)
 - [x] Leader death always loses the game (single party); revisit with several leaders (4.8, 4.9) — done in M10
-- [ ] Leaders of one class share a name, so the log cannot tell two Paladins apart; no cap on the number of leaders **(verify)**
+- [x] Leaders of one class share a name, so the log cannot tell two Paladins apart — a second leader of a class on the same side is numbered (Paladin II), the title is saved with the unit
+- [ ] No cap on the number of leaders **(verify)**
 - [ ] Items: no leader abilities gate artifacts and banners, potions only heal and work only on the map, the bag is unlimited and is lost with the party, merchants don't buy items **(verify)**
 - [ ] City tiers: garrison slots, healing and upgrade costs per tier are placeholders; income does not grow with the tier **(verify)**
 - [ ] Guardian: a slain guardian does not return; it is an ordinary garrison unit rather than a separate defender slot **(verify)**

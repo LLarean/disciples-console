@@ -235,7 +235,8 @@ namespace Disciples.Core.Persistence
                     Column = slot.Column,
                     Level = u.Level,
                     Experience = u.Experience,
-                    Hp = u.Hp == u.MaxHp ? (int?)null : u.Hp
+                    Hp = u.Hp == u.MaxHp ? (int?)null : u.Hp,
+                    Title = u.Title
                 };
             }).ToList();
 
@@ -243,7 +244,7 @@ namespace Disciples.Core.Persistence
         {
             foreach (var data in units)
             {
-                var unit = new Unit(content.Unit(data.Id), data.Level, data.Experience, data.Hp);
+                var unit = new Unit(content.Unit(data.Id), data.Level, data.Experience, data.Hp, data.Title);
                 if (!squad.TryPlace(unit, new SquadSlot(data.Line, data.Column)))
                     throw new ContentException($"'{owner}': cannot place {data.Id} at {data.Line} {data.Column}.");
             }
