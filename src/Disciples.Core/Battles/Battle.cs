@@ -180,11 +180,18 @@ namespace Disciples.Core.Battles
             }
         }
 
+        /// <summary>The damage a hit that lands would deal, without the random spread.</summary>
+        public int ExpectedDamage(Unit actor, Unit target) => Reduce(PowerOf(actor), target);
+
         private int Damage(Unit actor, Unit target)
         {
             var power = PowerOf(actor);
             var spread = power * _rules.DamageSpreadPercent / 100;
-            var damage = power + _random.Next(-spread, spread + 1);
+            return Reduce(power + _random.Next(-spread, spread + 1), target);
+        }
+
+        private int Reduce(int damage, Unit target)
+        {
             if (EffectOn(target) != AttackEffect.Polymorph)
                 damage = damage * (100 - _bonuses(target).ArmorOf(target)) / 100;
 

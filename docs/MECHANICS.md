@@ -91,7 +91,7 @@ Markers:
 | 6.8 | Victory/defeat, experience distributed to survivors | M5 — even split **(verify)** |
 | 6.9 | Battle vs neutral squads standing on the map | M5 |
 | 6.10 | Retreat mechanics (unit leaves battle, squad flees) | M9 (simplified: whole squad flees, party loses the rest of its movement; per-unit escape **(verify)**) |
-| 6.11 | Auto-battle | M14 — the battle AI plays one action (`A`) or the whole battle for both sides (`Q`, `GameSession.ResolveBattle`) |
+| 6.11 | Auto-battle | M14 — the battle AI plays one action (`A`) or the whole battle for both sides (`Q`, `GameSession.ResolveBattle`); the AI finishes off the strongest enemy one hit kills, otherwise hits the one closest to death, spreads status effects to unaffected enemies, heals the most wounded ally and defends when nobody is hurt |
 
 ## 7. Races and content
 

@@ -115,7 +115,7 @@ Every milestone above is implemented; the screens of M10–M14 were checked by b
 - [ ] Races: the enemy is not a race (orcs from `enemyLeaderClasses`, no buildings, mana or spells); cities other than the capital sell the scenario's local recruits whatever the player's race; the Legions have no support branch and mirror the Empire's numbers **(verify)**
 - [ ] Trainers: unlimited lessons at a flat price per experience point; a leader can be trained to a perk level **(verify)**
 - [ ] Leader abilities: the list and the numbers are placeholders; Natural Healing is the only healing outside cities, potions and spells **(verify)**
-- [ ] Battle `Q` plays the player's side with the same simple AI as the enemy's
+- [x] Battle `Q` plays the player's side with the same simple AI as the enemy's — the shared AI now picks targets: kills it can make, the weakest enemy, unaffected targets for effects; healers defend when nobody is hurt
 - [ ] Thief actions are three (poison, assassinate, steal gold) with one success chance; no spying, duels or item theft, the enemy has no thieves **(verify)**
 - [ ] Magic is minimal: only damage and healing spells, no spell levels, no summons, buffs or curses; the enemy neither researches nor casts **(verify)**
 - [ ] Enemy economy is minimal: garrisons are never reinforced, cities are not upgraded, nothing is built, leaders leave the capital without waiting for a full squad, found potions are not used and the items die with the leader **(verify)**
